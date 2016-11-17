@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.persistence.domain;
+package cz.zcu.sar.centraldb.client.persistence.domain;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;

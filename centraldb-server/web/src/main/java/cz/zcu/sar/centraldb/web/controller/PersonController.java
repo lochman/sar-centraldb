@@ -19,7 +19,7 @@ public class PersonController {
     @Autowired
     private PersonRepository personRepository;
 
-    @RequestMapping(value = "add", method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addPerson(@RequestParam("name") String name) {
         Person person = new Person();
         person.setName(name);
@@ -27,7 +27,7 @@ public class PersonController {
         return "Added new user: " + person.getName();
     }
 
-    @RequestMapping(value = "find", method = RequestMethod.GET)
+    @RequestMapping(value = "/find", method = RequestMethod.GET)
     public String findPersonByName(@RequestParam("name") String name) {
         Person person = personRepository.findByName(name);
         return (person == null) ? "Person " + name + " not found." : person.getName() + person.getId();

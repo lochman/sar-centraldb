@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.persistence.domain;
+package cz.zcu.sar.centraldb.client.persistence.domain;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,12 +11,8 @@ import java.util.Set;
 @Entity
 public class Person extends BaseObject {
 
-    @Id
     @Column(length = 20)
     private String centralId;
-
-    @Column(nullable = false)
-    private String name;
 
     @Column(nullable = false)
     @ManyToOne
@@ -25,13 +21,8 @@ public class Person extends BaseObject {
     @OneToMany(mappedBy = "person")
     private Set<Address> addresses;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "PersonBelongs",
-        joinColumns = @JoinColumn(name = "centralId"),
-        inverseJoinColumns = @JoinColumn(name = "instituteId")
-    )
-    private Set<Institute> institutes;
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = false, length = 40)
     private String firstName;
@@ -102,14 +93,6 @@ public class Person extends BaseObject {
 
     public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
-    }
-
-    public Set<Institute> getInstitutes() {
-        return institutes;
-    }
-
-    public void setInstitutes(Set<Institute> institutes) {
-        this.institutes = institutes;
     }
 
     public String getFirstName() {
