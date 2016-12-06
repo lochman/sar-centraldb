@@ -32,6 +32,8 @@ App.controller('PersonController', ['$scope', 'Person', function($scope, Person)
     self.fetchAllPeople();
 
     self.submit = function() {
+        self.person.name = $scope.name;
+        console.log('Updating person with name', $scope.name);
         if (self.person.id == null) {
             console.log('Saving new person', self.person);
             self.createPerson();
