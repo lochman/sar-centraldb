@@ -11,14 +11,9 @@ import java.util.Set;
 @Entity
 public class Person extends BaseObject {
 
-    @Id
-    @Column(length = 20)
-    private String centralId;
-
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     @ManyToOne
     private PersonType personType;
 
@@ -27,25 +22,27 @@ public class Person extends BaseObject {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-        name = "PersonBelongs",
-        joinColumns = @JoinColumn(name = "centralId"),
+        name = "PersonInstitute",
+        joinColumns = @JoinColumn(name = "centralId", nullable = false),
         inverseJoinColumns = @JoinColumn(name = "instituteId")
     )
     private Set<Institute> institutes;
 
-    @Column(nullable = false, length = 40)
+    private boolean temporary;
+
+    @Column(length = 40)//, nullable = false)
     private String firstName;
 
-    @Column(nullable = false, length = 40)
+    @Column(length = 40)//, nullable = false)
     private String birthName;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)//, nullable = false)
     private String birthplace;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private Date birthDate;
 
-    @Column(nullable = false, length = 1)
+    @Column(length = 1)//, nullable = false)
     private String gender;
 
     @Column(length = 50)
@@ -60,25 +57,17 @@ public class Person extends BaseObject {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)//, nullable = false)
     private String citizenship;
 
     @Column(length = 9)
     private String companyNumber;
 
-    @Column(nullable = false, length = 15)
+    @Column(length = 15)//, nullable = false)
     private String socialNumber;
 
     @Column(length = 1)
     private String usePermitted;
-
-    public String getCentralId() {
-        return centralId;
-    }
-
-    public void setCentralId(String centralId) {
-        this.centralId = centralId;
-    }
 
     public String getName() {
         return name;
@@ -110,6 +99,14 @@ public class Person extends BaseObject {
 
     public void setInstitutes(Set<Institute> institutes) {
         this.institutes = institutes;
+    }
+
+    public boolean getTemporary() {
+        return temporary;
+    }
+
+    public void setTemporary(boolean temporary) {
+        this.temporary = temporary;
     }
 
     public String getFirstName() {

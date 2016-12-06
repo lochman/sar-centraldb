@@ -2,7 +2,6 @@ package cz.zcu.sar.centraldb.persistence.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Date;
 
@@ -14,10 +13,8 @@ import java.util.Date;
 public class Address extends BaseObject {
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Person person;
 
-    @Column(nullable = false)
     @ManyToOne
     private AddressType addressType;
 

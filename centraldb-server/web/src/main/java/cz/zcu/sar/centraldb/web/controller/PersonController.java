@@ -3,10 +3,14 @@ package cz.zcu.sar.centraldb.web.controller;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Created by Matej Lochman on 31.10.16.
@@ -19,17 +23,29 @@ public class PersonController {
     @Autowired
     private PersonRepository personRepository;
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addPerson(@RequestParam("name") String name) {
-        Person person = new Person();
-        person.setName(name);
-        personRepository.save(person);
-        return "Added new user: " + person.getName();
+    @GetMapping
+    public Collection<Person> getAll() {
+        return personRepository.findAll();
     }
 
-    @RequestMapping(value = "/find", method = RequestMethod.GET)
-    public String findPersonByName(@RequestParam("name") String name) {
-        Person person = personRepository.findByName(name);
-        return (person == null) ? "Person " + name + " not found." : person.getName() + person.getId();
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Person> get(@PathVariable String id) {
+        return ResponseEntity.ok(personRepository.findOne(id));
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> addPerson(@RequestBody Person person) {
+        System.out.println("addperson called");
+        person.setTemporary(true);
+        personRepository.save(person);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(person.getId()).toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping(value = "/{name}")
+    public Person findPersonByName(@PathVariable String name) {
+        return personRepository.findByName(name).get();
     }
 }

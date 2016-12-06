@@ -3,11 +3,13 @@ package cz.zcu.sar.centraldb.persistence.repository;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 
+import java.util.Optional;
+
 /**
  * Created by Matej Lochman on 31.10.16.
  */
 
-public interface AddressRepository extends BaseRepository<Address, Long> {
+public interface AddressRepository extends BaseRepository<Address, String> {
 
-    Address findByPerson(Person person);
+    Optional<Address> findByPerson(Person person);
 }

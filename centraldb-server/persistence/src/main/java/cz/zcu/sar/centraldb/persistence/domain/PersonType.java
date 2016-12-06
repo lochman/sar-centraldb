@@ -10,18 +10,10 @@ import java.util.Set;
 @Entity
 public class PersonType extends BaseObject {
 
-    @Id
-    @Column(length = 10)
-    private String personType;
-
     @OneToMany(mappedBy = "personType")
     private Set<Person> people;
 
     private String description;
-
-    public String getPersonType() { return personType; }
-
-    public void setPersonType(String personType) { this.personType = personType; }
 
     public Set<Person> getPeople() {
         return people;

@@ -1,5 +1,7 @@
 package cz.zcu.sar.centraldb.persistence.domain;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,28 +17,30 @@ import java.sql.Timestamp;
 public class BaseObject implements Serializable {
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    //@Column(length = 20)
+    private String id;
 
-    @Column(nullable = false, length = 20)
-    private String modifiedBy;
+    @Column(length = 20)//, nullable = false)
+    private Person modifiedBy;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private Timestamp modifiedTime;
 
-    public boolean isNew() {
-        return id == null;
+    public String getId() {
+        return id;
     }
 
-    public Long getId() { return id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public void setId(Long id) { this.id = id; }
-
-    public String getModifiedBy() {
+    public Person getModifiedBy() {
         return modifiedBy;
     }
 
-    public void setModifiedBy(String modifiedBy) {
+    public void setModifiedBy(Person modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
