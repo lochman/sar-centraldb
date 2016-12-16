@@ -17,8 +17,8 @@ public class Address extends BaseObject {
     @JoinColumn(nullable = false)
     private Person person;
 
-    @Column(nullable = false)
     @ManyToOne
+    @JoinColumn(nullable = false)
     private AddressType addressType;
 
     private Date residenceFrom;

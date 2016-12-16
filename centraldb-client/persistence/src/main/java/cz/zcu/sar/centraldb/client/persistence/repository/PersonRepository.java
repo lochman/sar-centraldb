@@ -1,7 +1,5 @@
 package cz.zcu.sar.centraldb.client.persistence.repository;
 
-
-
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 
 import java.util.Optional;

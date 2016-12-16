@@ -14,8 +14,8 @@ public class Person extends BaseObject {
     @Column(length = 20)
     private String centralId;
 
-    @Column(nullable = false)
     @ManyToOne
+    @JoinColumn(nullable = false)
     private PersonType personType;
 
     @OneToMany(mappedBy = "person")
