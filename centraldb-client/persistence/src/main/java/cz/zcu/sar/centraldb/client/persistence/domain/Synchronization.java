@@ -43,4 +43,15 @@ public class Synchronization {
     public void setBatchId(String batchId) {
         this.batchId = batchId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Synchronization  that = (Synchronization) o;
+
+        return id.equals(that.id);
+
+    }
 }
