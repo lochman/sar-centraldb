@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 public class AddressType extends BaseObject {
 
-    @Id
+
     @Column(length = 10)
     private String addressType;
 
