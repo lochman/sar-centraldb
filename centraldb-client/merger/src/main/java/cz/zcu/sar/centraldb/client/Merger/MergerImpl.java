@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.client.pusher;
+package cz.zcu.sar.centraldb.client.Merger;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.Synchronization;

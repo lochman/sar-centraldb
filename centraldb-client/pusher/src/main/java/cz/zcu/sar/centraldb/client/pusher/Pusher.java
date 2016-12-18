@@ -11,6 +11,5 @@ import java.util.List;
  *         date 16.12.2016.
  */
 public interface Pusher {
-    public List<Person> fetchData();
-    public void updateSyncFlags(Timestamp lastTime);
+    public void pushData();
 }

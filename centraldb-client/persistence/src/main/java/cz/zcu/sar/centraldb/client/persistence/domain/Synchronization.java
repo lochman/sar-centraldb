@@ -1,8 +1,6 @@
 package cz.zcu.sar.centraldb.client.persistence.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
@@ -13,10 +11,12 @@ import java.sql.Timestamp;
 public class Synchronization {
 
     @Id
+    @Column(name = "id", columnDefinition = "bigserial")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Timestamp syncPointer;
-
+    private Timestamp fistDate;
+    private Timestamp lastDate;
     @Column(length = 50)
     private String batchId;
 
@@ -28,12 +28,20 @@ public class Synchronization {
         this.id = id;
     }
 
-    public Timestamp getSyncPointer() {
-        return syncPointer;
+    public Timestamp getFistDate() {
+        return fistDate;
     }
 
-    public void setSyncPointer(Timestamp syncPointer) {
-        this.syncPointer = syncPointer;
+    public void setFistDate(Timestamp fistDate) {
+        this.fistDate = fistDate;
+    }
+
+    public Timestamp getLastDate() {
+        return lastDate;
+    }
+
+    public void setLastDate(Timestamp lastDate) {
+        this.lastDate = lastDate;
     }
 
     public String getBatchId() {

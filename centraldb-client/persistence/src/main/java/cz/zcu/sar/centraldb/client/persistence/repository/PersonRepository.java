@@ -15,11 +15,11 @@ import java.util.Optional;
 
 public interface PersonRepository extends BaseRepository<Person, String> {
     public final static String FIND_BY_TIME = "SELECT p " +
-            "FROM person p WHERE p.modifiedTime > :timeStart AND p.modifiedTime >= :timeEnd AND p.modifiedBy <> 'AUTO'";
+            "FROM Person p WHERE p.modifiedTime > :timeStart AND p.modifiedTime <= :timeEnd AND p.modifiedBy <> 'AUTO'";
 
     Optional<Person> findByName(String name);
     @Query(FIND_BY_TIME)
-    Optional<Person> findByDate(@Param("timeStart")Timestamp timeStart,@Param("timeEnd")Timestamp timeEnd);
+    List<Person> findByDate(@Param("timeStart")Timestamp timeStart,@Param("timeEnd")Timestamp timeEnd);
 
 
 }
