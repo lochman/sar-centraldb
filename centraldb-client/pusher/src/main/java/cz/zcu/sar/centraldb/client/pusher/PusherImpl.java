@@ -19,7 +19,7 @@ import java.util.*;
 @Service
 public class PusherImpl implements Pusher {
 
-    private static final long START_TIME = System.currentTimeMillis()-(7*24*60*60*1000); // minus tyden
+    private static final long START_TIME = System.currentTimeMillis()-(8*24*60*60*1000); // minus tyden
     private Synchronization lastSync;
     @Autowired
     private BatchCreator creator;
@@ -42,11 +42,11 @@ public class PusherImpl implements Pusher {
         }else{
             lastSync = new Synchronization();
         }
-       // if(lastSync.getFistDate()==null){
+        if(lastSync.getFistDate()==null){
             lastSync.setLastDate(new Timestamp(START_TIME));
             lastSync.setFistDate(new Timestamp(START_TIME));
             synchronizationRepository.save(lastSync);
-       // }
+        }
         List<Person> persons;
         if(lastSyncComlete()){
             persons = creator.createBatch(lastSync.getLastDate());
@@ -69,6 +69,6 @@ public class PusherImpl implements Pusher {
         lastSync.setLastDate(creator.getEndDate());
         lastSync.setFistDate(creator.getStartDate());
         lastSync.setBatchId(creator.getStartDate().getTime()+";"+creator.getEndDate().getTime());
-      //  synchronizationRepository.save(lastSync);
+        synchronizationRepository.save(lastSync);
     }
 }

@@ -40,6 +40,6 @@ public class SenderImpl implements Sender {
         jsonArray.addAll(persons);
         params.put("data",jsonArray);
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uri, String.class, params);
+        String result = restTemplate.getForObject(uriData, String.class, params);
     }
 }
