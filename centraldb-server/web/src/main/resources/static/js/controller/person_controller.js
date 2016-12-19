@@ -1,5 +1,5 @@
 'use strict';
-App.controller('PersonController', ['$scope', 'Person', function($scope, Person) {
+App.controller('PersonController', ['$scope', 'Person', '$window', function($scope, Person, $window) {
     var self = this;
     self.person = new Person();
     self.people = [];
@@ -9,9 +9,17 @@ App.controller('PersonController', ['$scope', 'Person', function($scope, Person)
     };
 
     self.createPerson = function() {
-        self.person.$save(function() {
-            self.fetchAllPeople();
+        console.log("savecalled", self.person.name);
+      /*  self.person.$save(function(resp) {
+            console.log("saved", self.person.name, resp, self.person);
+            self.$get();
+        });*/
+        self.person.$save(function(response, headers){
+            self.person = response;
+            console.log("save", self.person, response, headers('Location'));
+            $window.location.href = headers('Location');
         });
+        console.log("wtf",  self.person);
     };
 
     self.updatePerson = function() {

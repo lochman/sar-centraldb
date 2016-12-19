@@ -1,6 +1,8 @@
 package cz.zcu.sar.centraldb.web.controller;
 
 import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IndexController implements ErrorController {
     private static final String ERROR_PATH = "error";
 
+    @Secured({ "ROLE_USER" })
     @GetMapping
     public String viewIndex(Model model) {
         model.addAttribute("message", "Hello");
         return "index";
     }
-
+    //@Secured({ "ROLE_USER" })
     @RequestMapping(value = ERROR_PATH)
     public String error() {
         return "error";
