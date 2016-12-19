@@ -2,10 +2,13 @@ package cz.zcu.sar.centraldb.client.persistence.repository;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Temporal;
 import org.springframework.data.repository.query.Param;
 
 
+import javax.persistence.TemporalType;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +22,8 @@ public interface PersonRepository extends BaseRepository<Person, String> {
 
     Optional<Person> findByName(String name);
     @Query(FIND_BY_TIME)
-    List<Person> findByDate(@Param("timeStart")Timestamp timeStart,@Param("timeEnd")Timestamp timeEnd);
+    List<Person> findByDate(@Param("timeStart")Timestamp timeStart,
+                            @Param("timeEnd")Timestamp timeEnd);
 
 
 }

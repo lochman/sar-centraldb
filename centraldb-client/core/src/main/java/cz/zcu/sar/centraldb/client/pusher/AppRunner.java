@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -26,7 +27,6 @@ public class AppRunner implements CommandLineRunner {
     private Pusher pusher;
 
     public void run(String... strings) throws Exception {
-        //initTestData();
         pusher.pushData();
     }
 

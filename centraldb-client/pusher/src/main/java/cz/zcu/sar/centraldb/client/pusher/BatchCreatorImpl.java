@@ -58,7 +58,7 @@ public class BatchCreatorImpl implements BatchCreator{
 
     private List<Person> getDataByDate(Timestamp startDate, Timestamp endDate) {
         List<Person> o = personRepository.findByDate(startDate, endDate);
-        return o==null ? o : new ArrayList<>();
+        return o!=null ? o : new ArrayList<>();
     }
 
     public Timestamp getEndDate() {
