@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.client.pusher;
 
+import cz.zcu.sar.centraldb.client.fetcher.Fetcher;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.client.persistence.services.BaseService;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -25,9 +25,12 @@ public class AppRunner implements CommandLineRunner {
     private BaseService baseService;
     @Autowired
     private Pusher pusher;
+    @Autowired
+    private Fetcher fetcher;
 
     public void run(String... strings) throws Exception {
-        pusher.pushData();
+        //pusher.pushData();
+        fetcher.fetchData();
     }
 
    private void initTestData(){

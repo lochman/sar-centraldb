@@ -9,5 +9,5 @@ import java.util.List;
  *         date 16.12.2016.
  */
 public interface Merger {
-    public boolean mergeData(List<Person> persons, String batchId);
+    boolean mergeData(List<Person> persons);
 }

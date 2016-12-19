@@ -14,4 +14,12 @@ public interface BaseService {
      * @return base object
      */
     BaseObject setDefaultValue(BaseObject baseObject, boolean isSync);
+
+    /**
+     * set modified by
+     * @param baseObject object
+     * @param isSync auto is a robot
+     * @return base object
+     */
+    BaseObject setModifyBy(BaseObject baseObject,boolean isSync);
 }

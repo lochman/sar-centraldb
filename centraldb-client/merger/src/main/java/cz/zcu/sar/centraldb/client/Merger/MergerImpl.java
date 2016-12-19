@@ -4,6 +4,7 @@ import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.Synchronization;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.SynchronizationRepository;
+import cz.zcu.sar.centraldb.client.persistence.services.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,25 +22,22 @@ public class MergerImpl implements Merger {
 
     @Autowired
     SynchronizationRepository synchronizationRepository;
+    @Autowired
+    BaseService baseService;
 
     @Override
-    public boolean mergeData(List<Person> persons, String batchId){
-        personRepository.save(persons);
-        Synchronization lastSync;
-        Collection<Synchronization> syncs = synchronizationRepository.findAll();
-        if(!syncs.isEmpty()) {
-            Iterator<Synchronization> it = syncs.iterator();
-            Synchronization max = it.next();
-            while (it.hasNext()) {
-                Synchronization next = it.next();
-                if (max.getId() < next.getId()) max = next;
+    public boolean mergeData(List<Person> persons){
+        for (Person p : persons){
+            Person save = personRepository.findOne(p.getId());
+            if(save!=null){
+                if(save.getModifiedTime().after(p.getModifiedTime())){
+                    continue;
+                }
+            }else{
+                p = (Person)baseService.setModifyBy(p,true);
+                personRepository.save(p);
             }
-            lastSync = max;
-        }else{
-            lastSync = new Synchronization();
         }
-        lastSync.setBatchId(batchId);
-        synchronizationRepository.save(lastSync);
         return true;
     }
 }
