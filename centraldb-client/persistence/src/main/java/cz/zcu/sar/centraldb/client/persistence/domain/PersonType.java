@@ -10,7 +10,6 @@ import java.util.Set;
 @Entity
 public class PersonType extends BaseObject {
 
-    @Id
     @Column(length = 10)
     private String personType;
 

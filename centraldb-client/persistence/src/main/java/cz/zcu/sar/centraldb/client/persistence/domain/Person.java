@@ -9,13 +9,14 @@ import java.util.Set;
  */
 
 @Entity
+@Table(name = "person")
 public class Person extends BaseObject {
 
     @Column(length = 20)
     private String centralId;
 
-    @Column(nullable = false)
     @ManyToOne
+    @JoinColumn(nullable = true)
     private PersonType personType;
 
     @OneToMany(mappedBy = "person")
@@ -24,19 +25,19 @@ public class Person extends BaseObject {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = true, length = 40)
     private String firstName;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = true, length = 40)
     private String birthName;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50)
     private String birthplace;
 
     @Column(nullable = false)
     private Date birthDate;
 
-    @Column(nullable = false, length = 1)
+    @Column(nullable = true, length = 1)
     private String gender;
 
     @Column(length = 50)
@@ -51,13 +52,13 @@ public class Person extends BaseObject {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = true, length = 20)
     private String citizenship;
 
     @Column(length = 9)
     private String companyNumber;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = true, length = 15)
     private String socialNumber;
 
     @Column(length = 1)

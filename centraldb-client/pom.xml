@@ -9,11 +9,16 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>persistence</module>
-        <module>pusher</module>
+        <module>core</module>
         <module>fetcher</module>
         <module>merger</module>
+        <module>persistence</module>
+        <module>pusher</module>
     </modules>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
