@@ -24,4 +24,12 @@ public class BaseServiceImpl implements BaseService{
         baseObject.setModifiedTime( new Timestamp(System.currentTimeMillis()));
         return baseObject;
     }
+    public BaseObject setModifyBy(BaseObject baseObject,boolean isSync){
+        if (isSync){
+            baseObject.setModifiedBy(AUTO);
+        }else{
+            baseObject.setModifiedBy(USER);
+        }
+        return baseObject;
+    }
 }

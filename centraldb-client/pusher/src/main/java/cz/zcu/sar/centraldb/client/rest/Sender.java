@@ -9,6 +9,7 @@ import java.util.List;
  *         date 18.12.2016.
  */
 public interface Sender {
-    public boolean sendLastBatchId(String batchId);
-    public void sendData(List<Person> persons,String batchId);
+    boolean sendLastBatchId(String batchId);
+    void sendData(List<Person> persons,String batchId);
+    List<Person> fetchData();
 }
