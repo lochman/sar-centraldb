@@ -36,7 +36,6 @@ public class PersonController {
         System.out.println("get called "+id);
         return ResponseEntity.ok(personRepository.findOne(id));
     }
-
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> addPerson(@RequestBody Person person) {
         System.out.println("addperson called "+person.getName()+ " "+person.getId());

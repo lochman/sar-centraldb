@@ -1,19 +1,44 @@
 <!DOCTYPE html>
-<html lang="cz" xmlns:th="http://www.thymeleaf.org">
+<html lang="cz" xmlns:th="http://www.thymeleaf.org" ng-app="app">
 <head>
-    <title>Spring Security Example </title>
+    <meta charset="UTF-8"/>
+    <title>Centrální databáze osob</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
+    <script th:src="@{/js/angular.min.js}"></script>
+    <script th:src="@{/js/angular-resource.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
 </head>
 <body>
-<div th:if="${param.error}">
-    Invalid username and password.
+<div class="container">
+<div th:replace="fragments/header :: header">Header</div>
+
+<div class="alert alert-danger" th:if="${param.error}">
+    Neplatné jméno nebo heslo.
 </div>
-<div th:if="${param.logout}">
-    You have been logged out.
+<div class="alert alert-success" th:if="${param.logout}">
+    Uživatel úspěšně odhlášen.
 </div>
 <form th:action="@{/login}" method="post">
-    <div><label> User Name : <input type="text" name="username"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
-    <div><input type="submit" value="Sign In"/></div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label"> Přihlašovací jméno :</label>
+        <div class="col-sm-10">
+            <input type="text" name="username"  class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label"> Heslo:</label>
+        <div class="col-sm-10">
+            <input type="password" name="password"  class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary" >Přihlásit</button>
+        </div>
+    </div>
 </form>
+</div>
 </body>
 </html>

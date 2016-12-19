@@ -23,6 +23,12 @@ public class IndexController implements ErrorController {
         model.addAttribute("message", "Hello");
         return "index";
     }
+
+
+    @GetMapping(value = "/login")
+    public String login() {
+        return "login";
+    }
     //@Secured({ "ROLE_USER" })
     @RequestMapping(value = ERROR_PATH)
     public String error() {

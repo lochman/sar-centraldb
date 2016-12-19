@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Centrální databáze osob - chyba</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
+    <script th:src="@{/js/angular.min.js}"></script>
+    <script th:src="@{/js/angular-resource.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
 </head>
 <body>
 
-<div th:if="${message}">
-    <h2 th:text="${message}"/>
+<div class="container">
+    <div th:replace="fragments/header :: header">Header</div>
+    <div th:if="${message}">
+        <h1 th:text="${message}"/>
+    </div>
 </div>
-
 </body>
 </html>

@@ -1,0 +1,20 @@
+<header th:fragment="header"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid" sec:authorize="isAuthenticated()">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a th:href="@{/person/list}">Seznam Osob</a></li>
+                <li><a th:href="@{/person}">Osoba</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><p class="navbar-text">Přihlášen jako: <span style="font-weight: bold" sec:authentication="name"></span></p></li>
+                <li><a th:href="@{/logout}">Odhlásit</a></li>
+            </ul>
+        </div><!-- auth -->
+
+        <div class="container-fluid" sec:authorize="isAnonymous()">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a th:href="@{/login}">Přihlásit</a></li>
+            </ul>
+        </div><!-- auth -->
+    </nav>
+</header>

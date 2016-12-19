@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="cz" xmlns:th="http://www.thymeleaf.org" ng-app="app" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="cz" xmlns:th="http://www.thymeleaf.org" ng-app="app">
 <head>
     <meta charset="UTF-8"/>
     <title>Centrální databáze osob</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
+    <script th:src="@{/js/angular.min.js}"></script>
+    <script th:src="@{/js/angular-resource.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
 </head>
 <body>
+
+<div class="container">
+<div th:replace="fragments/header :: header">Header</div>
+
 <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
 <form th:action="@{/logout}" method="post">
     <!--<input type="hidden"
@@ -13,7 +22,7 @@
            th:value="${_csrf.token}" />-->
     <input type="submit" value="Odhlásit" />
 </form>
-<div ng-controller="PersonController as ctrl">
+<div ng-controller="PersonController as ctrl" class="container" th:fragment="content">
     <form name="addPersonForm" ng-submit="ctrl.submit()">
         <label for="name">Jméno osoby:</label>
         <input ng-model="name" id="name" type="text" name="name" />
@@ -24,12 +33,7 @@
 <div th:if="${message}">
     <h2 th:text="${message}"/>
 </div>
-
-<script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
-<script th:src="@{/js/angular.min.js}"></script>
-<script th:src="@{/js/angular-resource.min.js}"></script>
-<script th:src="@{/js/bootstrap.min.js}" ></script>
-<script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
+</div>
 <script th:src="@{/js/app.js}"></script>
 <script th:src="@{/js/controller/app_controller.js}" ></script>
 <script th:src="@{/js/controller/person_controller.js}" ></script>

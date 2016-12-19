@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Created by Petr on 12/18/2016.
@@ -31,7 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web
                 .ignoring()
                 .antMatchers("/resources/**");
-        web.debug(true);
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -43,10 +43,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated()
             .and()
             .formLogin()
-            //.loginPage("/login")
+            .loginPage("/login")
             .permitAll()
             .and()
             .logout()
+               .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
             .permitAll()
                .and()
                .csrf()
