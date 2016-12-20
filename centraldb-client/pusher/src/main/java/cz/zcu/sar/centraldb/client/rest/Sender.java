@@ -12,4 +12,5 @@ public interface Sender {
     boolean sendLastBatchId(String batchId);
     void sendData(List<Person> persons,String batchId);
     List<Person> fetchData();
+    void confirmFetchData();
 }

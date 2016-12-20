@@ -6,6 +6,7 @@ package cz.zcu.sar.centraldb.client.rest;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,22 +22,28 @@ import java.util.Map;
 // TODO: otestovat a dodelat
 @Service
 public class SenderImpl implements Sender {
-    final String uri = "http://localhost:8080/lastBatch";
-    final String uriData = "http://localhost:8080/data";
-    final String fetchData = "http://localhost:8080/data/fetch";
-    final String clientId="client1";
+    @Value("${uri.lastBatch}")
+    String uriBatch;
+    @Value("${uri.getData}")
+    String uriData;
+    @Value("${uri.fetch}")
+    String fetchData;
+    @Value("${uri.fetch.confirm}")
+    String confirmFetch;
+    @Value("${client.id}")
+    String clientId;
 
     public boolean sendLastBatchId(String batchId) {
         Map<String, String> params = new HashMap();
         params.put("batchId", batchId);
         params.put("idClient", clientId);
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uri, String.class, params);
+        String result = restTemplate.getForObject(uriBatch, String.class, params);
         return result.equals(batchId);
     }
     public void sendData(List<Person> persons,String batchId){
         JSONObject params = new JSONObject();
-        params.put("idClient",clientId);
+        params.put("idClient", clientId);
         JSONArray jsonArray = new JSONArray();
         jsonArray.addAll(persons);
         params.put("data",jsonArray);
@@ -50,5 +57,11 @@ public class SenderImpl implements Sender {
         String result = restTemplate.getForObject(fetchData, String.class, params);
         //TODO : dodelat komunikaci
         return new ArrayList<>();
+    }
+    public void confirmFetchData(){
+        JSONObject params = new JSONObject();
+        params.put("idClient",clientId);
+        RestTemplate restTemplate = new RestTemplate();
+        String result = restTemplate.getForObject(confirmFetch, String.class, params);
     }
 }

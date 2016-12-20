@@ -23,6 +23,7 @@ public class FetcherImpl implements Fetcher {
         List<Person> persons = sender.fetchData();
         if (!persons.isEmpty()){
             merger.mergeData(persons);
+            sender.confirmFetchData();
         }
 
     }
