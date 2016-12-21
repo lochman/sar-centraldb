@@ -19,7 +19,7 @@ import java.net.URI;
  */
 
 @RestController
-@Secured({ "ROLE_ADMIN" })
+//@Secured({ "ROLE_ADMIN" })
 @RequestMapping("/person")
 public class PersonController {
 
@@ -29,7 +29,7 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
-    @Secured({ "ROLE_USER" })
+    //@Secured({ "ROLE_USER" })
     @PostMapping("/search/paginated")
     public Page<Person> getPeopleByQuery(@RequestBody PageRequestWrapper request) {
         return personService.getPeopleByQuery(request);

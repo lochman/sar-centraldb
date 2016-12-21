@@ -23,6 +23,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Page<Person> getPeopleByQuery(PageRequestWrapper requestWrapper) {
         PageRequestWrapper.PagingParams queryParams = requestWrapper.getPagingParams();
+        System.out.println(queryParams);
         PageRequest pageRequest = new PageRequest(queryParams.getPage(), queryParams.getLimit(), Sort.Direction.ASC,
                 queryParams.getSort().toArray(new String[queryParams.getSort().size()]));
         return personRepository.findAll(hasProperties(requestWrapper.getQueryParams()), pageRequest);

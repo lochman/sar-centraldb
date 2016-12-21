@@ -5,7 +5,11 @@ App.factory('Person', ['$resource', function ($resource) {
         {id: '@id'},
         {
             update: {
-                method: 'POST' // To send the HTTP Put request when calling this custom update method.
+                method: 'POST'
+            },
+            paginatedSearch: {
+                url: 'person/search/paginated',
+                method: 'POST'
             }
 
         }

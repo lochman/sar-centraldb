@@ -2,18 +2,10 @@
 App.controller('PersonController', ['$scope', 'Person', '$window', function($scope, Person, $window) {
     var self = this;
     self.person = new Person();
-    self.people = [];
-
-    self.fetchAllPeople = function() {
-        self.people = Person.query();
-    };
 
     self.createPerson = function() {
+        console.log(3);
         console.log("savecalled", self.person.name);
-      /*  self.person.$save(function(resp) {
-            console.log("saved", self.person.name, resp, self.person);
-            self.$get();
-        });*/
         self.person.$save(function(response, headers){
             self.person = response;
             console.log("save", self.person, response, headers('Location'));
@@ -23,12 +15,14 @@ App.controller('PersonController', ['$scope', 'Person', '$window', function($sco
     };
 
     self.updatePerson = function() {
+        console.log(4);
         self.person.$update(function() {
             self.fetchAllPeople();
         });
     };
 
     self.deletePerson = function(identity) {
+        console.log(5);
         var person = Person.get({id:identity}, function() {
             person.$delete(function() {
                 console.log('Deleting person with id ', identity);
@@ -36,8 +30,6 @@ App.controller('PersonController', ['$scope', 'Person', '$window', function($sco
             });
         });
     };
-
-    self.fetchAllPeople();
 
     self.submit = function() {
         self.person.name = $scope.name;

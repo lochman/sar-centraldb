@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <title>Centrální databáze osob</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
     <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
     <script th:src="@{/js/angular.min.js}"></script>
     <script th:src="@{/js/angular-resource.min.js}"></script>
@@ -15,16 +16,20 @@
     <base th:href="@{/}"/>
 </head>
 <body>
+
 <div th:replace="fragments/header :: header">Header</div>
+<h1>Osoba</h1>>
 <div ng-controller="PersonController as ctrl" class="container">
-        <form name="addPersonForm" ng-submit="ctrl.submit()">
-            <label for="name">Jméno osoby:</label>
-            <input ng-model="name" id="name" type="text" name="name" />
-            <input type="submit" value="Uložit" />
-        </form>
-    <div th:if="${message}">
-        <h2 th:text="${message}"/>
-    </div>
+    <table class="table">
+        <col width="40%"/>
+        <col width="60%"/>
+        <tbody>
+        <tr ng-repeat="param in personParams">
+            <td>{{param.key}}</td>
+            <td>{{param.value}}</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

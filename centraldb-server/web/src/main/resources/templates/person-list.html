@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="cz" xmlns:th="http://www.thymeleaf.org" ng-app="app">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Centrální databáze osob</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
+    <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
+    <script th:src="@{/js/angular.min.js}"></script>
+    <script th:src="@{/js/angular-resource.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
+    <script th:src="@{/js/app.js}"></script>
+    <script th:src="@{/js/service/person_service.js}" ></script>
+    <script th:src="@{/js/controller/person_list_controller.js}" ></script>
+    <base th:href="@{/}"/>
+</head>
+<body>
+
+    <div th:replace="fragments/header :: header">Header</div>
+
+    <div ng-controller="PersonListController as ctrl" class="container">
+        <div th:replace="fragments/query-form :: form">Query Form</div>
+
+
+
+        <div>
+        Zobrazit
+        <select class="form-control input-sm limit-selector" ng-model="paginationParams.limit"
+                ng-change="ctrl.changePaginationLimit()" ng-init="paginationParams.limit = '50'">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50" th:selected="selected">50</option>
+            <option value="100">100</option>
+        </select> záznamů na stránku.
+        <table class="table table-hover">
+            <col width="20%"/>
+            <col width="20%"/>
+            <col width="20%"/>
+            <col width="20%"/>
+            <col width="10%"/>
+            <col width="10%"/>
+            <thead>
+                <tr>
+                    <th>Jméno</th>
+                    <th>Název</th>
+                    <th>Identifikační číslo</th>
+                    <th>Rodné číslo</th>
+                    <th>Typ osoby</th>
+                    <th>Pohlaví</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="person in persons" row-href="person/{{person.id}}">
+                    <td>{{person.firstname}}</td>
+                    <td>{{person.name}}</td>
+                    <td>{{person.ic}}</td>
+                    <td>{{person.rc}}</td>
+                    <td>{{person.persontype}}</td>
+                    <td>{{person.gender}}</td>
+                </tr>
+            </tbody>
+        </table>
+            <ul uib-pagination="true" total-items="paginationParams.totalCount" ng-model="paginationParams.currentPage"
+                ng-change="paginationChangePage()" max-size="paginationParams.pageCount" class="pagination-sm" boundary-link-numbers="true"
+                previous-text="Předchozí" next-text="Další"></ul>
+        </div>
+</div>
+</body>
+</html>

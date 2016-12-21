@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IndexController implements ErrorController {
     private static final String ERROR_PATH = "error";
 
-    @Secured({ "ROLE_USER" })
+    //@Secured({ "ROLE_USER" })
     @GetMapping
     public String viewIndex(Model model) {
         model.addAttribute("message", "Hello");
@@ -28,6 +28,12 @@ public class IndexController implements ErrorController {
     @GetMapping(value = "/login")
     public String login() {
         return "login";
+    }
+
+
+    @GetMapping(value = "/person/list")
+    public String getList() {
+        return "person-list";
     }
     //@Secured({ "ROLE_USER" })
     @RequestMapping(value = ERROR_PATH)
