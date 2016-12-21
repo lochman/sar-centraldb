@@ -63,6 +63,14 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
     @Column(length = 1)
     private String usePermitted;
 
+    public Person() { }
+
+    public Person(String name, String surname, String gender) {
+        this.name = name;
+        this.surname = surname;
+        this.gender = gender;
+    }
+
     public Long getForeignId() {
         return foreignId;
     }

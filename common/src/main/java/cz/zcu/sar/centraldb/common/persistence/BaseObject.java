@@ -1,11 +1,9 @@
 package cz.zcu.sar.centraldb.common.persistence;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by Matej Lochman on 31.10.16.
@@ -23,6 +21,12 @@ public class BaseObject implements Serializable {
 
     @Column(nullable = false)
     private Timestamp modifiedTime;
+
+    @PreUpdate
+    @PrePersist
+    public void setModificationTimeStamp() {
+        modifiedTime = new Timestamp(new Date().getTime());
+    }
 
     public boolean isNew() {
         return id == null;

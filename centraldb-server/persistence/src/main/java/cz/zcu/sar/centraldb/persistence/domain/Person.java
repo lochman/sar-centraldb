@@ -22,6 +22,12 @@ public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<Perso
 
     private boolean temporary;
 
+    public Person() {}
+
+    public Person(String firstName, String surname, String gender) {
+        super(firstName, surname, gender);
+    }
+
     public Set<Institute> getInstitutes() {
         return institutes;
     }

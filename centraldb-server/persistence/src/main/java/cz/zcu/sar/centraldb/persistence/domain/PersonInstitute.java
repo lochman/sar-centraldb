@@ -13,10 +13,11 @@ public class PersonInstitute {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id")
+    @JoinColumn(name = "centralId")
     private Person person;
+
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "institute_id")
+    @JoinColumn(name = "instituteId")
     private Institute institute;
     private Long localId;
 
