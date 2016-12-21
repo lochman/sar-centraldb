@@ -8,5 +8,5 @@ import java.util.Set;
  */
 
 @Entity
-public class PersonType extends wrapper.PersonType<Person> {
+public class PersonType extends cz.zcu.sar.centraldb.common.persistence.PersonType<Person> {
 }

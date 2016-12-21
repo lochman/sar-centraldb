@@ -1,4 +1,4 @@
-package wrapper;
+package cz.zcu.sar.centraldb.common.persistence;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,7 +28,7 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
     private String firstName;
 
     @Column(nullable = true, length = 40)
-    private String birthName;
+    private String surname;
 
     @Column(nullable = true, length = 50)
     private String birthplace;
@@ -103,12 +103,12 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
         this.firstName = firstName;
     }
 
-    public String getBirthName() {
-        return birthName;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setBirthName(String birthName) {
-        this.birthName = birthName;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getBirthplace() {

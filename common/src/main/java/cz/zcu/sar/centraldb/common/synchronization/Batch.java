@@ -1,4 +1,6 @@
-package wrapper;
+package cz.zcu.sar.centraldb.common.synchronization;
+
+import cz.zcu.sar.centraldb.common.persistence.Person;
 
 import java.util.List;
 
@@ -6,11 +8,11 @@ import java.util.List;
  * @author Marek Rasocha
  *         date 21.12.2016.
  */
-public class BatchWrapper {
+public class Batch {
     private String clientId;
     private List<Person> persons;
 
-    public BatchWrapper(String clientId, List<Person> persons) {
+    public Batch(String clientId, List<Person> persons) {
         this.clientId = clientId;
         this.persons=persons;
     }

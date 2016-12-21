@@ -1,7 +1,6 @@
 package cz.zcu.sar.centraldb.persistence.domain;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Set;
 
 /**
@@ -11,9 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "person")
-public class Person extends wrapper.Person<PersonType,Address> {
-
-
+public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<PersonType, Address> {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

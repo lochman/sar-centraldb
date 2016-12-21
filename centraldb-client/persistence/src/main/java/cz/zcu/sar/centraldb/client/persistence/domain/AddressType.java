@@ -11,6 +11,6 @@ import java.util.Set;
  */
 
 @Entity
-public class AddressType extends wrapper.AddressType<Address> {
+public class AddressType extends cz.zcu.sar.centraldb.common.persistence.AddressType<Address> {
 
 }

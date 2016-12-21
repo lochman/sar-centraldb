@@ -1,4 +1,4 @@
-package wrapper;
+package cz.zcu.sar.centraldb.common.persistence;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;

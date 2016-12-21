@@ -1,16 +1,12 @@
 package cz.zcu.sar.centraldb.client.rest;
 
-
-
-
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
-import org.json.simple.JSONArray;
+import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import wrapper.BatchWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,16 +35,16 @@ public class SenderImpl implements Sender {
         return result.equals(batchId);
     }
     public void sendData(List<Person> persons,String batchId){
-        BatchWrapper batchWrapper = new BatchWrapper(clientId,normalizedPerson(persons));
+        Batch batchWrapper = new Batch(clientId,normalizedPerson(persons));
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        restTemplate.postForObject(uriData, batchWrapper, BatchWrapper.class);
+        restTemplate.postForObject(uriData, batchWrapper, Batch.class);
     }
 
-    private List<wrapper.Person> normalizedPerson(List<Person> persons) {
-        List<wrapper.Person> wrapper = new ArrayList<>();
+    private List<cz.zcu.sar.centraldb.common.persistence.Person> normalizedPerson(List<Person> persons) {
+        List<cz.zcu.sar.centraldb.common.persistence.Person> wrapper = new ArrayList<>();
         for(Person p : persons){
-            wrapper.Person w = p.getWraperPerson();
+            cz.zcu.sar.centraldb.common.persistence.Person w = p.getWraperPerson();
             wrapper.add(w);
         }
         return wrapper;

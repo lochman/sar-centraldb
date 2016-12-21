@@ -1,4 +1,4 @@
-package wrapper;
+package cz.zcu.sar.centraldb.common.persistence;
 
 import javax.persistence.*;
 import java.util.Date;

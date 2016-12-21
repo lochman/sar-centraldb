@@ -2,9 +2,8 @@ package cz.zcu.sar.centraldb.client.persistence.domain;
 
 import org.springframework.beans.BeanUtils;
 
-import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by Matej Lochman on 31.10.16.
@@ -12,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "person")
-public class Person extends wrapper.Person<PersonType, Address> {
+public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<PersonType, Address> {
 
    private Long centralId;
 
@@ -23,8 +22,8 @@ public class Person extends wrapper.Person<PersonType, Address> {
     public void setCentralId(Long centralId) {
         this.centralId = centralId;
     }
-    public wrapper.Person getWraperPerson(){
-        wrapper.Person person = new wrapper.Person();
+    public cz.zcu.sar.centraldb.common.persistence.Person getWraperPerson(){
+        cz.zcu.sar.centraldb.common.persistence.Person person = new cz.zcu.sar.centraldb.common.persistence.Person();
         BeanUtils.copyProperties(person, this);
         person.setForeignId(getCentralId());
         return person;

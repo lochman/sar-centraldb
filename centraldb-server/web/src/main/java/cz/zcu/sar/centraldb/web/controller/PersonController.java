@@ -2,17 +2,17 @@ package cz.zcu.sar.centraldb.web.controller;
 
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.repository.PersonRepository;
+import cz.zcu.sar.centraldb.persistence.service.PageRequestWrapper;
+import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Created by Matej Lochman on 31.10.16.
@@ -26,23 +26,24 @@ public class PersonController {
     @Autowired
     private PersonRepository personRepository;
 
-    @GetMapping
-    public Collection<Person> getAll() {
-        return personRepository.findAll();
+    @Autowired
+    private PersonService personService;
+
+    @PostMapping("/search/paginated")
+    public Page<Person> getPeopleByQuery(@RequestBody PageRequestWrapper request) {
+        return personService.getPeopleByQuery(request);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Person> get(@PathVariable String id) {
-        System.out.println("get called "+id);
-        return ResponseEntity.ok(personRepository.findOne(id));
+    public ResponseEntity<?> getPersonById(@PathVariable String id) {
+        Person person = personRepository.findOne(id);
+        return person == null ? new ResponseEntity<>("Uživatel s id \'" + id + "\' nebyl nalezen.", HttpStatus.NOT_FOUND) :
+                ResponseEntity.ok(person);
     }
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> addPerson(@RequestBody Person person) {
-        System.out.println("addperson called "+person.getName()+ " "+person.getId());
-        person.setTemporary(true);
-        person.setName(person.getName()+"ppp");
-        person = personRepository.save(person);
-        System.out.println("2addperson called "+person.getName()+ " "+person.getId());
+
+    @PostMapping
+    public ResponseEntity<?> createNewPerson(@RequestBody Person person) {
+        personService.savePersonAsTemp(person);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(person.getId()).toUri();

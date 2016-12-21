@@ -1,8 +1,11 @@
 package cz.zcu.sar.centraldb.persistence.repository;
 
 import cz.zcu.sar.centraldb.persistence.domain.Person;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -10,6 +13,5 @@ import java.util.Optional;
  */
 
 public interface PersonRepository extends BaseRepository<Person, String> {
-
     Optional<Person> findByName(String name);
 }
