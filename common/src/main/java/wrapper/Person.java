@@ -11,8 +11,8 @@ import java.util.Set;
 @MappedSuperclass
 public class Person<P extends PersonType, A extends Address> extends BaseObject {
 
-    //@Column(length = 20)
-    //private String centralId;
+    @Transient
+    private Long foreignId;
 
     @ManyToOne
     @JoinColumn(nullable = true)
@@ -63,13 +63,13 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
     @Column(length = 1)
     private String usePermitted;
 
-//    public String getCentralId() {
-//        return centralId;
-//    }
+    public Long getForeignId() {
+        return foreignId;
+    }
 
-//    public void setCentralId(String centralId) {
-//        this.centralId = centralId;
-//    }
+    public void setForeignId(Long foreignId) {
+        this.foreignId = foreignId;
+    }
 
     public String getName() {
         return name;

@@ -29,6 +29,7 @@ public class AppRunner implements CommandLineRunner {
     private Fetcher fetcher;
 
     public void run(String... strings) throws Exception {
+        initTestData();
         pusher.pushData();
         //fetcher.fetchData();
     }

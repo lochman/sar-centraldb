@@ -60,7 +60,7 @@ public class PusherImpl implements Pusher {
     }
 
     private boolean lastSyncComlete() {
-        //if (lastSync.getBatchId()==null) return true;
+        if (lastSync.getBatchId()==null) return true;
         return sender.sendLastBatchId(lastSync.getBatchId());
     }
 

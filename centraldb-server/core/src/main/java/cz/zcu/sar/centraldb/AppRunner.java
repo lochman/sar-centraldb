@@ -2,6 +2,7 @@ package cz.zcu.sar.centraldb;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import wrapper.BatchWrapper;
 
 /**
  * Created by Matej Lochman on 16.12.2016.
@@ -13,7 +14,7 @@ public class AppRunner implements CommandLineRunner {
 
 
     public void run(String... strings) throws Exception {
-
+//        BatchWrapper batchWrapper;
     }
 
   /* private void initTestData(){

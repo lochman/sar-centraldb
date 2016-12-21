@@ -1,13 +1,15 @@
 package cz.zcu.sar.centraldb.rest;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
+
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wrapper.BatchWrapper;
 
-import java.util.concurrent.atomic.AtomicLong;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * @author Marek Rasocha
@@ -26,11 +28,11 @@ public class RestControler {
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.POST)
-    public ResponseEntity<String> getData(@RequestBody String id) {
-//        params.put("idClient", clientId);
-        //todo: najdi lastBatch podle id clienta
+    public ResponseEntity<BatchWrapper> getData(@RequestBody() BatchWrapper request) {
+
+        //todo: vloz do bufferu
         JSONObject result = new JSONObject();
-        return new ResponseEntity<String>("lastBatch", HttpStatus.OK);
+        return new ResponseEntity<BatchWrapper>(HttpStatus.OK);
     }
 
 }

@@ -7,13 +7,13 @@ import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import wrapper.BatchWrapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Marek Rasocha
@@ -39,14 +39,21 @@ public class SenderImpl implements Sender {
         return result.equals(batchId);
     }
     public void sendData(List<Person> persons,String batchId){
-        JSONObject params = new JSONObject();
-        params.put("idClient", clientId);
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.addAll(persons);
-        params.put("data",jsonArray);
+        BatchWrapper batchWrapper = new BatchWrapper(clientId,normalizedPerson(persons));
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uriData, String.class, params);
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        restTemplate.postForObject(uriData, batchWrapper, BatchWrapper.class);
     }
+
+    private List<wrapper.Person> normalizedPerson(List<Person> persons) {
+        List<wrapper.Person> wrapper = new ArrayList<>();
+        for(Person p : persons){
+            wrapper.Person w = p.getWraperPerson();
+            wrapper.add(w);
+        }
+        return wrapper;
+    }
+
     public List<Person> fetchData(){
         JSONObject params = new JSONObject();
         params.put("idClient",clientId);

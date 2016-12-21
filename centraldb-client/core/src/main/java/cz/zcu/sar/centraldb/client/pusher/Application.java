@@ -14,9 +14,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan("cz.zcu.sar.centraldb.client")
 @EnableJpaRepositories(basePackages="cz.zcu.sar.centraldb.client.persistence.repository")
 @EntityScan("cz.zcu.sar.centraldb.client")
-public class Application {
+public class Application{
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+
 }
