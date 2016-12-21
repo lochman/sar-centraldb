@@ -1,6 +1,6 @@
 package cz.zcu.sar.centraldb.client.persistence.services;
 
-import cz.zcu.sar.centraldb.client.persistence.domain.BaseObject;
+import wrapper.BaseObject;
 
 /**
  * @author Marek Rasocha

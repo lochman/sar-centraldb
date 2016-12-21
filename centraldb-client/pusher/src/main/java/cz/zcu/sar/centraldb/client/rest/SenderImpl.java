@@ -34,11 +34,8 @@ public class SenderImpl implements Sender {
     String clientId;
 
     public boolean sendLastBatchId(String batchId) {
-        Map<String, String> params = new HashMap();
-        params.put("batchId", batchId);
-        params.put("idClient", clientId);
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uriBatch, String.class, params);
+        String result = restTemplate.postForObject(uriBatch, clientId, String.class);
         return result.equals(batchId);
     }
     public void sendData(List<Person> persons,String batchId){

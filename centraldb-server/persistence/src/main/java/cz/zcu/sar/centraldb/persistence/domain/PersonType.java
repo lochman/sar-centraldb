@@ -8,22 +8,5 @@ import java.util.Set;
  */
 
 @Entity
-public class PersonType extends BaseObject {
-
-    @OneToMany(mappedBy = "personType")
-    private Set<Person> people;
-
-    private String description;
-
-    public Set<Person> getPeople() {
-        return people;
-    }
-
-    public void setPeople(Set<Person> people) {
-        this.people = people;
-    }
-
-    public String getDescription() { return description; }
-
-    public void setDescription(String description) { this.description = description; }
+public class PersonType extends wrapper.PersonType<Person> {
 }

@@ -11,22 +11,5 @@ import java.util.Set;
  */
 
 @Entity
-public class AddressType extends BaseObject {
-
-    @OneToMany(mappedBy = "addressType")
-    private Set<Address> addresses;
-
-    private String description;
-
-    public Set<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(Set<Address> addresses) {
-        this.addresses = addresses;
-    }
-
-    public String getDescription() { return description; }
-
-    public void setDescription(String description) { this.description = description; }
+public class AddressType extends wrapper.AddressType<Address> {
 }

@@ -8,6 +8,7 @@ import java.util.Set;
  * Created by Matej Lochman on 17.11.16.
  */
 
+
 @Entity
 public class Institute {
 
