@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import static cz.zcu.sar.centraldb.persistence.specification.PersonSpecifications.hasProperties;
 
@@ -13,6 +14,7 @@ import static cz.zcu.sar.centraldb.persistence.specification.PersonSpecification
  * Created by Matej Lochman on 21.12.16.
  */
 
+@Service
 public class PersonServiceImpl implements PersonService {
 
     @Autowired

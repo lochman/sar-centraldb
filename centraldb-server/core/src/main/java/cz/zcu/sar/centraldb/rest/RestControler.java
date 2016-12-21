@@ -1,14 +1,14 @@
 package cz.zcu.sar.centraldb.rest;
 
 
+import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import org.json.simple.JSONObject;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import wrapper.BatchWrapper;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -28,11 +28,11 @@ public class RestControler {
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.POST)
-    public ResponseEntity<BatchWrapper> getData(@RequestBody() BatchWrapper request) {
+    public ResponseEntity<Batch> getData(@RequestBody() Batch request) {
 
         //todo: vloz do bufferu
         JSONObject result = new JSONObject();
-        return new ResponseEntity<BatchWrapper>(HttpStatus.OK);
+        return new ResponseEntity<Batch>(HttpStatus.OK);
     }
 
 }

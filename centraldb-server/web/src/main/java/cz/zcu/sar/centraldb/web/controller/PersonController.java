@@ -29,6 +29,7 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+    @Secured({ "ROLE_USER" })
     @PostMapping("/search/paginated")
     public Page<Person> getPeopleByQuery(@RequestBody PageRequestWrapper request) {
         return personService.getPeopleByQuery(request);

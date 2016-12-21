@@ -2,7 +2,6 @@ package cz.zcu.sar.centraldb;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import wrapper.BatchWrapper;
 
 /**
  * Created by Matej Lochman on 16.12.2016.
