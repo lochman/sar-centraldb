@@ -22,7 +22,7 @@ public class TestDataLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
         Person person;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 112; i++) {
             person = new Person("Jmeno" + i % 15, "Prijmeni" + i, "");
             if (i % 2 == 0) { person.setGender("m");
             } else { person.setGender("f"); }
