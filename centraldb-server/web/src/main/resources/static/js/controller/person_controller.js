@@ -1,7 +1,10 @@
 'use strict';
 App.controller('PersonController', ['$scope', 'Person', '$window', function($scope, Person, $window) {
     var self = this;
-    self.person = new Person();
+    self.person = Person.$get([[${id}]]);
+    $scope.person = self.person;
+    $scope.personParams = Object.keys(self.person);
+    console.log("init",$scope.person,$scope.personParams);
 
     self.createPerson = function() {
         console.log(3);

@@ -1,22 +1,22 @@
 'use strict';
 App.controller('PersonListController', ['$scope', 'Person', function($scope, Person) {
     var self = this;
-    self.allPersons = [];
     self.persons = [];
     self.queryParams = {};
     self.paginationParams = {limit: 50, currentPage: 1, sort: null};
-
+    $scope.paginationParams = {};
+    $scope.paginationParams.currentPage = 0;
+    $scope.paginationParams.limit = 50;
+    $scope.paginationParams.totalCount = 0;
+    $scope.paginationParams.maxSize = 5;
     self.changePaginationLimit = function(){
         self.paginationParams.limit = $scope.paginationParams.limit;
-        self.persons = self.allPersons.slice(0,self.paginationParams.limit);
-        self.paginationParams.pageCount = Math.ceil(self.paginationParams.totalCount/self.paginationParams.limit);
-        if(self.paginationParams.limit > self.allPersons.length){
-            self.paginatedSearch();
-        }
+        self.paginatedSearch();
         console.log(self.paginationParams)
     };
-    self.paginationChangePage = function(){
+   self.pageChanged = function() {
         self.paginationParams.currentPage = $scope.paginationParams.currentPage;
+        console.log("stranka na ", $scope.paginationParams.currentPage, $scope.paginationParams.limit);
         self.paginatedSearch();
     };
     self.paginatedSearch = function() {
@@ -53,39 +53,30 @@ App.controller('PersonListController', ['$scope', 'Person', function($scope, Per
             delete self.queryParams.personType;
         }
 
-        console.log("serchh called", JSON.stringify({queryParams: self.queryParams, paginationParams: self.paginationParams}));
         var pp = {};
         pp.page = self.paginationParams.currentPage - 1;
         pp.limit = self.paginationParams.limit;
         pp.sort = self.paginationParams.sort;
+        console.log("serchh called", JSON.stringify({queryParams: self.queryParams, paginationParams: pp}));
         Person.paginatedSearch({queryParams: self.queryParams, paginationParams: pp},
             function(data) {
                 console.log("done", data);
                 self.paginationParams.totalCount = Number(data.totalElements);
                 self.paginationParams.currentPage = Number(data.number) + 1;
-                self.paginationParams.pageCount = Math.ceil(self.paginationParams.totalCount / self.paginationParams.limit);
+                self.paginationParams.limit =  Number(data.size);
+                //for select box need to be string
+                $scope.paginationParams.limit = String(self.paginationParams.limit);
                 $scope.paginationParams.currentPage = self.paginationParams.currentPage;
-                $scope.paginationParams.pageCount = self.paginationParams.pageCount;
                 $scope.paginationParams.totalCount = self.paginationParams.totalCount;
                 if (Array.isArray(data.content)) {
-                    self.allPersons = data.content;
+                    self.persons = data.content;
                 } else{
-                    self.allPersons = [];
+                    self.persons = [];
                 }
-                self.persons = self.allPersons.slice(0,self.paginationParams.limit);
                 $scope.persons = self.persons;
             }, function(err){
                 console.log("error", err);
-                self.paginationParams.totalCount = Number(555);
-                self.paginationParams.currentPage = Number(5)+1;
-                self.paginationParams.pageCount = Math.ceil(Number(555)/self.paginationParams.limit);
-                $scope.paginationParams.currentPage = self.paginationParams.currentPage;
-                $scope.paginationParams.pageCount = self.paginationParams.pageCount;
-                $scope.paginationParams.totalCount = self.paginationParams.totalCount;
-                self.allPersons = [{id: "asd", name:"dobricka", firstname: "petr", gender: "male", rc:"891020/xxxx", persontype:"fyzicka"}];
-                self.persons = self.allPersons.slice(0,self.paginationParams.limit);
-                $scope.persons = self.persons;
-                console.log("done" , self.persons);
+
             }
         );
     };
