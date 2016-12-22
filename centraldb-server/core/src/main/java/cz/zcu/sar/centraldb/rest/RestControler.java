@@ -1,6 +1,7 @@
 package cz.zcu.sar.centraldb.rest;
 
 
+import cz.zcu.sar.centraldb.common.persistence.Person;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 /**
@@ -28,10 +31,8 @@ public class RestControler {
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.POST)
-    public ResponseEntity<Batch> getData(@RequestBody() Batch request) {
-
+    public ResponseEntity<Batch> getData(@RequestBody() Batch bacth) {
         //todo: vloz do bufferu
-        JSONObject result = new JSONObject();
         return new ResponseEntity<Batch>(HttpStatus.OK);
     }
 

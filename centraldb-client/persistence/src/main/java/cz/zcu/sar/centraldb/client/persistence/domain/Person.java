@@ -24,8 +24,11 @@ public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<Perso
     }
     public cz.zcu.sar.centraldb.common.persistence.Person getWraperPerson(){
         cz.zcu.sar.centraldb.common.persistence.Person person = new cz.zcu.sar.centraldb.common.persistence.Person();
-        BeanUtils.copyProperties(person, this);
+        BeanUtils.copyProperties(this,person);
         person.setForeignId(getCentralId());
+        //todo smazat po domluve eager, doptavani
+        person.setAddressWrappers(null);
+        person.setPersonType(null);
         return person;
     }
 

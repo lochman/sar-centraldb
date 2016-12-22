@@ -10,11 +10,14 @@ import java.util.List;
  */
 public class Batch {
     private String clientId;
-    private List<Person> persons;
+    private Person[] persons;
 
-    public Batch(String clientId, List<Person> persons) {
+    public Batch(String clientId, Person[] persons) {
         this.clientId = clientId;
-        this.persons=persons;
+        this.persons = persons;
+    }
+
+    public Batch() {
     }
 
     public String getClientId() {
@@ -25,12 +28,11 @@ public class Batch {
         this.clientId = clientId;
     }
 
-    public List<Person> getPersons() {
+    public Person[] getPersons() {
         return persons;
     }
 
-    public void setPersons(List<Person> persons) {
+    public void setPersons(Person[] persons) {
         this.persons = persons;
     }
-
 }

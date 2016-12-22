@@ -38,17 +38,9 @@ public class SenderImpl implements Sender {
         Batch batchWrapper = new Batch(clientId,normalizedPerson(persons));
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        restTemplate.postForObject(uriData, batchWrapper, Batch.class);
+        restTemplate.postForObject(uriData, batchWrapper,Batch.class);
     }
 
-    private List<cz.zcu.sar.centraldb.common.persistence.Person> normalizedPerson(List<Person> persons) {
-        List<cz.zcu.sar.centraldb.common.persistence.Person> wrapper = new ArrayList<>();
-        for(Person p : persons){
-            cz.zcu.sar.centraldb.common.persistence.Person w = p.getWraperPerson();
-            wrapper.add(w);
-        }
-        return wrapper;
-    }
 
     public List<Person> fetchData(){
         JSONObject params = new JSONObject();
@@ -64,4 +56,15 @@ public class SenderImpl implements Sender {
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(confirmFetch, String.class, params);
     }
+
+    private cz.zcu.sar.centraldb.common.persistence.Person[] normalizedPerson(List<Person> persons) {
+        cz.zcu.sar.centraldb.common.persistence.Person[] wrapper = new cz.zcu.sar.centraldb.common.persistence.Person[persons.size()];
+        int i=0;
+        for(Person p : persons){
+            cz.zcu.sar.centraldb.common.persistence.Person w = p.getWraperPerson();
+            wrapper[i++] = (w);
+        }
+        return wrapper;
+    }
+
 }
