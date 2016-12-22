@@ -28,7 +28,10 @@ public class MergerImpl implements Merger {
     @Override
     public boolean mergeData(List<Person> persons){
         for (Person p : persons){
-            Person save = personRepository.findOne(p.getId());
+            Person save = null;
+            if (p.getId()!=null){
+                save = personRepository.findOne(p.getId());
+            }
             if(save!=null){
                 if(save.getModifiedTime().after(p.getModifiedTime())){
                     continue;

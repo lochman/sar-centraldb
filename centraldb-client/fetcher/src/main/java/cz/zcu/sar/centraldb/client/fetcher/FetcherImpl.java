@@ -6,6 +6,7 @@ import cz.zcu.sar.centraldb.client.rest.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -23,7 +24,11 @@ public class FetcherImpl implements Fetcher {
         List<Person> persons = sender.fetchData();
         if (!persons.isEmpty()){
             merger.mergeData(persons);
-            sender.confirmFetchData();
+            Timestamp maxDate = new Timestamp(0);
+            for (Person p : persons){
+                if(maxDate.after(p.getModifiedTime())) maxDate=p.getModifiedTime();
+            }
+            sender.confirmFetchData(maxDate, persons.size());
         }
 
     }

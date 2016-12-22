@@ -31,5 +31,13 @@ public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<Perso
         person.setPersonType(null);
         return person;
     }
+    public Person(cz.zcu.sar.centraldb.common.persistence.Person person){
+        BeanUtils.copyProperties(person,this);
+        // change id
+        this.setId(person.getForeignId());
+        this.setForeignId(person.getId());
+    }
 
+    public Person() {
+    }
 }

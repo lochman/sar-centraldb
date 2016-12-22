@@ -30,8 +30,8 @@ public class AppRunner implements CommandLineRunner {
 
     public void run(String... strings) throws Exception {
         initTestData();
-        pusher.pushData();
-        //fetcher.fetchData();
+//        pusher.pushData();
+        fetcher.fetchData();
     }
 
    private void initTestData(){

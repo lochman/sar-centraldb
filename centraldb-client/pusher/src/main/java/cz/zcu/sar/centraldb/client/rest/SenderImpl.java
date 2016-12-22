@@ -2,12 +2,14 @@ package cz.zcu.sar.centraldb.client.rest;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
+import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,18 +45,22 @@ public class SenderImpl implements Sender {
 
 
     public List<Person> fetchData(){
-        JSONObject params = new JSONObject();
-        params.put("idClient",clientId);
+        Batch batchWrapper = new Batch();
+        batchWrapper.setClientId(clientId);
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(fetchData, String.class, params);
-        //TODO : dodelat komunikaci
-        return new ArrayList<>();
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        Batch batch = restTemplate.postForObject(fetchData, batchWrapper, Batch.class);
+        return batch!=null ? normalizedPerson(batch.getPersons()) : new ArrayList<>();
     }
-    public void confirmFetchData(){
-        JSONObject params = new JSONObject();
-        params.put("idClient",clientId);
+
+
+
+    public void confirmFetchData(Timestamp lastDate, int size){
+        ConfirmFetch param = new ConfirmFetch(clientId,lastDate,size);
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(confirmFetch, String.class, params);
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        restTemplate.postForObject(confirmFetch, param, ConfirmFetch.class);
+        return;
     }
 
     private cz.zcu.sar.centraldb.common.persistence.Person[] normalizedPerson(List<Person> persons) {
@@ -65,6 +71,14 @@ public class SenderImpl implements Sender {
             wrapper[i++] = (w);
         }
         return wrapper;
+    }
+    private List<Person> normalizedPerson(cz.zcu.sar.centraldb.common.persistence.Person[] persons) {
+        List<Person> normalized = new ArrayList<>();
+        if (persons == null) return normalized;
+        for(int i=0;i<persons.length;i++){
+            normalized.add(new Person(persons[i]));
+        }
+        return normalized;
     }
 
 }

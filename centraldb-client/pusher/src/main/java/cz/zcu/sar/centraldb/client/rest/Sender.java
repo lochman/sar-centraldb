@@ -2,6 +2,7 @@ package cz.zcu.sar.centraldb.client.rest;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -12,5 +13,5 @@ public interface Sender {
     boolean sendLastBatchId(String batchId);
     void sendData(List<Person> persons,String batchId);
     List<Person> fetchData();
-    void confirmFetchData();
+    void confirmFetchData(Timestamp lastDate, int size);
 }
