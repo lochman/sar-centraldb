@@ -23,7 +23,9 @@ public class TestDataLoader implements ApplicationRunner {
     public void run(ApplicationArguments applicationArguments) throws Exception {
         Person person;
         for (int i = 0; i < 100; i++) {
-            person = new Person("Jmeno" + i, "Prijmeni" + i, "" + i % 2);
+            person = new Person("Jmeno" + i % 15, "Prijmeni" + i, "");
+            if (i % 2 == 0) { person.setGender("m");
+            } else { person.setGender("f"); }
             person.setModifiedBy("init");
             person.setBirthDate(new Date());
             personRepository.save(person);

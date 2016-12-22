@@ -10,10 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppRunner implements CommandLineRunner {
 
-
-
     public void run(String... strings) throws Exception {
-//        BatchWrapper batchWrapper;
+//        Batch batch;
     }
 
   /* private void initTestData(){

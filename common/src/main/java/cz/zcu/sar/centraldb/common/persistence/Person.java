@@ -28,7 +28,7 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
     private String firstName;
 
     @Column(nullable = true, length = 40)
-    private String surname;
+    private String birthName;
 
     @Column(nullable = true, length = 50)
     private String birthplace;
@@ -65,9 +65,10 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
 
     public Person() { }
 
-    public Person(String name, String surname, String gender) {
+    public Person(String firstName, String name, String gender) {
+        this.firstName = firstName;
         this.name = name;
-        this.surname = surname;
+        this.birthName = name;
         this.gender = gender;
     }
 
@@ -111,12 +112,12 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
         this.firstName = firstName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getBirthName() {
+        return birthName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setBirthName(String birthName) {
+        this.birthName = birthName;
     }
 
     public String getBirthplace() {
