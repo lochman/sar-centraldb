@@ -1,7 +1,7 @@
 package cz.zcu.sar.centraldb.client.persistence.services;
 
-import org.springframework.stereotype.Service;
 import cz.zcu.sar.centraldb.common.persistence.BaseObject;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 

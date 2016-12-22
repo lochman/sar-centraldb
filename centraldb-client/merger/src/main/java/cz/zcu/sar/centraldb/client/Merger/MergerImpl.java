@@ -1,14 +1,13 @@
 package cz.zcu.sar.centraldb.client.Merger;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
-import cz.zcu.sar.centraldb.client.persistence.domain.Synchronization;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.SynchronizationRepository;
 import cz.zcu.sar.centraldb.client.persistence.services.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * @author Marek Rasocha

@@ -3,7 +3,6 @@ package cz.zcu.sar.centraldb.client.rest;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;

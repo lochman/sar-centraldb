@@ -1,15 +1,19 @@
 package cz.zcu.sar.centraldb.client.pusher;
 
+import cz.zcu.sar.centraldb.client.persistence.domain.Address;
+import cz.zcu.sar.centraldb.client.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
+import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
+import cz.zcu.sar.centraldb.client.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Marek Rasocha
@@ -23,7 +27,9 @@ public class BatchCreatorImpl implements BatchCreator{
     private Timestamp endDate;
 
     @Autowired
-    PersonRepository personRepository;
+    private PersonRepository personRepository;
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Override
     public List<Person> createBatch(Timestamp start) {
@@ -40,6 +46,26 @@ public class BatchCreatorImpl implements BatchCreator{
             startDate= new Timestamp(endDate.getTime());
             endDate = new Timestamp(endDate.getTime()+STEP);
         }
+        //List<Person> personCompleted = fillLazyAttribute(persons);
+        return persons;
+    }
+
+    private Person fillLazyAttribute(Person persons) {
+        PersonType type = personRepository.findPersonType(persons.getId());
+        if(type!=null){
+            type.setPeople(null);       // we dont have to send to server... Server has different data
+        }
+        List<Address> addresses = addressRepository.findByPerson(persons);
+        for (Address a : addresses){
+            AddressType addressType = addressRepository.findAddressType(a.getId());
+            if(addressType!=null){
+                addressType.setAddresses(null); // we dont have to send to server... Server has different data
+            }
+            a.setAddressType(addressType);
+            a.setPerson(persons);
+        }
+        persons.setAddressWrappers(new HashSet<>());
+        persons.setPersonType(type);
         return persons;
     }
 
@@ -58,7 +84,9 @@ public class BatchCreatorImpl implements BatchCreator{
 
     private List<Person> getDataByDate(Timestamp startDate, Timestamp endDate) {
         List<Person> o = personRepository.findByDate(startDate, endDate);
-        return o!=null ? o : new ArrayList<>();
+        if (o==null) o = new ArrayList<>();
+        List<Person> persons = o.stream().map(this::fillLazyAttribute).collect(Collectors.toList());
+        return persons;
     }
 
     public Timestamp getEndDate() {

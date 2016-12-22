@@ -2,15 +2,15 @@ package cz.zcu.sar.centraldb.client.pusher;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.Synchronization;
-import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.SynchronizationRepository;
 import cz.zcu.sar.centraldb.client.rest.Sender;
-import cz.zcu.sar.centraldb.client.rest.SenderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Marek Rasocha
@@ -42,11 +42,12 @@ public class PusherImpl implements Pusher {
         }else{
             lastSync = new Synchronization();
         }
-        if(lastSync.getFistDate()==null){
+//        if(lastSync.getFistDate()==null){
+            lastSync.setBatchId(null);
             lastSync.setLastDate(new Timestamp(START_TIME));
             lastSync.setFistDate(new Timestamp(START_TIME));
             synchronizationRepository.save(lastSync);
-        }
+//        }
         List<Person> persons;
         if(lastSyncComlete()){
             persons = creator.createBatch(lastSync.getLastDate());
@@ -60,8 +61,7 @@ public class PusherImpl implements Pusher {
     }
 
     private boolean lastSyncComlete() {
-        if (lastSync.getBatchId()==null) return true;
-        return sender.sendLastBatchId(lastSync.getBatchId());
+        return lastSync.getBatchId()==null ? true :sender.sendLastBatchId(lastSync.getBatchId());
     }
 
 

@@ -1,6 +1,7 @@
 package cz.zcu.sar.centraldb.client.persistence.repository;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
+import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,6 +21,10 @@ public interface PersonRepository extends BaseRepository<Person, Long> {
     @Query(FIND_BY_TIME)
     List<Person> findByDate(@Param("timeStart")Timestamp timeStart,
                             @Param("timeEnd")Timestamp timeEnd);
+
+    @Query("select p.personType from Person p where p.id=:id")
+    PersonType findPersonType(@Param("id")Long id );
+
 
 
 }
