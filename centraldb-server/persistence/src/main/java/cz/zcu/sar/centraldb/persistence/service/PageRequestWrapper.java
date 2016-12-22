@@ -9,7 +9,9 @@ import java.util.Map;
 
 public class PageRequestWrapper {
     private Map<String, String> queryParams;
-    private PagingParams pagingParams;
+    private PaginationParams paginationParams;
+
+    public PageRequestWrapper() { }
 
     public Map<String, String> getQueryParams() {
         return queryParams;
@@ -19,18 +21,20 @@ public class PageRequestWrapper {
         this.queryParams = queryParams;
     }
 
-    public PagingParams getPagingParams() {
-        return pagingParams;
+    public PaginationParams getPaginationParams() {
+        return paginationParams;
     }
 
-    public void setPagingParams(PagingParams pagingParams) {
-        this.pagingParams = pagingParams;
+    public void setPaginationParams(PaginationParams paginationParams) {
+        this.paginationParams = paginationParams;
     }
 
-    class PagingParams {
+    public class PaginationParams {
         private Integer limit;
         private Integer page;
         private List<String> sort;
+
+        public PaginationParams() { }
 
         public Integer getLimit() {
             return limit;

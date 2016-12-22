@@ -32,6 +32,7 @@ public class PersonController {
     //@Secured({ "ROLE_USER" })
     @PostMapping("/search/paginated")
     public Page<Person> getPeopleByQuery(@RequestBody PageRequestWrapper request) {
+        System.out.println(request.getQueryParams());
         return personService.getPeopleByQuery(request);
     }
 

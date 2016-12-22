@@ -17,7 +17,9 @@ public class PersonSpecifications {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             for (Map.Entry<String, String> entry : properties.entrySet()) {
-                predicates.add(cb.equal(root.get(entry.getKey()), entry.getValue()));
+                if (root.get(entry.getKey()) != null) {
+                    predicates.add(cb.equal(root.get(entry.getKey()), entry.getValue()));
+                }
             }
             return cb.and(predicates.toArray(new Predicate[] {}));
         };

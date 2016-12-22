@@ -17,15 +17,24 @@ import static cz.zcu.sar.centraldb.persistence.specification.PersonSpecification
 @Service
 public class PersonServiceImpl implements PersonService {
 
+    private static final int DEFAULT_LIMIT = 20;
+
     @Autowired
     private PersonRepository personRepository;
 
     @Override
     public Page<Person> getPeopleByQuery(PageRequestWrapper requestWrapper) {
-        PageRequestWrapper.PagingParams queryParams = requestWrapper.getPagingParams();
-        System.out.println(queryParams);
-        PageRequest pageRequest = new PageRequest(queryParams.getPage(), queryParams.getLimit(), Sort.Direction.ASC,
-                queryParams.getSort().toArray(new String[queryParams.getSort().size()]));
+        PageRequestWrapper.PaginationParams queryParams = requestWrapper.getPaginationParams();
+        Integer page = queryParams.getPage(), limit = queryParams.getLimit();
+        page = (page == null) ? 0 : page;
+        limit = (limit == null) ? DEFAULT_LIMIT : limit;
+        PageRequest pageRequest;
+        if (queryParams.getSort() != null) {
+            pageRequest = new PageRequest(page, limit, Sort.Direction.ASC,
+                    queryParams.getSort().toArray(new String[queryParams.getSort().size()]));
+        } else {
+            pageRequest = new PageRequest(page, limit);
+        }
         return personRepository.findAll(hasProperties(requestWrapper.getQueryParams()), pageRequest);
     }
 
