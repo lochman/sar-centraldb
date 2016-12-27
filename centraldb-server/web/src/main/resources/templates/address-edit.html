@@ -1,0 +1,92 @@
+<div class="address">
+    <button type="button" class="btn btn-danger" ng-click="addressCtrl.removeAddress({index: addressCtrl.index})">Odstranit adresu</button>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="addresstype"> Druh adresy :</label>
+    <div class="col-sm-9">
+        <select class="form-control" id="addresstype" ng-model="address.addresstype" name="addresstype">
+            <option ng-repeat="type in addressTypes" value="{{type.id}}">{{type.description}}</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="street">Ulice :</label>
+    <div class="col-sm-9">
+        <input type="text" id="street" ng-model="address.street" name="street" class="form-control"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="number">Číslo popisné :</label>
+    <div class="col-sm-9">
+        <input type="text" id="number" ng-model="address.number" name="number" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="borough">Část obce :</label>
+    <div class="col-sm-9">
+        <input type="text" id="borough" ng-model="address.borough" name="borough" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="city">Město :</label>
+    <div class="col-sm-9">
+        <input type="text" id="city" ng-model="address.city" name="city" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="district">Okres :</label>
+    <div class="col-sm-9">
+        <input type="text" id="district" ng-model="address.district" name="district" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="postalcode">PSČ :</label>
+    <div class="col-sm-9">
+        <input type="text" id="postalcode" ng-model="address.postalCode" name="postalcode" class="form-control"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="country">Země :</label>
+    <div class="col-sm-9">
+        <input type="text" id="country" ng-model="address.country" name="country" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="countrycode">Kód země :</label>
+    <div class="col-sm-9">
+        <input type="text" id="countrycode" ng-model="address.countryCode" name="countrycode" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="phone">Telefon :</label>
+    <div class="col-sm-9">
+        <input type="text" id="phone" ng-model="address.phone" name="phone" class="form-control"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="fax">Fax :</label>
+    <div class="col-sm-9">
+        <input type="text" id="fax" ng-model="address.fax" name="fax" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="flatat">Bytem u :</label>
+    <div class="col-sm-9">
+        <input type="text" id="flatat" ng-model="address.flatAt" name="flatat" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+        <label class="col-sm-3 control-label" for="residencefrom">Platnost od :</label>
+        <div class="col-sm-9">
+            <input type="text" id="residencefrom" ng-model="address.residenceFrom" name="residencefrom" class="form-control"/>
+        </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="residenceto">Platnost do :</label>
+    <div class="col-sm-9">
+        <input type="text" id="residenceto" ng-model="address.residenceTo" name="residenceto" class="form-control"/>
+    </div>
+</div>
+</div>

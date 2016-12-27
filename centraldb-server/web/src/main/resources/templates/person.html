@@ -1,35 +1,14 @@
-<!DOCTYPE html>
-<html lang="cz" xmlns:th="http://www.thymeleaf.org" ng-app="app">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Centrální databáze osob</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
-    <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
-    <script th:src="@{/js/angular.min.js}"></script>
-    <script th:src="@{/js/angular-resource.min.js}"></script>
-    <script th:src="@{/js/bootstrap.min.js}" ></script>
-    <script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
-    <script th:src="@{/js/app.js}"></script>
-    <script th:src="@{/js/service/person_service.js}" ></script>
-    <script th:src="@{/js/controller/person_controller.js}" ></script>
-    <base th:href="@{/}"/>
-</head>
-<body>
-
-<div th:replace="fragments/header :: header">Header</div>
-<h1>Osoba</h1>>
-<div ng-controller="PersonController as ctrl" class="container">
-    <table class="table">
-        <col width="40%"/>
-        <col width="60%"/>
-        <tbody>
-        <tr ng-repeat="param in personParams">
-            <td>{{param.key}}</td>
-            <td>{{param.value}}</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-</body>
-</html>
+<button ng-if="!error &amp;&amp; personCtrl.isAdmin()" class="btn btn-primary pull-right" ng-click="personCtrl.goEdit()">Upravit osobu</button>
+<h1 ng-if="!error">Osoba {{id}} </h1>
+<h1 ng-if="error">Chyba! </h1>
+<h2 ng-if="error">Osoba nenalezena.</h2>
+<table class="table">
+    <col width="40%"/>
+    <col width="60%"/>
+    <tbody>
+    <tr ng-repeat="param in personParams">
+        <td>{{param}}</td>
+        <td>{{person[param]}}</td>
+    </tr>
+    </tbody>
+</table>

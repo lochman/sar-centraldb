@@ -2,6 +2,7 @@ package cz.zcu.sar.centraldb.common.persistence;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by Matej Lochman on 31.10.16.

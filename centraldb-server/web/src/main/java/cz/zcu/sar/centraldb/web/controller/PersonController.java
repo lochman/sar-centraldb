@@ -38,7 +38,7 @@ public class PersonController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getPersonById(@PathVariable String id) {
-        Person person = personRepository.findOne(id);
+        Person person = personRepository.findOne(Long.parseLong(id));
         return person == null ? new ResponseEntity<>("Uživatel s id \'" + id + "\' nebyl nalezen.", HttpStatus.NOT_FOUND) :
                 ResponseEntity.ok(person);
     }
@@ -51,7 +51,6 @@ public class PersonController {
                 .buildAndExpand(person.getId()).toUri();
         return ResponseEntity.created(location).body(person);
     }
-
     /*@GetMapping(value = "/{name}")
     public Person findPersonByName(@PathVariable String name) {
         return personRepository.findByName(name).get();

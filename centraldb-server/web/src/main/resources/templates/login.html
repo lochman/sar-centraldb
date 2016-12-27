@@ -1,36 +1,20 @@
-<!DOCTYPE html>
-<html lang="cz" xmlns:th="http://www.thymeleaf.org" ng-app="app">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Centrální databáze osob</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
-    <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
-    <script th:src="@{/js/angular.min.js}"></script>
-    <script th:src="@{/js/angular-resource.min.js}"></script>
-    <script th:src="@{/js/bootstrap.min.js}" ></script>
-    <script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
-</head>
-<body>
-<div th:replace="fragments/header :: header">Header</div>
-
-<div class="container">
-<div class="alert alert-danger" th:if="${param.error}">
-    Neplatné jméno nebo heslo.
+<div class="alert alert-danger" ng-if="errorMsg">
+    {{errorMsg}}
 </div>
-<div class="alert alert-success" th:if="${param.logout}">
-    Uživatel úspěšně odhlášen.
+<div class="alert alert-success" ng-if="logoutMsg">
+    {{logoutMsg}}
 </div>
-<form th:action="@{/login}" method="post" class="form-horizontal">
+<form name="loginForm" ng-submit="loginCtrl.login()" class="form-horizontal">
     <div class="form-group">
         <label for="username" class="col-sm-2 control-label"> Přihlašovací jméno :</label>
         <div class="col-sm-10">
-            <input type="text" id="username" name="username"  class="form-control"/>
+            <input type="text" id="username" ng-model="username" name="username"  class="form-control"/>
         </div>
     </div>
     <div class="form-group row">
         <label for="password" class="col-sm-2 control-label"> Heslo:</label>
         <div class="col-sm-10">
-            <input type="password" id="password" name="password"  class="form-control"/>
+            <input type="password" id="password" ng-model="password" name="password"  class="form-control"/>
         </div>
     </div>
     <div class="form-group">
@@ -39,6 +23,3 @@
         </div>
     </div>
 </form>
-</div>
-</body>
-</html>

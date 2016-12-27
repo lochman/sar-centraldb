@@ -4,27 +4,37 @@
     <meta charset="UTF-8"/>
     <title>Centrální databáze osob</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
     <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
-    <script th:src="@{/js/angular.min.js}"></script>
-    <script th:src="@{/js/angular-resource.min.js}"></script>
+    <script th:src="@{/js/angular-1.5.8.min.js}"></script>
+    <script th:src="@{/js/angular-resource-1.5.8.min.js}"></script>
+    <script th:src="@{/js/angular-route-1.5.8.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}" ></script>
-    <script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
-    <script th:src="@{/js/app.js}"></script>
-    <script th:src="@{/js/service/person_service.js}" ></script>
-    <script th:src="@{/js/controller/person_controller.js}" ></script>
+    <script th:src="@{/js/ui-bootstrap-tpls-2.3.1.min.js}" ></script>
+    <script th:src="@{/js/application.js}"></script>
     <base th:href="@{/}"/>
 </head>
-<body>
-<div th:replace="fragments/header :: header">Header</div>
-<div ng-controller="PersonController as ctrl" class="container">
-        <form name="addPersonForm" ng-submit="ctrl.submit()">
-            <label for="name">Jméno osoby:</label>
-            <input ng-model="name" id="name" type="text" name="name" />
-            <input type="submit" value="Uložit" />
-        </form>
-    <div th:if="${message}">
-        <h2 th:text="${message}"/>
-    </div>
-</div>
+<body  class="container ng-cloak" ng-cloak="">
+<header>
+    <nav class="navbar navbar-default" ng-controller="NavigationController as nav">
+        <div class="container-fluid" ng-show="nav.authenticated()">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="#person/list">Seznam Osob</a></li>
+                <li ng-if="nav.isAdmin()"><a href="#person/new">Nová Osoba</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><p class="navbar-text">Přihlášen jako: <span style="font-weight: bold" >{{nav.username()}}</span></p></li>
+                <li><a href="" ng-click="nav.logout()">Odhlásit</a></li>
+            </ul>
+        </div><!-- auth -->
+
+        <div class="container-fluid" ng-show="!nav.authenticated()">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#login">Přihlásit</a></li>
+            </ul>
+        </div><!-- not auth -->
+    </nav>
+</header>
+<div ng-view=""></div>
 </body>
 </html>

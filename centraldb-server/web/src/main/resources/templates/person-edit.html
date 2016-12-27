@@ -1,37 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><!DOCTYPE html>
-        <html lang="cz" xmlns:th="http://www.thymeleaf.org" ng-app="app">
-        <head>
-            <meta charset="UTF-8"/>
-            <title>Centrální databáze osob</title>
-            <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
-            <link rel="stylesheet" th:href="@{/css/custom.css}"/>
-            <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
-            <script th:src="@{/js/angular.min.js}"></script>
-            <script th:src="@{/js/angular-resource.min.js}"></script>
-            <script th:src="@{/js/bootstrap.min.js}" ></script>
-            <script th:src="@{/js/ui-bootstrap-2.3.1.min.js}" ></script>
-            <script th:src="@{/js/app.js}"></script>
-            <script th:src="@{/js/service/person_service.js}" ></script>
-            <script th:src="@{/js/controller/person_controller.js}" ></script>
-            <base th:href="@{/}"/>
-        </head>
-<body>
-
-<div th:replace="fragments/header :: header">Header</div>
-<h1>Osoba</h1>>
-<div ng-controller="PersonController as ctrl" class="container">
-    <form name="createForm" ng-submit="ctrl.paginatedSearch()" class="form-horizontal col-sm-12">
-        <div th:replace="fragments/person-inputs :: inputs">Form Inputs</div>
-        <div class="form-group col-sm-6">
-            <div class="col-sm-offset-3 col-sm-9">
-                <button type="submit" class="btn btn-primary" >Vytvořit</button>
-            </div>
+<h1 ng-if="!editPage">Nová osoba</h1>
+<h1 ng-if="editPage">Úprava osoby {{id}}</h1>
+<form name="editForm" ng-submit="personCtrl.submitPerson()" class="form-horizontal col-sm-12">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="persontype"> Druh osoby :</label>
+        <div class="col-sm-9">
+            <select class="form-control" id="persontype" ng-model="persontype" name="persontype">
+                <option ng-repeat="type in personTypes" value="{{type.id}}">{{type.description}}</option>
+            </select>
         </div>
-    </form>
-</div>
-</body>
-</html>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="firstname">Jméno :</label>
+        <div class="col-sm-9">
+            <input type="text" id="firstname" ng-model="person.firstName" name="firstname" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="name"> Název firmy nebo osoby, příjmení :</label>
+        <div class="col-sm-9">
+            <input type="text" id="name" ng-model="person.name" name="name" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"> Pohlaví :</label>
+        <div class="col-sm-9">
+            <label for="male" class="radio-inline">
+                <input type="radio" ng-model="person.gender" id="male" name="gender" value="m"/> Muž
+            </label>
+            <label for="female" class="radio-inline">
+                <input type="radio" ng-model="person.gender" id="female" name="gender" value="f"/> Žena
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="birthplace">Místo narození :</label>
+        <div class="col-sm-9">
+            <input type="text" id="birthplace" ng-model="person.birthplace" name="birthplace" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="birthdate">Datum narození :</label>
+        <div class="col-sm-9">
+            <input type="text" id="birthdate" ng-model="person.birthDate" name="birthdate" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="birthname">Rodné příjmení :</label>
+        <div class="col-sm-9">
+            <input type="text" id="birthname" ng-model="person.birthName" name="birthname" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="socialnumber">Rodné číslo :</label>
+        <div class="col-sm-9">
+            <input type="text" id="socialnumber" ng-model="person.socialNumber" name="socialnumber" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="companynumber">Identifikační číslo :</label>
+        <div class="col-sm-9">
+            <input type="text" id="companynumber" ng-model="person.companyNumber" name="companynumber" class="form-control"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="citizenship">Státní občanství :</label>
+        <div class="col-sm-9">
+            <input type="text" id="citizenship" ng-model="person.citizenship" name="citizenship" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="degreebefore">Titul před jménem :</label>
+        <div class="col-sm-9">
+            <input type="text" id="degreebefore" ng-model="person.degreeBefore" name="degreebefore" class="form-control"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="degreeafter">Titul za jménem :</label>
+        <div class="col-sm-9">
+            <input type="text" id="degreeafter" ng-model="person.degreeAfter" name="degreeafter" class="form-control"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="supervisor">ID nadřízené osoby :</label>
+        <div class="col-sm-9">
+            <input type="text" id="supervisor" ng-model="person.supervisor" name="supervisor" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="usepermitted">Použití povoleno :</label>
+        <div class="col-sm-9">
+            <input type="checkbox" id="usepermitted" ng-model="person.usePermitted" name="usepermitted"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="description">Popis :</label>
+        <div class="col-sm-9">
+            <textarea type="text" id="description" ng-model="person.description" name="description" class="form-control"/>
+        </div>
+    </div>
+    <fieldset>
+        <legend>Adresy</legend>
+        <button type="button" ng-click="personCtrl.addAddress()" class="btn btn-info" >Přidat novou adresu</button>
+        <address-edit ng-repeat="address in person.addressWrappers" address="address" index="$index" remove-address="personCtrl.removeAddress(index)" types="addressTypes"></address-edit>
+    </fieldset>
+
+    <div class="form-group">
+        <div class="col-sm-12" style="margin-top: 5px">
+            <button ng-if="!editPage" type="submit" class="btn btn-primary" >Vytvořit</button>
+            <button ng-if="editPage" type="submit" class="btn btn-primary" >Uložit</button>
+        </div>
+    </div>
+</form>

@@ -12,6 +12,6 @@ import java.util.Optional;
  * Created by Matej Lochman on 31.10.16.
  */
 
-public interface PersonRepository extends BaseRepository<Person, String> {
+public interface PersonRepository extends BaseRepository<Person, Long> {
     Optional<Person> findByName(String name);
 }

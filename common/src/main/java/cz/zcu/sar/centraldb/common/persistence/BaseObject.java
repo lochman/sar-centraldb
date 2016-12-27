@@ -1,5 +1,7 @@
 package cz.zcu.sar.centraldb.common.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -28,6 +30,7 @@ public class BaseObject implements Serializable {
         modifiedTime = new Timestamp(new Date().getTime());
     }
 
+    @JsonIgnore
     public boolean isNew() {
         return id == null;
     }

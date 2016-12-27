@@ -1,70 +1,95 @@
-<!DOCTYPE html>
-<html lang="cz" xmlns:th="http://www.thymeleaf.org" ng-app="app">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Centrální databáze osob</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
-    <script th:src="@{/js/jquery-3.1.1.min.js}" ></script>
-    <script th:src="@{/js/angular.min.js}"></script>
-    <script th:src="@{/js/angular-resource.min.js}"></script>
-    <script th:src="@{/js/bootstrap.min.js}" ></script>
-    <script th:src="@{/js/ui-bootstrap-tpls-2.3.1.min.js}" ></script>
-    <script th:src="@{/js/app.js}"></script>
-    <script th:src="@{/js/service/person_service.js}" ></script>
-    <script th:src="@{/js/controller/person_list_controller.js}" ></script>
-    <base th:href="@{/}"/>
-</head>
-<body>
-
-    <div th:replace="fragments/header :: header">Header</div>
-
-    <div ng-controller="PersonListController as ctrl" class="container">
-        <div th:replace="fragments/query-form :: form">Query Form</div>
-
-
-
-        <div>
-        Zobrazit
-        <select class="form-control input-sm limit-selector" ng-model="paginationParams.limit"
-                ng-change="ctrl.changePaginationLimit()" ng-init="paginationParams.limit = '50'">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50" th:selected="selected">50</option>
-            <option value="100">100</option>
-        </select> záznamů na stránku.
-        <table class="table table-hover">
-            <col width="20%"/>
-            <col width="20%"/>
-            <col width="20%"/>
-            <col width="20%"/>
-            <col width="10%"/>
-            <col width="10%"/>
-            <thead>
-                <tr>
-                    <th>Jméno</th>
-                    <th>Název</th>
-                    <th>Identifikační číslo</th>
-                    <th>Rodné číslo</th>
-                    <th>Typ osoby</th>
-                    <th>Pohlaví</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="person in persons" row-href="person/p/{{person.id}}">
-                    <td>{{person.firstName}}</td>
-                    <td>{{person.name}}</td>
-                    <td>{{person.companyNumber}}</td>
-                    <td>{{person.socialNumber}}</td>
-                    <td>{{person.personType}}</td>
-                    <td>{{person.gender}}</td>
-                </tr>
-            </tbody>
-        </table>
-            <ul uib-pagination="" total-items="paginationParams.totalCount" ng-model="paginationParams.currentPage"
-                ng-change="ctrl.pageChanged()" items-per-page="paginationParams.limit" max-size="paginationParams.maxSize" class="pagination-sm" boundary-link-numbers="true"
-                            previous-text="Předchozí" next-text="Další"></ul>
+<form name="searchForm" ng-submit="personListCtrl.paginatedSearch()" class="form-horizontal col-sm-12">
+    <div class="form-group col-sm-6">
+        <label class="col-sm-3 control-label" for="firstname">Jméno :</label>
+        <div class="col-sm-9">
+            <input type="text" id="firstname" ng-model="firstname" name="firstname" class="form-control"/>
         </div>
+    </div>
+    <div class="form-group col-sm-6">
+        <label class="col-sm-3 control-label" for="name"> Název firmy nebo osoby, příjmení:</label>
+        <div class="col-sm-9">
+            <input type="text" id="name" ng-model="name" name="name" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group col-sm-6">
+        <label class="col-sm-3 control-label" for="socialnumber">Rodné číslo :</label>
+        <div class="col-sm-9">
+            <input type="text" id="socialnumber" ng-model="socialnumber" name="socialnumber" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group col-sm-6">
+        <label class="col-sm-3 control-label" for="companynumber">Identifikační číslo :</label>
+        <div class="col-sm-9">
+            <input type="text" id="companynumber" ng-model="companynumber" name="companynumber" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group col-sm-6">
+        <label class="col-sm-3 control-label" for="persontype"> Druh osoby :</label>
+        <div class="col-sm-9">
+            <select class="form-control" id="persontype" ng-model="persontype" name="persontype">
+                <option ng-repeat="type in personTypes" value="{{type.id}}">{{type.description}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group col-sm-6">
+        <label class="col-sm-3 control-label"> Pohlaví :</label>
+        <div class="col-sm-9">
+            <label for="male" class="radio-inline">
+                <input type="radio" ng-model="gender" id="male" name="gender" value="m"/> Muž
+            </label>
+            <label for="female" class="radio-inline">
+                <input type="radio" ng-model="gender" id="female" name="gender" value="f"/> Žena
+            </label>
+        </div>
+    </div>
+    <div class="form-group col-sm-6">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-primary">Hledat</button>
+        </div>
+    </div>
+</form>
+
+
+<div>
+    Zobrazit
+    <select class="form-control input-sm limit-selector" ng-model="paginationParams.limit"
+            ng-change="personListCtrl.changePaginationLimit()" ng-init="paginationParams.limit = '10'">
+        <option value="10" selected="">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select> záznamů na stránku.
+    <table class="table table-hover">
+        <col width="19%"/>
+        <col width="19%"/>
+        <col width="19%"/>
+        <col width="19%"/>
+        <col width="14%"/>
+        <col width="10%"/>
+        <thead>
+        <tr>
+            <th>Jméno</th>
+            <th>Název</th>
+            <th>Identifikační číslo</th>
+            <th>Rodné číslo</th>
+            <th>Typ osoby</th>
+            <th>Pohlaví</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="person in persons" row-href="#person/{{person.id}}">
+            <td>{{person.firstName}}</td>
+            <td>{{person.name}}</td>
+            <td>{{person.companyNumber}}</td>
+            <td>{{person.socialNumber}}</td>
+            <td>{{person.personType.description}}</td>
+            <td ng-if="person.gender == 'm'">Muž</td>
+            <td ng-if="person.gender == 'f'">Žena</td>
+        </tr>
+        </tbody>
+    </table>
+    <ul uib-pagination="" total-items="paginationParams.totalCount" ng-model="paginationParams.currentPage"
+        ng-change="personListCtrl.pageChanged()" items-per-page="paginationParams.limit"
+        max-size="paginationParams.maxSize" class="pagination-sm" boundary-link-numbers="true"
+        previous-text="Předchozí" next-text="Další"></ul>
 </div>
-</body>
-</html>

@@ -15,3 +15,13 @@ td.cell-link a{
     height: 100%;
     cursor: pointer;
 }
+textarea {
+    resize: vertical;
+}
+.address{
+    border: solid 1px #000;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
