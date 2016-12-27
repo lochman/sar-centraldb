@@ -1,5 +1,7 @@
 package cz.zcu.sar.centraldb.common.persistence;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -19,6 +21,7 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
     private P personType;
 
     @OneToMany(mappedBy = "person")
+    @JsonManagedReference
     private Set<A> addressWrappers;
 
     @Column(nullable = false)

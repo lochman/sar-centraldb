@@ -1,5 +1,7 @@
 package cz.zcu.sar.centraldb.common.persistence;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
@@ -13,6 +15,7 @@ public class Address<P extends Person,A extends AddressType> extends BaseObject 
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @JsonBackReference
     protected P person;
 
     @ManyToOne

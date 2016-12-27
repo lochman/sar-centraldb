@@ -1,8 +1,10 @@
 package cz.zcu.sar.centraldb.web;
 
+import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.domain.PersonType;
+import cz.zcu.sar.centraldb.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.persistence.repository.AddressTypeRepository;
 import cz.zcu.sar.centraldb.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.persistence.repository.PersonTypeRepository;
@@ -22,6 +24,9 @@ public class TestDataLoader implements ApplicationRunner {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private AddressRepository addresssRepository;
 
     @Autowired
     private PersonTypeRepository personTypeRepository;
@@ -53,14 +58,28 @@ public class TestDataLoader implements ApplicationRunner {
         addressTypeRepository.save(at2);
 
         for (int i = 0; i < 112; i++) {
+            Address address = new Address();
             person = new Person("Jmeno" + i % 15, "Prijmeni" + i, "");
             if (i % 2 == 0) { person.setGender("m");
             } else { person.setGender("f"); }
             person.setModifiedBy("init");
-            if( i % 5 == 0) {person.setPersonType(t2);}
-            else{ person.setPersonType(t1); }
+            if( i % 5 == 0) {
+                person.setPersonType(t2);
+                address.setAddressType(at2);
+            }
+            else{
+                person.setPersonType(t1);
+                address.setAddressType(at1);
+            }
             person.setBirthDate(new Date());
             personRepository.save(person);
+            address.setStreet("Dlouhá");
+            address.setLand_registry_number(String.valueOf(i));
+            address.setCity("Praha");
+            address.setModifiedBy("init");
+            address.setPerson(person);
+            addresssRepository.save(address);
+
         }
     }
 }

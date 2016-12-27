@@ -44,21 +44,4 @@ public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<Perso
     public void setTemporary(boolean temporary) {
         this.temporary = temporary;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        System.out.println("mrdka z krtka");
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Person person = (Person) o;
-        return temporary == person.temporary &&
-                Objects.equals(institutes, person.institutes);
-    }
-
-    @Override
-    public int hashCode() {
-        System.out.println("mrdka z krtka2");
-        return Objects.hash(super.hashCode(), institutes, temporary);
-    }
 }
