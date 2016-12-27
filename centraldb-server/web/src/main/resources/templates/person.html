@@ -3,12 +3,71 @@
 <h1 ng-if="error">Chyba! </h1>
 <h2 ng-if="error">Osoba nenalezena.</h2>
 <table class="table">
-    <col width="40%"/>
-    <col width="60%"/>
+    <col width="35%"/>
+    <col width="65%"/>
     <tbody>
-    <tr ng-repeat="param in personParams">
-        <td>{{param}}</td>
-        <td>{{person[param]}}</td>
-    </tr>
+        <tr ng-if="person.personType.description">
+            <td class="td-key">Druh osoby :</td>
+            <td>{{person.personType.description}}</td>
+        </tr>
+        <tr ng-if="person.firstName">
+            <td class="td-key">Jméno :</td>
+            <td>{{person.firstName}}</td>
+        </tr>
+        <tr ng-if="person.name">
+            <td class="td-key">Název firmy nebo osoby, příjmení :</td>
+            <td>{{person.name}}</td>
+        </tr>
+        <tr ng-if="person.gender">
+            <td class="td-key">Pohlaví :</td>
+            <td ng-if="person.gender == 'm'">Muž</td>
+            <td ng-if="person.gender == 'f'">Žena</td>
+        </tr>
+        <tr ng-if="person.birthplace">
+            <td class="td-key">Místo narození :</td>
+            <td>{{person.birthplace}}</td>
+        </tr>
+        <tr ng-if="person.birthDate">
+            <td class="td-key">Datum narození :</td>
+            <td>{{person.birthDate | date:'dd.MM.yyyy'}}</td>
+        </tr>
+        <tr ng-if="person.birthName">
+            <td class="td-key">Rodné příjmení :</td>
+            <td>{{person.birthName}}</td>
+        </tr>
+        <tr ng-if="person.socialNumber">
+            <td class="td-key">Rodné číslo :</td>
+            <td>{{person.socialNumber}}</td>
+        </tr>
+        <tr ng-if="person.companyNumber">
+            <td class="td-key">Identifikační číslo :</td>
+            <td>{{person.companyNumber}}</td>
+        </tr>
+        <tr ng-if="person.citizenship">
+            <td class="td-key">Státní občanství :</td>
+            <td>{{person.citizenship}}</td>
+        </tr>
+        <tr ng-if="person.degreeBefore">
+            <td class="td-key">Titul před jménem :</td>
+            <td>{{person.degreeBefore}}</td>
+        </tr>
+        <tr ng-if="person.degreeAfter">
+            <td class="td-key">Titul za jménem :</td>
+            <td>{{person.degreeAfter}}</td>
+        </tr>
+        <tr ng-if="person.supervisor">
+            <td class="td-key">ID nadřízené osoby :</td>
+            <td>{{person.supervisor}}</td>
+        </tr>
+        <tr ng-if="person.usePermitted">
+            <td class="td-key">Použití povoleno :</td>
+            <td>{{person.usePermitted}}</td>
+        </tr>
+        <tr ng-if="person.description">
+            <td class="td-key">Popis :</td>
+            <td>{{person.description}}</td>
+        </tr>
     </tbody>
 </table>
+<address-table class="col-sm-6" ng-repeat="address in person.addressWrappers" address="address"></address-table>
+

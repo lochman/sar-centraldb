@@ -1,0 +1,65 @@
+<div class="address">
+    <table class="table">
+        <caption>Adresa {{address.id}}</caption>
+        <col width="35%"/>
+        <col width="65%"/>
+        <tbody>
+        <tr ng-if="address.addressType.description">
+            <td class="td-key">Druh adresy :</td>
+            <td>{{address.addressType.description}}</td>
+        </tr>
+        <tr ng-if="address.street">
+            <td class="td-key">Ulice :</td>
+            <td>{{address.street}}</td>
+        </tr>
+        <tr ng-if="address.land_registry_number">
+            <td class="td-key">Číslo popisné :</td>
+            <td>{{address.land_registry_number}}</td>
+        </tr>
+        <tr ng-if="address.borough">
+            <td class="td-key">Část obce :</td>
+            <td>{{address.borough}}</td>
+        </tr>
+        <tr ng-if="address.city">
+            <td class="td-key">Město :</td>
+            <td>{{address.city}}</td>
+        </tr>
+        <tr ng-if="address.district">
+            <td class="td-key">Okres :</td>
+            <td>{{address.district}}</td>
+        </tr>
+        <tr ng-if="address.postalCode">
+            <td class="td-key">PSČ :</td>
+            <td>{{address.postalCode}}</td>
+        </tr>
+        <tr ng-if="address.country">
+            <td class="td-key">Země :</td>
+            <td>{{address.country}}</td>
+        </tr>
+        <tr ng-if="address.countryCode">
+            <td class="td-key">Kód země :</td>
+            <td>{{address.countryCode}}</td>
+        </tr>
+        <tr ng-if="address.phone">
+            <td class="td-key">Telefon :</td>
+            <td>{{address.phone}}</td>
+        </tr>
+        <tr ng-if="address.fax">
+            <td class="td-key">Fax :</td>
+            <td>{{address.fax}}</td>
+        </tr>
+        <tr ng-if="address.flatAt">
+            <td class="td-key">Bytem u :</td>
+            <td>{{address.flatAt}}</td>
+        </tr>
+        <tr ng-if="address.residenceFrom">
+            <td class="td-key">Platnost od :</td>
+            <td>{{address.residenceFrom}}</td>
+        </tr>
+        <tr ng-if="address.residenceTo">
+            <td class="td-key">Platnost do :</td>
+            <td>{{address.residenceTo}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

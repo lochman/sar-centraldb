@@ -100,6 +100,11 @@ public class IndexController {
         return "person-edit";
     }
 
+    @GetMapping(value = "address")
+    public String getAddress() {
+        return "address";
+    }
+
     @GetMapping(value = "address-edit")
     public String getAddressEdit() {
         return "address-edit";
