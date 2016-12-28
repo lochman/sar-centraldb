@@ -7,5 +7,5 @@ import javax.persistence.Entity;
  */
 
 @Entity
-public class PersonType extends cz.zcu.sar.centraldb.common.persistence.PersonType<Person> {
+public class PersonType extends cz.zcu.sar.centraldb.common.persistence.PersonType {
 }

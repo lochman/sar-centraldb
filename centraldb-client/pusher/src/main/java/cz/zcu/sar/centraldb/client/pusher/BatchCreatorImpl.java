@@ -6,6 +6,7 @@ import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.client.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
+import cz.zcu.sar.centraldb.client.persistence.services.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class BatchCreatorImpl implements BatchCreator{
     @Autowired
     private PersonRepository personRepository;
     @Autowired
-    private AddressRepository addressRepository;
+    private BaseService baseService;
 
     @Override
     public List<Person> createBatch(Timestamp start) {
@@ -50,24 +51,7 @@ public class BatchCreatorImpl implements BatchCreator{
         return persons;
     }
 
-    private Person fillLazyAttribute(Person persons) {
-        PersonType type = personRepository.findPersonType(persons.getId());
-        if(type!=null){
-            type.setPeople(null);       // we dont have to send to server... Server has different data
-        }
-        List<Address> addresses = addressRepository.findByPerson(persons);
-        for (Address a : addresses){
-            AddressType addressType = addressRepository.findAddressType(a.getId());
-            if(addressType!=null){
-                addressType.setAddresses(null); // we dont have to send to server... Server has different data
-            }
-            a.setAddressType(addressType);
-            a.setPerson(persons);
-        }
-        persons.setAddressWrappers(new HashSet<>());
-        persons.setPersonType(type);
-        return persons;
-    }
+
 
     public List<Person> createBatch(Timestamp start,Timestamp end){
         startDate = start;
@@ -85,7 +69,7 @@ public class BatchCreatorImpl implements BatchCreator{
     private List<Person> getDataByDate(Timestamp startDate, Timestamp endDate) {
         List<Person> o = personRepository.findByDate(startDate, endDate);
         if (o==null) o = new ArrayList<>();
-        List<Person> persons = o.stream().map(this::fillLazyAttribute).collect(Collectors.toList());
+        List<Person> persons = o.stream().map(baseService::fillLazyAttribute).collect(Collectors.toList());
         return persons;
     }
 

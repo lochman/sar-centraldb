@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.client.persistence.services;
 
+import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.common.persistence.BaseObject;
 
 /**
@@ -22,4 +23,11 @@ public interface BaseService {
      * @return base object
      */
     BaseObject setModifyBy(BaseObject baseObject,boolean isSync);
+
+    /**
+     * fill all lazy attributes
+     * @param persons person
+     * @return fill person
+     */
+    Person fillLazyAttribute(Person persons);
 }

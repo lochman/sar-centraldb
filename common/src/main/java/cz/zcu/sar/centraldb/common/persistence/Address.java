@@ -168,4 +168,51 @@ public class Address<P extends Person,A extends AddressType> extends BaseObject 
     public void setBorough(String borough) {
         this.borough = borough;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+
+        Address<?, ?> address = (Address<?, ?>) object;
+
+        if (addressType != null ? !addressType.equals(address.addressType) : address.addressType != null) return false;
+        if (residenceFrom != null ? !residenceFrom.equals(address.residenceFrom) : address.residenceFrom != null)
+            return false;
+        if (residenceTo != null ? !residenceTo.equals(address.residenceTo) : address.residenceTo != null) return false;
+        if (city != null ? !city.equals(address.city) : address.city != null) return false;
+        if (street != null ? !street.equals(address.street) : address.street != null) return false;
+        if (land_registry_number != null ? !land_registry_number.equals(address.land_registry_number) : address.land_registry_number != null)
+            return false;
+        if (country != null ? !country.equals(address.country) : address.country != null) return false;
+        if (countryCode != null ? !countryCode.equals(address.countryCode) : address.countryCode != null) return false;
+        if (postalCode != null ? !postalCode.equals(address.postalCode) : address.postalCode != null) return false;
+        if (phone != null ? !phone.equals(address.phone) : address.phone != null) return false;
+        if (fax != null ? !fax.equals(address.fax) : address.fax != null) return false;
+        if (district != null ? !district.equals(address.district) : address.district != null) return false;
+        if (flatAt != null ? !flatAt.equals(address.flatAt) : address.flatAt != null) return false;
+        return !(borough != null ? !borough.equals(address.borough) : address.borough != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (addressType != null ? addressType.hashCode() : 0);
+        result = 31 * result + (residenceFrom != null ? residenceFrom.hashCode() : 0);
+        result = 31 * result + (residenceTo != null ? residenceTo.hashCode() : 0);
+        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (street != null ? street.hashCode() : 0);
+        result = 31 * result + (land_registry_number != null ? land_registry_number.hashCode() : 0);
+        result = 31 * result + (country != null ? country.hashCode() : 0);
+        result = 31 * result + (countryCode != null ? countryCode.hashCode() : 0);
+        result = 31 * result + (postalCode != null ? postalCode.hashCode() : 0);
+        result = 31 * result + (phone != null ? phone.hashCode() : 0);
+        result = 31 * result + (fax != null ? fax.hashCode() : 0);
+        result = 31 * result + (district != null ? district.hashCode() : 0);
+        result = 31 * result + (flatAt != null ? flatAt.hashCode() : 0);
+        result = 31 * result + (borough != null ? borough.hashCode() : 0);
+        return result;
+    }
 }

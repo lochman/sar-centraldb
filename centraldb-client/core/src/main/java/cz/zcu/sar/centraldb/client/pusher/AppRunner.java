@@ -28,8 +28,11 @@ public class AppRunner implements CommandLineRunner {
     @Autowired
     private Fetcher fetcher;
 
+    @Autowired
+    TestDataLoader testDataLoader;
+
     public void run(String... strings) throws Exception {
-        initTestData();
+        testDataLoader.run();
         pusher.pushData();
        // fetcher.fetchData();
     }

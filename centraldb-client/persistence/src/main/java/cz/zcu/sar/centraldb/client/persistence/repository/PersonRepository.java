@@ -25,6 +25,11 @@ public interface PersonRepository extends BaseRepository<Person, Long> {
     @Query("select p.personType from Person p where p.id=:id")
     PersonType findPersonType(@Param("id")Long id );
 
+    List<Person> findBySocialNumber(String socialNumber);
+    List<Person> findByCompanyNumber(String companyNumber);
+    List<Person> findBySocialNumberAndCompanyNumber(String socialNumber,String companyNumber);
+
+
 
 
 }

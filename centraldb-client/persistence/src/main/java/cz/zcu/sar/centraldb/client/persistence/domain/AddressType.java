@@ -7,6 +7,6 @@ import javax.persistence.Entity;
  */
 
 @Entity
-public class AddressType extends cz.zcu.sar.centraldb.common.persistence.AddressType<Address> {
+public class AddressType extends cz.zcu.sar.centraldb.common.persistence.AddressType {
 
 }

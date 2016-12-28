@@ -38,5 +38,9 @@ public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<Perso
     }
 
     public Person() {
+        super();
+    }
+    public Person(String firstName, String name, String gender) {
+        super(firstName,name,gender);
     }
 }
