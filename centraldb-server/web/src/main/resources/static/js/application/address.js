@@ -13,7 +13,9 @@ angular.module('address', ['ngResource']).component('addressEdit', {
     console.log("init address", self.address, self.index, self.types);
     $scope.address = self.address;
     $scope.addressTypes = self.types;
-    $scope.address.addresstype = String(self.address.addressType.id);
+    if (self.address.addressType){
+        $scope.address.addresstype = String(self.address.addressType.id);
+    }
     /*self.removeAddress = function(){
         console.log("remove shit", self.index, self.remove);
         self.remove(self.index);

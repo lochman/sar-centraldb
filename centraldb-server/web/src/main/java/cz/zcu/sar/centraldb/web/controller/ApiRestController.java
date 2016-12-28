@@ -58,7 +58,7 @@ public class ApiRestController {
     }
 
     //@Secured({ "ROLE_USER" })
-    @PostMapping("search/paginated")
+    @PostMapping("person/search/paginated")
     public Page<Person> getPeopleByQuery(@RequestBody PageRequestWrapper request) {
         System.out.println(request.getQueryParams());
         return personService.getPeopleByQuery(request);
@@ -88,14 +88,14 @@ public class ApiRestController {
     }
 
     @PutMapping(value = "person/{id}")
-    public ResponseEntity<?> getUpdatePerson(@PathVariable String id, @RequestBody PersonAddress personAddress, Authentication auth) {
+    public ResponseEntity<?> updatePerson(@PathVariable String id, @RequestBody PersonAddress personAddress, Authentication auth) {
         Person person = personAddress.getPerson();
         if(person == null || Long.parseLong(id) != person.getId()){
             return new ResponseEntity<>("{\"error\": \"Uživatel s id \'" + id + "\' nebyl nalezen.\"}", HttpStatus.NOT_FOUND);
         }
         person.setModifiedBy(auth.getName());
         personRepository.save(person);
-        System.out.println("person id" + person.getId() + " adresy " + personAddress.getAddressWrappers());
+        System.out.println("update person id" + person.getId() + " adresy " + personAddress.getAddressWrappers());
         for(Address a: personAddress.getAddressWrappers()){
             a.setPerson(person);
             a.setModifiedBy(auth.getName());
@@ -107,10 +107,11 @@ public class ApiRestController {
     }
 
 
-    @PostMapping
+    @PostMapping(value = "person")
     public ResponseEntity<?> createNewPerson( @RequestBody PersonAddress personAddress, Authentication auth) {
         Person person = personAddress.getPerson();
         person.setModifiedBy(auth.getName());
+        System.out.println(person.getBirthDate().getTime());
         personService.savePersonAsTemp(person);
         for(Address a: personAddress.getAddressWrappers()){
             a.setPerson(person);
@@ -120,7 +121,7 @@ public class ApiRestController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(person.getId()).toUri();
-        return ResponseEntity.created(location).body(person);
+        return ResponseEntity.created(location).body("{\"status\": true}");
     }
     /*@GetMapping(value = "/{name}")
     public Person findPersonByName(@PathVariable String name) {

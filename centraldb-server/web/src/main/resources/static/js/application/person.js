@@ -5,10 +5,16 @@ angular.module('person', ['ngResource', 'auth', 'address'])
         { id: '@id' },
         {
             update: {
-                method: 'PUT'
+                url: 'api/person/:id',
+                method: 'PUT',
+                params: {id: '@person.id'}
+            },
+            create: {
+                url: 'api/person',
+                method: 'POST'
             },
             paginatedSearch: {
-                url: 'person/search/paginated',
+                url: 'api/person/search/paginated',
                 method: 'POST'
             }
 
@@ -100,9 +106,14 @@ angular.module('person', ['ngResource', 'auth', 'address'])
         //deep copy
         var copy = JSON.parse(JSON.stringify($scope.person));
         delete copy.addressWrappers;
+        //convertor from czech date
+        copy.birthDate = (new Date(copy.birthDate.replace( /(\d+)[^\d]+(\d+)[^\d]+(\d+)/, "$2/$1/$3") )).getTime();
+        //convert true/false to 1/0
+        copy.usePermitted = copy.usePermitted ? "1" : "0";
+        console.log("datumek", copy.birthDate);
         var obj = {person: copy, addressWrappers: $scope.person.addressWrappers};
         if (editPage){
-            $http({
+           /* $http({
                 method: 'PUT',
                 url: 'api/person/'+self.id,
                 data: obj,
@@ -117,25 +128,27 @@ angular.module('person', ['ngResource', 'auth', 'address'])
                 console.log("Chyba pri zpracovani na serveru");
             });
 
+*/
 
 
-            /*
             Person.update(obj, function (resp){
                 console.log(resp);
                 if(resp.status){
                     $location.path("").search("edited");
+                }else {
+                    console.log("Chyba pri zpracovani na serveru");
                 }
-                console.log("Chyba pri zpracovani na serveru");
             }, function(err) {
                 console.log("Chyba pri zpracovani na serveru");
-            });*/
+            });
         }else{
-            Person.$save(obj, function (resp){
+            Person.create(obj, function (resp){
                 console.log(resp);
                 if(resp.status){
                     $location.path("").search("created");
+                }else {
+                    console.log("Chyba pri zpracovani na serveru");
                 }
-                console.log("Chyba pri zpracovani na serveru");
             }, function(err) {
                 console.log("Chyba pri zpracovani na serveru");
             });

@@ -1,7 +1,7 @@
 <div class="address">
     <button type="button" class="btn btn-danger" ng-click="addressCtrl.removeAddress({index: addressCtrl.index})">Odstranit adresu</button>
 <div class="form-group">
-    <label class="col-sm-3 control-label" for="addresstype"> Druh adresy :</label>
+    <label class="col-sm-3 control-label" for="addresstype"> Druh adresy *:</label>
     <div class="col-sm-9">
         <select class="form-control" id="addresstype" ng-model="address.addresstype" name="addresstype">
             <option ng-repeat="type in addressTypes" value="{{type.id}}">{{type.description}}</option>
