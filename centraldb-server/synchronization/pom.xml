@@ -11,5 +11,12 @@
 
     <artifactId>synchronization</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>cz.zcu.sar.centraldb</groupId>
+            <artifactId>persistence</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

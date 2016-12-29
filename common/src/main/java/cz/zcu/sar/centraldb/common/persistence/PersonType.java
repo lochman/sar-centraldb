@@ -24,6 +24,4 @@ public class PersonType extends BaseObject {
 
     public void setDescription(String description) { this.description = description; }
 
-
-
 }

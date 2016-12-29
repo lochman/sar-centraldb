@@ -4,6 +4,7 @@ import cz.zcu.sar.centraldb.persistence.domain.Person;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,5 +24,9 @@ public class PersonSpecifications {
             }
             return cb.and(predicates.toArray(new Predicate[] {}));
         };
+    }
+
+    public static Specification<Person> isNewer(String property, Timestamp value) {
+        return (root, query, cb) -> cb.greaterThan(root.<Timestamp>get(property), value);
     }
 }

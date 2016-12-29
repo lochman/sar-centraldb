@@ -12,7 +12,7 @@ import java.util.Date;
  */
 
 @MappedSuperclass
-public class BaseObject implements Serializable {
+public abstract class BaseObject implements Serializable {
 
     @Id
     @GeneratedValue

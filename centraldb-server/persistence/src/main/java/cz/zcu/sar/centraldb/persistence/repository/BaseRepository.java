@@ -1,8 +1,8 @@
 package cz.zcu.sar.centraldb.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.Repository;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -12,6 +12,10 @@ import java.util.Optional;
  */
 
 @NoRepositoryBean
-public interface BaseRepository<T, ID extends Serializable> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
-//    Optional<T> findOne(T object);
+public interface BaseRepository<T, ID extends Serializable> extends Repository<T, ID>, JpaSpecificationExecutor<T> {
+    Optional<T> findOne(ID id);
+    T save(T object);
+    void delete(ID id);
+    void delete(T object);
+    void delete(Iterable<? extends T> entities);
 }
