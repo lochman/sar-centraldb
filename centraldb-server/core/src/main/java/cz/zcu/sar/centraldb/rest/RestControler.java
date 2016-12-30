@@ -1,20 +1,17 @@
 package cz.zcu.sar.centraldb.rest;
 
-import cz.zcu.sar.centraldb.common.persistence.Person;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
 import cz.zcu.sar.centraldb.core.SyncService;
-import org.springframework.beans.factory.annotation.Autowired;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.domain.PersonType;
-import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
@@ -47,6 +44,7 @@ public class RestControler {
     @PostMapping("/data/fetch")
     public ResponseEntity<Batch> fetchData(@RequestBody() ConfirmFetch confirmed) {
         // TODO: nacti data z fronty a posli je a normalizuj
+        Batch batch = new Batch();
         batch.setPersons(normalizedPerson(run()));
         return new ResponseEntity<Batch>(batch,HttpStatus.OK);
     }
