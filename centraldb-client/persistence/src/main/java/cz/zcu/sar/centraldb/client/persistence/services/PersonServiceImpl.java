@@ -2,6 +2,7 @@ package cz.zcu.sar.centraldb.client.persistence.services;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Address;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
+import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.client.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -7,5 +7,5 @@ import cz.zcu.sar.centraldb.client.persistence.domain.Person;
  *         date 28.12.2016.
  */
 public interface PersonService {
-    void createPerson(Person person);
+    public void createPerson(Person person);
 }

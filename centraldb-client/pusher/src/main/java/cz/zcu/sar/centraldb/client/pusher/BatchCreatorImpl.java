@@ -8,6 +8,7 @@ import cz.zcu.sar.centraldb.client.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.client.persistence.services.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -22,8 +23,10 @@ import java.util.stream.Collectors;
  */
 @Service
 public class BatchCreatorImpl implements BatchCreator{
-    private static final long STEP = 60*60*1000;      // hour
-    private static final int SIZE_BUFFER =100;
+    @Value("${batchCreator.step}")
+    private long STEP;      // hour
+    @Value("${batchCreator.bufferSize}")
+    private int SIZE_BUFFER;
     private Timestamp startDate;
     private Timestamp endDate;
 

@@ -10,12 +10,8 @@ import cz.zcu.sar.centraldb.client.persistence.repository.AddressTypeRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonTypeRepository;
 import cz.zcu.sar.centraldb.client.persistence.services.BaseService;
-
 import cz.zcu.sar.centraldb.client.persistence.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -46,6 +42,16 @@ public class TestDataLoader{
     @Autowired
     private PersonService personService;
 
+    public void initTypes(){
+        List<PersonType> personTypes = personTypeRepository.findAll();
+        if (personTypes.isEmpty()){
+            personTypes.addAll(initPersonType());
+        }
+        List<AddressType> addressTypes = addressTypeRepository.findAll();
+        if (addressTypes.isEmpty()){
+            addressTypes.addAll(initAddressType());
+        }
+    }
     public void run(){
         //Create person types
         Random random = new Random();

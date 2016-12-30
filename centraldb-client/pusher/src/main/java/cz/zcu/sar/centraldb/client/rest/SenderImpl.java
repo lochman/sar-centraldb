@@ -1,6 +1,8 @@
 package cz.zcu.sar.centraldb.client.rest;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
+import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
+import cz.zcu.sar.centraldb.common.persistence.Address;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +12,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Marek Rasocha
@@ -75,8 +80,10 @@ public class SenderImpl implements Sender {
         List<Person> normalized = new ArrayList<>();
         if (persons == null) return normalized;
         for(int i=0;i<persons.length;i++){
-            normalized.add(new Person(persons[i]));
-        }
+            Person p = new Person(persons[i]);
+            p.setPersonType(new PersonType(p.getPersonType()));
+            normalized.add(p);
+    }
         return normalized;
     }
 

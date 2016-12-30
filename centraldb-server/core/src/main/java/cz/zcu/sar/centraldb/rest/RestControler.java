@@ -1,9 +1,12 @@
 package cz.zcu.sar.centraldb.rest;
 
 
-import cz.zcu.sar.centraldb.common.persistence.Person;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
+import cz.zcu.sar.centraldb.persistence.domain.Address;
+import cz.zcu.sar.centraldb.persistence.domain.AddressType;
+import cz.zcu.sar.centraldb.persistence.domain.Person;
+import cz.zcu.sar.centraldb.persistence.domain.PersonType;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -22,7 +25,6 @@ import java.util.List;
  */
 @RestController
 public class RestControler {
-
 
 
     @RequestMapping(value = "/lastBatch", method = RequestMethod.POST)
@@ -40,13 +42,7 @@ public class RestControler {
     @RequestMapping(value = "/data/fetch", method = RequestMethod.POST)
     public ResponseEntity<Batch> fetchData(@RequestBody() Batch batch) {
         // TODO: nacti data z fronty a posli je a normalizuj
-        Person[] persons = new Person[1];
-        persons[0] = new Person();
-        persons[0].setName("asd");
-        persons[0].setModifiedBy("user1");
-        persons[0].setModifiedTime(new Timestamp(System.currentTimeMillis()));
-        persons[0].setBirthDate(new Timestamp(System.currentTimeMillis()));
-        batch.setPersons(persons);
+        batch.setPersons(normalizedPerson(run()));
         return new ResponseEntity<Batch>(batch,HttpStatus.OK);
     }
     @RequestMapping(value = "/data/confirm", method = RequestMethod.POST)
@@ -55,4 +51,98 @@ public class RestControler {
         return new ResponseEntity<ConfirmFetch>(HttpStatus.OK);
     }
 
+
+    public List<Person> run(){
+        //Create person types
+        Random random = new Random();
+        List<PersonType> personTypes =initPersonType();
+        List<AddressType> addressTypes = initAddressType();
+        List<Person> persons = new ArrayList<>();
+        for (int i = 0; i < 110; i++) {
+            Address address = new Address();
+            Address address2 = new Address();
+            Person person = new Person("Jmenooo" + i, "Prijmeniee" , "");
+            if (i % 2 == 0) { person.setGender("m");
+            } else { person.setGender("f"); }
+            person.setModifiedBy("user1");
+            person.setCompanyNumber(String.valueOf(i));
+            person.setSocialNumber(String.valueOf(i));
+            // generate modified time
+            long curr = System.currentTimeMillis();
+            long hour = 60*60*1000;
+            int cislo = random.nextInt(7*24);        // 7 dni a 24 hod
+            person.setModifiedTime(new Timestamp(curr-(hour*cislo)));
+
+            if( i % 5 == 0) {
+                person.setPersonType(personTypes.get(0));
+                address.setAddressType(addressTypes.get(0));
+                address2.setAddressType(addressTypes.get(0));
+            }
+            else{
+                person.setPersonType(personTypes.get(1));
+                address.setAddressType(addressTypes.get(1));
+                address2.setAddressType(addressTypes.get(1));
+            }
+            person.setBirthDate(new Date());
+            // personRepository.save(person);
+            if(i%10 !=0){
+                address.setStreet("Dlouhá" + i);
+                address.setLand_registry_number(String.valueOf(i));
+                address.setCity("Praha" + i);
+                address.setModifiedBy("init");
+                address.setPerson(person);
+
+                address2.setStreet("Kratka" + i);
+                address2.setLand_registry_number(String.valueOf(i));
+                address2.setCity("Plisen" + i);
+                address2.setModifiedBy("init");
+                address2.setPerson(person);
+                Set set = new HashSet<>();
+                set.add(address);
+                set.add(address2);
+                person.setAddressWrappers(set);
+            }
+            persons.add(person);
+        }
+        return persons;
+    }
+    private cz.zcu.sar.centraldb.common.persistence.Person[] normalizedPerson(List<Person> persons) {
+        cz.zcu.sar.centraldb.common.persistence.Person[] wrapper = new cz.zcu.sar.centraldb.common.persistence.Person[persons.size()];
+        int i=0;
+        for(Person p : persons){
+            cz.zcu.sar.centraldb.common.persistence.Person<cz.zcu.sar.centraldb.common.persistence.PersonType,cz.zcu.sar.centraldb.common.persistence.Address> w = p.getWraperPerson();
+            wrapper[i++] = (w);
+        }
+        return wrapper;
+    }
+    private List<AddressType> initAddressType() {
+        //Create address types
+        AddressType at1 = new AddressType();
+        at1.setId((long) 3);
+        at1.setDescription("Trvalá adresa");
+        at1.setModifiedBy("init");
+        AddressType at2 = new AddressType();
+        at2.setId((long) 4);
+        at2.setDescription("Přechodná adresa");
+        at2.setModifiedBy("init");
+        List<AddressType> list = new ArrayList<>();
+        list.add(at1);
+        list.add(at2);
+        return list;
+    }
+
+    private List<PersonType> initPersonType() {
+        PersonType t1 = new PersonType();
+        t1.setId((long) 1);
+        t1.setDescription("Fyzická osoba");
+        t1.setModifiedBy("init");
+        PersonType t2 = new PersonType();
+        t2.setId((long) 2);
+        t2.setDescription("Právnická osoba");
+        t2.setModifiedBy("init");
+        List<PersonType> list = new ArrayList<>();
+        list.add(t1);
+        list.add(t2);
+        return list;
+    }
 }

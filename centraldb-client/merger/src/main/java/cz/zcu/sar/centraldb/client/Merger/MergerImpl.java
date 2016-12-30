@@ -3,9 +3,9 @@ package cz.zcu.sar.centraldb.client.Merger;
 import cz.zcu.sar.centraldb.client.persistence.domain.Address;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
-import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
-import cz.zcu.sar.centraldb.client.persistence.repository.SynchronizationRepository;
+import cz.zcu.sar.centraldb.client.persistence.repository.*;
 import cz.zcu.sar.centraldb.client.persistence.services.BaseService;
+import cz.zcu.sar.centraldb.client.persistence.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,30 +25,43 @@ public class MergerImpl implements Merger {
     PersonRepository personRepository;
 
     @Autowired
+    PersonTypeRepository personTypeRepository;
+
+    @Autowired
+    AddressTypeRepository addressTypeRepository;
+
+    @Autowired
     BaseService baseService;
+
+    @Autowired
+    PersonService personService;
 
     @Override
     public boolean mergeData(List<Person> persons){
         for (Person p : persons){
             Person save = null;
-            if (p.getId()!=null){
-                save = personRepository.findOne(p.getId());
-                if (save!=null)save = baseService.fillLazyAttribute(save);
-            }
-            if(save!=null){
-                if(save.getModifiedTime().after(p.getModifiedTime()))continue;
-            }else{
-                save = mergePerson(p);
-                if (save!=null)save = baseService.fillLazyAttribute(save);
-            }
+            if (p.getId()!=null)save = personRepository.findOne(p.getId());
+            // IF person is not founded, Try to find by companyNumber or socialNumber
+            if(save==null) save = mergePerson(p);
             if (save!=null){
+                //TODO - uncomment after testing
+//                if(save.getModifiedTime().after(p.getModifiedTime()))continue;
+                save = baseService.fillLazyAttribute(save);
+                p.setId(save.getId());
+                if(save.getAddressWrappers()==null) save.setAddressWrappers(new HashSet<>());
+                if(p.getAddressWrappers()==null) p.setAddressWrappers(new HashSet<>());
                 // null id and merge address
-                p.setAddressWrappers(mergeAddress(new ArrayList(p.getAddressWrappers()),new ArrayList(save.getAddressWrappers())));
+                p.setAddressWrappers(mergeAddress(new ArrayList(p.getAddressWrappers()), new ArrayList(save.getAddressWrappers())));
             }
+            p.setPersonType(mergePersonType(p.getPersonType()));
             p = (Person)baseService.setModifyBy(p,true);
-            personRepository.save(p);
+            personService.createPerson(p);
         }
         return true;
+    }
+
+    private PersonType mergePersonType(PersonType personType) {
+        return personTypeRepository.findOne(personType.getId());
     }
 
     private Person mergePerson(Person p) {
@@ -70,16 +83,17 @@ public class MergerImpl implements Merger {
         return search;
     }
 
-    private Set<Address> mergeAddress(List<Address> addressNew, List<Address> addressOld) {
+    private Set<Address> mergeAddress(List<cz.zcu.sar.centraldb.common.persistence.Address> addressNew, List<Address> addressOld) {
         Set<Address> address = new HashSet<>();
-        for (Address newA : addressNew){
-            int index = getAddress(newA, addressOld);
+        for (cz.zcu.sar.centraldb.common.persistence.Address newA : addressNew){
+            Address address1 = new Address(newA);
+            int index = getAddress(address1, addressOld);
             if (index!=-1){
                 Address old = addressOld.remove(index);
                 address.add(old);
             }else{
-                newA.setId(null);
-                address.add(newA);
+                address1.setAddressType(addressTypeRepository.findOne(address1.getAddressType().getId()));
+                address.add(address1);
             }
         }
         address.addAll(addressOld);

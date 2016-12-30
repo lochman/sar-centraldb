@@ -173,10 +173,9 @@ public class Address<P extends Person,A extends AddressType> extends BaseObject 
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
+       // if (!super.equals(object)) return false;
 
         Address<?, ?> address = (Address<?, ?>) object;
-
         if (addressType != null ? !addressType.equals(address.addressType) : address.addressType != null) return false;
         if (residenceFrom != null ? !residenceFrom.equals(address.residenceFrom) : address.residenceFrom != null)
             return false;
