@@ -1,10 +1,10 @@
 package cz.zcu.sar.centraldb.web.controller;
 
 import cz.zcu.sar.centraldb.persistence.domain.Person;
-import cz.zcu.sar.centraldb.persistence.helper.PersonAddress;
+import cz.zcu.sar.centraldb.persistence.wrapper.PersonAddress;
 import cz.zcu.sar.centraldb.persistence.repository.AddressTypeRepository;
 import cz.zcu.sar.centraldb.persistence.repository.PersonTypeRepository;
-import cz.zcu.sar.centraldb.persistence.service.PageRequestWrapper;
+import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

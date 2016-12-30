@@ -1,20 +1,17 @@
 package cz.zcu.sar.centraldb.rest;
 
-
 import cz.zcu.sar.centraldb.common.persistence.Person;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
-import org.json.simple.JSONObject;
+import cz.zcu.sar.centraldb.core.SyncService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
-import java.util.List;
-
 
 /**
  * @author Marek Rasocha
@@ -23,22 +20,24 @@ import java.util.List;
 @RestController
 public class RestControler {
 
+    @Autowired
+    private SyncService syncService;
 
-
-    @RequestMapping(value = "/lastBatch", method = RequestMethod.POST)
-    public ResponseEntity<String> lastBatch(@RequestBody String id) {
+    @PostMapping("/lastBatch")
+    public ResponseEntity<String> lastBatch(@RequestBody String instituteId) {
         //todo: najdi lastBatch podle id clienta
         String result = "laswtBactch";
-        return new ResponseEntity<String>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
+    @PostMapping("/data")
     public ResponseEntity<Batch> getData(@RequestBody() Batch batch) {
         //todo: vloz do bufferu
-        return new ResponseEntity<Batch>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    @RequestMapping(value = "/data/fetch", method = RequestMethod.POST)
-    public ResponseEntity<Batch> fetchData(@RequestBody() Batch batch) {
+
+    @PostMapping("/data/fetch")
+    public ResponseEntity<Batch> fetchData(@RequestBody() ConfirmFetch confirmed) {
         // TODO: nacti data z fronty a posli je a normalizuj
         Person[] persons = new Person[1];
         persons[0] = new Person();
@@ -46,13 +45,15 @@ public class RestControler {
         persons[0].setModifiedBy("user1");
         persons[0].setModifiedTime(new Timestamp(System.currentTimeMillis()));
         persons[0].setBirthDate(new Timestamp(System.currentTimeMillis()));
+        Batch batch = syncService.retrieveData(confirmed.getClientId(), confirmed.getSize());
         batch.setPersons(persons);
-        return new ResponseEntity<Batch>(batch,HttpStatus.OK);
+        return new ResponseEntity<>(batch, HttpStatus.OK);
     }
-    @RequestMapping(value = "/data/confirm", method = RequestMethod.POST)
+
+    @PostMapping("/data/confirm")
     public ResponseEntity<ConfirmFetch> confirmFetch(@RequestBody() ConfirmFetch batch) {
         //todo: potvrd prijeti davky
-        return new ResponseEntity<ConfirmFetch>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

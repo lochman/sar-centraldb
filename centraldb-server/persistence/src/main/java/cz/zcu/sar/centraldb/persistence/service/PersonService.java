@@ -1,8 +1,8 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
-import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
-import cz.zcu.sar.centraldb.persistence.helper.PersonAddress;
+import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
+import cz.zcu.sar.centraldb.persistence.wrapper.PersonAddress;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
