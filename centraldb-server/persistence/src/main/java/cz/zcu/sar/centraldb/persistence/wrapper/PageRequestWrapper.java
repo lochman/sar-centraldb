@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.persistence.service;
+package cz.zcu.sar.centraldb.persistence.wrapper;
 
 import java.util.List;
 import java.util.Map;

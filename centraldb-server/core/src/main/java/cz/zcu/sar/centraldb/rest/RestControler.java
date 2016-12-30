@@ -1,8 +1,10 @@
 package cz.zcu.sar.centraldb.rest;
 
-
+import cz.zcu.sar.centraldb.common.persistence.Person;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
+import cz.zcu.sar.centraldb.core.SyncService;
+import org.springframework.beans.factory.annotation.Autowired;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
@@ -26,29 +28,33 @@ import java.util.*;
 @RestController
 public class RestControler {
 
+    @Autowired
+    private SyncService syncService;
 
-    @RequestMapping(value = "/lastBatch", method = RequestMethod.POST)
-    public ResponseEntity<String> lastBatch(@RequestBody String id) {
+    @PostMapping("/lastBatch")
+    public ResponseEntity<String> lastBatch(@RequestBody String instituteId) {
         //todo: najdi lastBatch podle id clienta
         String result = "laswtBactch";
-        return new ResponseEntity<String>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
+    @PostMapping("/data")
     public ResponseEntity<Batch> getData(@RequestBody() Batch batch) {
         //todo: vloz do bufferu
-        return new ResponseEntity<Batch>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    @RequestMapping(value = "/data/fetch", method = RequestMethod.POST)
-    public ResponseEntity<Batch> fetchData(@RequestBody() Batch batch) {
+
+    @PostMapping("/data/fetch")
+    public ResponseEntity<Batch> fetchData(@RequestBody() ConfirmFetch confirmed) {
         // TODO: nacti data z fronty a posli je a normalizuj
         batch.setPersons(normalizedPerson(run()));
         return new ResponseEntity<Batch>(batch,HttpStatus.OK);
     }
-    @RequestMapping(value = "/data/confirm", method = RequestMethod.POST)
+
+    @PostMapping("/data/confirm")
     public ResponseEntity<ConfirmFetch> confirmFetch(@RequestBody() ConfirmFetch batch) {
         //todo: potvrd prijeti davky
-        return new ResponseEntity<ConfirmFetch>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

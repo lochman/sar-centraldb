@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.persistence.helper;
+package cz.zcu.sar.centraldb.persistence.wrapper;
 
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.Person;

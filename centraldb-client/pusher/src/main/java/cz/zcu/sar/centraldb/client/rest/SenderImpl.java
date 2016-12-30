@@ -40,27 +40,27 @@ public class SenderImpl implements Sender {
         String result = restTemplate.postForObject(uriBatch, clientId, String.class);
         return result.equals(batchId);
     }
-    public void sendData(List<Person> persons,String batchId){
-        Batch batchWrapper = new Batch(clientId,normalizedPerson(persons));
+    public void sendData(List<Person> persons,String batchId) {
+        Batch batchWrapper = new Batch(clientId, normalizedPerson(persons));
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.postForObject(uriData, batchWrapper,Batch.class);
     }
 
-
-    public List<Person> fetchData(){
+    //TODO: send clientId and int size in ConfimFetch, instead of Batch
+    public List<Person> fetchData() {
         Batch batchWrapper = new Batch();
         batchWrapper.setClientId(clientId);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         Batch batch = restTemplate.postForObject(fetchData, batchWrapper, Batch.class);
-        return batch!=null ? normalizedPerson(batch.getPersons()) : new ArrayList<>();
+        return batch != null ? normalizedPerson(batch.getPersons()) : new ArrayList<>();
     }
 
 
 
-    public void confirmFetchData(Timestamp lastDate, int size){
-        ConfirmFetch param = new ConfirmFetch(clientId,lastDate,size);
+    public void confirmFetchData(Timestamp lastDate, int size) {
+        ConfirmFetch param = new ConfirmFetch(clientId, lastDate,size);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.postForObject(confirmFetch, param, ConfirmFetch.class);
