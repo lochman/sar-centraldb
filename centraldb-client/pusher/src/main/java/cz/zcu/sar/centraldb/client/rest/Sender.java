@@ -12,6 +12,6 @@ import java.util.List;
 public interface Sender {
     boolean sendLastBatchId(String batchId);
     void sendData(List<Person> persons,String batchId);
-    List<Person> fetchData();
+    List<Person> fetchData(int size);
     void confirmFetchData(Timestamp lastDate, int size);
 }

@@ -7,6 +7,7 @@ import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -28,9 +29,9 @@ public class SharedSyncQueue implements SyncQueue {
     private Map<Timestamp, List<Person>> peopleByTime;
 
     public SharedSyncQueue() {
-        initQueue();
+        //initQueue();
     }
-
+    @PostConstruct
     private void initQueue() {
         List<Institute> institutes = instituteService.findAll();
         List<Person> unSynchronized;
@@ -90,7 +91,9 @@ public class SharedSyncQueue implements SyncQueue {
                 break;
             }
         }
-        data.addAll(queue.tailSet(from));//TODO sublist
+        if(from!=null){
+            data.addAll(queue.tailSet(from));//TODO sublist
+        }
         return data;
     }
 

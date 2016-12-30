@@ -42,8 +42,9 @@ public class RestControler {
     }
 
     @PostMapping("/data/fetch")
-    public ResponseEntity<Batch> fetchData(@RequestBody() ConfirmFetch confirmed) {
+    public ResponseEntity<Batch> fetchData(@RequestBody() Batch confirmed) {
         // TODO: nacti data z fronty a posli je a normalizuj
+        int size = confirmed.getSize();
         Batch batch = new Batch();
         batch.setPersons(normalizedPerson(run()));
         return new ResponseEntity<Batch>(batch,HttpStatus.OK);

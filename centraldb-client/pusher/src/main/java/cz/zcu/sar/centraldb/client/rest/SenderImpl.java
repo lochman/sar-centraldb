@@ -48,9 +48,10 @@ public class SenderImpl implements Sender {
     }
 
     //TODO: send clientId and int size in ConfimFetch, instead of Batch
-    public List<Person> fetchData() {
+    public List<Person> fetchData(int size) {
         Batch batchWrapper = new Batch();
         batchWrapper.setClientId(clientId);
+        batchWrapper.setSize(size);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         Batch batch = restTemplate.postForObject(fetchData, batchWrapper, Batch.class);

@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 public class Batch {
     private Timestamp first;
     private Timestamp last;
+    private int size;
     private String clientId;
     private Person[] persons;
 
@@ -22,6 +23,14 @@ public class Batch {
     }
 
     public Batch() {
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public Timestamp getFirst() {
