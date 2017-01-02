@@ -10,7 +10,7 @@ import java.util.List;
  *         date 18.12.2016.
  */
 public interface Sender {
-    boolean sendLastBatchId(String batchId);
+    MyResponse sendLastBatchId(String batchId);
     void sendData(List<Person> persons,String batchId);
     List<Person> fetchData(int size);
     void confirmFetchData(Timestamp lastDate, int size);

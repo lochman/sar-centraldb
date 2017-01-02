@@ -38,7 +38,7 @@ public class RestControler {
         } catch (NumberFormatException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return institute.isPresent() ? new ResponseEntity<>(institute.get().getLastBatchId(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return institute.isPresent() ? new ResponseEntity<>(institute.get().getLastBatchId(), HttpStatus.OK) : new ResponseEntity<>("NOT FOUND",HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/data")

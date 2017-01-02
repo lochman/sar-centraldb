@@ -19,9 +19,9 @@ public class AppRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         pusherRunner.start();
-//        fetcherRunner.start();
+        fetcherRunner.start();
         pusherRunner.join();
-//        fetcherRunner.join();
+        fetcherRunner.join();
 
     }
 }

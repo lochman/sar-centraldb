@@ -3,6 +3,7 @@ package cz.zcu.sar.centraldb.client.pusher;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.Synchronization;
 import cz.zcu.sar.centraldb.client.persistence.services.SynchronizationService;
+import cz.zcu.sar.centraldb.client.rest.MyResponse;
 import cz.zcu.sar.centraldb.client.rest.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class PusherImpl implements Pusher {
     @Autowired
     SynchronizationService synchronizationService;
 
+    List<Person> persons;
+
     @Override
     public void pushData() {
         lastSync = synchronizationService.findLast();
@@ -36,20 +39,27 @@ public class PusherImpl implements Pusher {
             lastSync.setFistDate(new Timestamp(START_TIME));
             synchronizationService.save(lastSync);
         }
-        List<Person> persons;
-        if(lastSyncComlete()){
-            persons = creator.createBatch(lastSync.getLastDate());
-            updateSyncFlags();
-        }else{
-            persons = creator.createBatch(lastSync.getFistDate(),lastSync.getLastDate());
+        MyResponse status = lastSyncComlete();
+        switch (status){
+            case SEND_NEW:
+                persons = creator.createBatch(lastSync.getLastDate());
+                updateSyncFlags();
+                break;
+            case SEND_OLD:
+                if (persons==null){
+                    persons = creator.createBatch(lastSync.getFistDate(),lastSync.getLastDate());
+                }
+                break;
+           default:
+                return;
         }
         if(!persons.isEmpty()){
             sender.sendData(persons, lastSync.getBatchId());
         }
     }
 
-    private boolean lastSyncComlete() {
-        return lastSync.getBatchId()==null ? true :sender.sendLastBatchId(lastSync.getBatchId());
+    private MyResponse lastSyncComlete() {
+        return lastSync.getBatchId()==null ? MyResponse.SEND_NEW :sender.sendLastBatchId(lastSync.getBatchId());
     }
 
 

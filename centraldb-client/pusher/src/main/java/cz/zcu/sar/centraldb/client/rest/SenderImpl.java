@@ -6,8 +6,11 @@ import cz.zcu.sar.centraldb.common.persistence.Address;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -35,19 +38,28 @@ public class SenderImpl implements Sender {
     @Value("${client.id}")
     String clientId;
 
-    public boolean sendLastBatchId(String batchId) {
+    public MyResponse sendLastBatchId(String batchId) {
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.postForObject(uriBatch, clientId, String.class);
-        return result.equals(batchId);
+        try {
+            String result = restTemplate.postForObject(uriBatch, clientId, String.class);
+            return result.equals(batchId) ? MyResponse.SEND_NEW : MyResponse.SEND_OLD;
+        }catch (HttpClientErrorException e){
+            HttpStatus statusCode = e.getStatusCode();
+            // if not found - client dont have a mark about sync -> send batch
+            // Other status code - wait
+            return statusCode == HttpStatus.NOT_FOUND ? MyResponse.SEND_NEW : MyResponse.WAIT;
+        }
     }
     public void sendData(List<Person> persons,String batchId) {
         Batch batchWrapper = new Batch(clientId, normalizedPerson(persons));
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        try{
         restTemplate.postForObject(uriData, batchWrapper,Batch.class);
+        }catch (HttpClientErrorException e){}
     }
 
-    //TODO: send clientId and int size in ConfimFetch, instead of Batch
+
     public List<Person> fetchData(int size) {
         Batch batchWrapper = new Batch();
         batchWrapper.setClientId(clientId);
@@ -55,7 +67,9 @@ public class SenderImpl implements Sender {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         Batch batch = restTemplate.postForObject(fetchData, batchWrapper, Batch.class);
-        return batch != null ? normalizedPerson(batch.getPersons()) : new ArrayList<>();
+        try {
+            return batch != null ? normalizedPerson(batch.getPersons()) : new ArrayList<>();
+        }catch (HttpClientErrorException e){return new ArrayList<Person>();}
     }
 
 
@@ -64,8 +78,9 @@ public class SenderImpl implements Sender {
         ConfirmFetch param = new ConfirmFetch(clientId, lastDate,size);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        restTemplate.postForObject(confirmFetch, param, ConfirmFetch.class);
-        return;
+        try {
+            restTemplate.postForObject(confirmFetch, param, ConfirmFetch.class);
+        }catch (HttpClientErrorException e){}
     }
 
     private cz.zcu.sar.centraldb.common.persistence.Person[] normalizedPerson(List<Person> persons) {
@@ -77,6 +92,8 @@ public class SenderImpl implements Sender {
         }
         return wrapper;
     }
+
+
     private List<Person> normalizedPerson(cz.zcu.sar.centraldb.common.persistence.Person[] persons) {
         List<Person> normalized = new ArrayList<>();
         if (persons == null) return normalized;
