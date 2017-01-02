@@ -1,5 +1,9 @@
 package cz.zcu.sar.centraldb;
 
+import cz.zcu.sar.centraldb.lookup.LookupPerson;
+import cz.zcu.sar.centraldb.persistence.domain.Person;
+import cz.zcu.sar.centraldb.persistence.service.PersonTypeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -10,24 +14,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppRunner implements CommandLineRunner {
 
+    @Autowired
+    PersonTypeService personTypeService;
+    @Autowired
+    TestDataLoader testDataLoader;
+    @Autowired
+    LookupPerson lookupPerson;
     public void run(String... strings) throws Exception {
-//        Batch batch;
+        testDataLoader.run();
+        testDataLoader.run_temp();
+        Person person = new Person();
+        person.setSocialNumber("1");
+        person.setCompanyNumber("1");
+        Person p = lookupPerson.findPerson(person);
+
+        person.setSocialNumber("2");
+        person.setCompanyNumber(null);
+        Person p2 = lookupPerson.findPerson(person);
+
+        person.setCompanyNumber("3");
+        Person p3 = lookupPerson.findPerson(person);
+
+        System.out.println();
     }
-
-  /* private void initTestData(){
-       Random random = new Random();
-       for (int i=0;i<1000;i++){
-           Person person = new Person();
-           baseService.setDefaultValue(person,true);
-           person.setName("Karel");
-           person.setBirthDate(new Date());
-           person.setModifiedBy("user1");
-           long curr = System.currentTimeMillis();
-           long hour = 60*60*1000;
-           int cislo = random.nextInt(7*24);        // 7 dni a 24 hod
-           person.setModifiedTime(new Timestamp(curr-(hour*cislo)));
-           personRepository.save(person);
-       }
-    }*/
-
 }

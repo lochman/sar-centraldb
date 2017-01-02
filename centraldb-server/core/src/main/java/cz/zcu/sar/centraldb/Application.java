@@ -12,10 +12,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 
 
-@SpringBootApplication
-@ComponentScan("cz.zcu.sar.centraldb")
+@SpringBootApplication(scanBasePackages = {"cz.zcu.sar.centraldb"})
 @EnableJpaRepositories("cz.zcu.sar.centraldb.persistence.repository")
 @EntityScan("cz.zcu.sar.centraldb.persistence.domain")
+@ComponentScan("cz.zcu.sar.centraldb")
 public class Application {
 
     public static void main(String[] args) {

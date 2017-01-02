@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -93,18 +94,27 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     public Person findPersonByNumbers(String socialNumber, String companyNumber){
         List<Person> result = new ArrayList<>();
         if (socialNumber!=null && companyNumber!=null){
-            result.addAll(personRepository.findBySocialNumberAndCompanyNumber(socialNumber, companyNumber));
+            result.addAll(personRepository.findBySocialNumberAndCompanyNumberAndTemporary(socialNumber, companyNumber, false));
         }else{
             if (socialNumber!=null){
-                result.addAll(personRepository.findBySocialNumber(socialNumber));
+                result.addAll(personRepository.findBySocialNumberAndTemporary(socialNumber, false));
             }
             if(companyNumber!=null){
-                result.addAll(personRepository.findByCompanyNumber(companyNumber));
+                result.addAll(personRepository.findByCompanyNumberAndTemporary(companyNumber, false));
             }
         }
         Person search = null;
         if (!result.isEmpty()) search = result.get(0);
         return search;
+    }
+
+    @Override
+    @Transactional
+    public void createPerson(Person person) {
+        personRepository.save(person);
+        if (person.getAddressWrappers()!=null){
+            person.getAddressWrappers().forEach(addressRepository::save);
+        }
     }
 
 

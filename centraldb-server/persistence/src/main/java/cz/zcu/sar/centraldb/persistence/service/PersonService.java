@@ -25,4 +25,6 @@ public interface PersonService extends BaseService<Person, Long> {
     Person createPerson(PersonAddress personAddress, String modifiedBy);
     void saveAddress(Person person, PersonAddress personAddress, String modifiedBy);
     Person findPersonByNumbers(String socialNumber, String companyNumber);
+
+    void createPerson(Person person);
 }
