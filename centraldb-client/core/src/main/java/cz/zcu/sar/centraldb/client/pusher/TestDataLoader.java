@@ -9,7 +9,9 @@ import cz.zcu.sar.centraldb.client.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.AddressTypeRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonTypeRepository;
-import cz.zcu.sar.centraldb.client.persistence.services.BaseService;
+import cz.zcu.sar.centraldb.client.persistence.services.AddressTypeService;
+import cz.zcu.sar.centraldb.client.persistence.services.PersonTypeService;
+import cz.zcu.sar.centraldb.client.persistence.services.UtilService;
 import cz.zcu.sar.centraldb.client.persistence.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,30 +26,27 @@ import java.util.*;
 @Service
 public class TestDataLoader{
 
-    @Autowired
-    private PersonRepository personRepository;
 
     @Autowired
-    private AddressRepository addresssRepository;
+    private PersonTypeService personTypeService;
 
     @Autowired
-    private PersonTypeRepository personTypeRepository;
+    private AddressTypeService addressTypeService;
+
+
 
     @Autowired
-    private AddressTypeRepository addressTypeRepository;
-
-    @Autowired
-    private BaseService baseService;
+    private UtilService utilService;
 
     @Autowired
     private PersonService personService;
 
     public void initTypes(){
-        List<PersonType> personTypes = personTypeRepository.findAll();
+        List<PersonType> personTypes = personTypeService.findAll();
         if (personTypes.isEmpty()){
             personTypes.addAll(initPersonType());
         }
-        List<AddressType> addressTypes = addressTypeRepository.findAll();
+        List<AddressType> addressTypes = addressTypeService.findAll();
         if (addressTypes.isEmpty()){
             addressTypes.addAll(initAddressType());
         }
@@ -55,11 +54,11 @@ public class TestDataLoader{
     public void run(){
         //Create person types
         Random random = new Random();
-        List<PersonType> personTypes = personTypeRepository.findAll();
+        List<PersonType> personTypes = personTypeService.findAll();
         if (personTypes.isEmpty()){
             personTypes.addAll(initPersonType());
         }
-        List<AddressType> addressTypes = addressTypeRepository.findAll();
+        List<AddressType> addressTypes = addressTypeService.findAll();
         if (addressTypes.isEmpty()){
             addressTypes.addAll(initAddressType());
         }
@@ -94,13 +93,13 @@ public class TestDataLoader{
                 address.setStreet("Dlouhá" + i);
                 address.setLand_registry_number(String.valueOf(i));
                 address.setCity("Praha" + i);
-                address = (Address) baseService.setDefaultValue(address,false);
+                address = (Address) utilService.setDefaultValue(address,false);
                 address.setPerson(person);
 
                 address2.setStreet("Kratka" + i);
                 address2.setLand_registry_number(String.valueOf(i));
                 address2.setCity("Plisen" + i);
-                address2 = (Address) baseService.setDefaultValue(address2,false);
+                address2 = (Address) utilService.setDefaultValue(address2,false);
                 address2.setPerson(person);
                 Set set = new HashSet<>();
                 set.add(address);
@@ -122,25 +121,25 @@ public class TestDataLoader{
         //Create address types
         AddressType at1 = new AddressType();
         at1.setDescription("Trvalá adresa");
-        at1 = (AddressType) baseService.setDefaultValue(at1,false);
-        addressTypeRepository.save(at1);
+        at1 = (AddressType) utilService.setDefaultValue(at1,false);
+        addressTypeService.save(at1);
         AddressType at2 = new AddressType();
         at2.setDescription("Přechodná adresa");
-        at2 = (AddressType) baseService.setDefaultValue(at2,false);
-        addressTypeRepository.save(at2);
-        return addressTypeRepository.findAll();
+        at2 = (AddressType) utilService.setDefaultValue(at2,false);
+        addressTypeService.save(at2);
+        return addressTypeService.findAll();
     }
 
     private List<PersonType> initPersonType() {
         PersonType t1 = new PersonType();
         t1.setDescription("Fyzická osoba");
-        t1 = (PersonType) baseService.setDefaultValue(t1,false);
-        personTypeRepository.save(t1);
+        t1 = (PersonType) utilService.setDefaultValue(t1,false);
+        personTypeService.save(t1);
         PersonType t2 = new PersonType();
         t2.setDescription("Právnická osoba");
-        t2 = (PersonType) baseService.setDefaultValue(t2,false);
-        personTypeRepository.save(t2);
-        return personTypeRepository.findAll();
+        t2 = (PersonType) utilService.setDefaultValue(t2,false);
+        personTypeService.save(t2);
+        return personTypeService.findAll();
 
     }
 }

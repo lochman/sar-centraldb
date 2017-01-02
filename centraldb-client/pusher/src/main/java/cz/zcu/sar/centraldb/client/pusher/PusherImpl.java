@@ -2,14 +2,12 @@ package cz.zcu.sar.centraldb.client.pusher;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.Synchronization;
-import cz.zcu.sar.centraldb.client.persistence.repository.SynchronizationRepository;
+import cz.zcu.sar.centraldb.client.persistence.services.SynchronizationService;
 import cz.zcu.sar.centraldb.client.rest.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,7 +16,7 @@ import java.util.List;
  */
 @Service
 public class PusherImpl implements Pusher {
-
+    //TODO: into properties
     private static final long START_TIME = System.currentTimeMillis()-(8*24*60*60*1000); // minus tyden
     private Synchronization lastSync;
     @Autowired
@@ -26,28 +24,18 @@ public class PusherImpl implements Pusher {
     @Autowired
     Sender sender;
     @Autowired
-    SynchronizationRepository synchronizationRepository;
+    SynchronizationService synchronizationService;
 
     @Override
     public void pushData() {
-        Collection<Synchronization> syncs = synchronizationRepository.findAll();
-        if(!syncs.isEmpty()) {
-            Iterator<Synchronization> it = syncs.iterator();
-            Synchronization max = it.next();
-            while (it.hasNext()) {
-                Synchronization next = it.next();
-                if (max.getId() < next.getId()) max = next;
-            }
-            lastSync = max;
-        }else{
-            lastSync = new Synchronization();
-        }
-//        if(lastSync.getFistDate()==null){
+        lastSync = synchronizationService.findLast();
+        if (lastSync==null) lastSync = new Synchronization();
+        if(lastSync.getFistDate()==null){
             lastSync.setBatchId(null);
             lastSync.setLastDate(new Timestamp(START_TIME));
             lastSync.setFistDate(new Timestamp(START_TIME));
-            synchronizationRepository.save(lastSync);
-//        }
+            synchronizationService.save(lastSync);
+        }
         List<Person> persons;
         if(lastSyncComlete()){
             persons = creator.createBatch(lastSync.getLastDate());
@@ -56,7 +44,7 @@ public class PusherImpl implements Pusher {
             persons = creator.createBatch(lastSync.getFistDate(),lastSync.getLastDate());
         }
         if(!persons.isEmpty()){
-            sender.sendData(persons,lastSync.getBatchId());
+            sender.sendData(persons, lastSync.getBatchId());
         }
     }
 
@@ -69,6 +57,6 @@ public class PusherImpl implements Pusher {
         lastSync.setLastDate(creator.getEndDate());
         lastSync.setFistDate(creator.getStartDate());
         lastSync.setBatchId(creator.getStartDate().getTime()+";"+creator.getEndDate().getTime());
-        synchronizationRepository.save(lastSync);
+        synchronizationService.save(lastSync);
     }
 }

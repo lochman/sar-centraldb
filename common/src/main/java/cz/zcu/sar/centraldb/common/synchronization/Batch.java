@@ -33,11 +33,11 @@ public class Batch {
     }
 
     public Timestamp getFirst() {
-        return persons.length != 0 && persons[0] != null ? persons[0].getModifiedTime() : null;
+        return persons != null && persons.length != 0 && persons[0] != null ? persons[0].getModifiedTime() : null;
     }
 
     public Timestamp getLast() {
-        return persons.length != 0 && persons[persons.length - 1] != null ? persons[persons.length - 1].getModifiedTime() : null;
+        return  persons != null && persons.length != 0 && persons[persons.length - 1] != null ? persons[persons.length - 1].getModifiedTime() : null;
     }
 
     public String getClientId() {

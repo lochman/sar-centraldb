@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -89,4 +90,22 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         person.setAddressWrappers(addresses);
         save(person);
     }
+    public Person findPersonByNumbers(String socialNumber, String companyNumber){
+        List<Person> result = new ArrayList<>();
+        if (socialNumber!=null && companyNumber!=null){
+            result.addAll(personRepository.findBySocialNumberAndCompanyNumber(socialNumber, companyNumber));
+        }else{
+            if (socialNumber!=null){
+                result.addAll(personRepository.findBySocialNumber(socialNumber));
+            }
+            if(companyNumber!=null){
+                result.addAll(personRepository.findByCompanyNumber(companyNumber));
+            }
+        }
+        Person search = null;
+        if (!result.isEmpty()) search = result.get(0);
+        return search;
+    }
+
+
 }

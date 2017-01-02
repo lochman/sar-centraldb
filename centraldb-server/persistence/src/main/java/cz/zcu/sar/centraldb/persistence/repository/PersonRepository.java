@@ -29,4 +29,8 @@ public interface PersonRepository extends BaseRepository<Person, Long> {
 
     @Query("SELECT p.addressWrappers FROM Person p WHERE p.id = :id")
     Set<Address> getAddresses(@Param("id") Long personId);
+
+    List<Person> findBySocialNumber(String socialNumber);
+    List<Person> findByCompanyNumber(String companyNumber);
+    List<Person> findBySocialNumberAndCompanyNumber(String socialNumber,String companyNumber);
 }

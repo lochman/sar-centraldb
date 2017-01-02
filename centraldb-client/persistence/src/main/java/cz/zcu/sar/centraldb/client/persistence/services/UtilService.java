@@ -7,7 +7,7 @@ import cz.zcu.sar.centraldb.common.persistence.BaseObject;
  * @author Marek Rasocha
  *         date 16.12.2016.
  */
-public interface BaseService {
+public interface UtilService {
     /**
      * Set value as last modified time and modified by
      * @param baseObject object

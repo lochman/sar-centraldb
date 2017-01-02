@@ -19,7 +19,7 @@ import java.util.List;
  *         date 16.12.2016.
  */
 @Service
-public class BaseServiceImpl implements BaseService{
+public class UtilServiceImpl implements UtilService {
     private static String AUTO = "AUTO";
     private static String USER = "USER";
     @Autowired
