@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.common.persistence;
+package cz.zcu.sar.centraldb.common.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

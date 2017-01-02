@@ -10,9 +10,9 @@ import java.util.List;
  * @author Marek Rasocha
  *         date 28.12.2016.
  */
-public interface PersonService extends BaseService<Person,Long>{
+public interface PersonService extends BaseService<Person, Long> {
     void createPerson(Person person);
     Person mergePerson(Person p);
     Person findPerson(Long id);
-    List<Person> findPersonByDate(Timestamp startDate,Timestamp endDate);
+    List<Person> findPersonByDate(Timestamp startDate, Timestamp endDate);
 }

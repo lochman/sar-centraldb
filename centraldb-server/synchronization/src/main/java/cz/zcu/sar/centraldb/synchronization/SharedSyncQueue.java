@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.synchronization;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.persistence.domain.Institute;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
@@ -24,19 +25,20 @@ public class SharedSyncQueue implements SyncQueue {
     @Autowired
     private InstituteService instituteService;
 
-    private TreeSet<Person> queue;
+    private TreeSet<PersonWrapper> queue;
     private Map<Long, Timestamp> lastSync;
-    private Map<Timestamp, List<Person>> peopleByTime;
+    private Map<Timestamp, List<PersonWrapper>> peopleByTime;
 
     public SharedSyncQueue() {
-        //initQueue();
+        initQueue();
     }
     @PostConstruct
     private void initQueue() {
         List<Institute> institutes = instituteService.findAll();
         List<Person> unSynchronized;
         lastSync = new HashMap<>();
-        queue = new TreeSet<>((Person p1, Person p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime()));
+        peopleByTime = new HashMap<>();
+        queue = new TreeSet<>((PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime()));
         for (Institute institute : institutes) {
             unSynchronized = personService.getUnsynchronized(institute.getLastSyncOut());
             if (!unSynchronized.isEmpty()) {
@@ -49,15 +51,15 @@ public class SharedSyncQueue implements SyncQueue {
         }
     }
 
-    private void addPersonToMap(Person person) {
+    private void addPersonToMap(PersonWrapper person) {
         if (!peopleByTime.containsKey(person.getModifiedTime())) {
             peopleByTime.put(person.getModifiedTime(), new LinkedList<>());
         }
         peopleByTime.get(person.getModifiedTime()).add(person);
     }
 
-    private void removePersonFromMap(Person person) {
-        List<Person> people = peopleByTime.get(person.getModifiedTime());
+    private void removePersonFromMap(PersonWrapper person) {
+        List<PersonWrapper> people = peopleByTime.get(person.getModifiedTime());
         people.remove(person);
         if (people.isEmpty()) {
             peopleByTime.remove(person.getModifiedTime());
@@ -67,23 +69,25 @@ public class SharedSyncQueue implements SyncQueue {
     @Override
     public boolean pushData(Collection<Person> data, Long instituteId) {
         Timestamp lastSyncTime = lastSync.get(instituteId);
+        PersonWrapper personWrapper;
         for (Person person : data) {
             if (person.getModifiedTime().before(lastSyncTime)) {
                 lastSync.put(instituteId, person.getModifiedTime());
                 instituteService.updateSyncOut(instituteId, person.getModifiedTime());
             }
-            queue.add(person);
-            addPersonToMap(person);
+            personWrapper = person.getPersonWrapper();
+            queue.add(personWrapper);
+            addPersonToMap(personWrapper);
         }
         return true;
     }
 
     @Override
-    public Collection<Person> pullData(Long instituteId, int size) {
-        List<Person> data = new LinkedList<>();
+    public Collection<PersonWrapper> pullData(Long instituteId, int size) {
+        List<PersonWrapper> data = new LinkedList<>();
         Timestamp lastSyncTime = lastSync.get(instituteId);
-        Person from = null;
-        Iterator<Person> iterator = queue.iterator();
+        PersonWrapper from = null;
+        Iterator<PersonWrapper> iterator = queue.iterator();
         while (iterator.hasNext()) {
             from = iterator.next();
             if (from.getModifiedTime() == lastSyncTime) {
@@ -106,8 +110,8 @@ public class SharedSyncQueue implements SyncQueue {
     }
 
     private void reduceQueue() {
-        Person person;
-        Iterator<Person> iterator = queue.iterator();
+        PersonWrapper person;
+        Iterator<PersonWrapper> iterator = queue.iterator();
         while (iterator.hasNext()) {
             person = iterator.next();
             iterator.remove();
@@ -126,6 +130,6 @@ public class SharedSyncQueue implements SyncQueue {
         lastSync.remove(instituteId);
         lastSync.put(instituteId, syncTime);
         instituteService.updateSyncOut(instituteId, syncTime);
-        return false;
+        return true;
     }
 }

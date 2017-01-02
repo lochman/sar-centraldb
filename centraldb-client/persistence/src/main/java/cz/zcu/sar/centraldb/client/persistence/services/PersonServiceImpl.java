@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 @Service
 @Transactional
-public class PersonServiceImpl extends BaseServiceImpl<Person,Long,PersonRepository> implements PersonService {
+public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepository> implements PersonService {
 
     @Autowired
     PersonRepository personRepository;

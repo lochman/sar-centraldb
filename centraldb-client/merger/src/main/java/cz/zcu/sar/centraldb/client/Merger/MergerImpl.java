@@ -6,6 +6,7 @@ import cz.zcu.sar.centraldb.client.persistence.services.AddressTypeService;
 import cz.zcu.sar.centraldb.client.persistence.services.PersonService;
 import cz.zcu.sar.centraldb.client.persistence.services.PersonTypeService;
 import cz.zcu.sar.centraldb.client.persistence.services.UtilService;
+import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,9 +56,9 @@ public class MergerImpl implements Merger {
     }
 
 
-    private Set<Address> mergeAddress(List<cz.zcu.sar.centraldb.common.persistence.Address> addressNew, List<Address> addressOld) {
+    private Set<Address> mergeAddress(List<AddressWrapper> addressNew, List<Address> addressOld) {
         Set<Address> address = new HashSet<>();
-        for (cz.zcu.sar.centraldb.common.persistence.Address newA : addressNew){
+        for (AddressWrapper newA : addressNew){
             Address address1 = new Address(newA);
             int index = getAddress(address1, addressOld);
             if (index!=-1){

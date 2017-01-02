@@ -91,6 +91,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         person.setAddressWrappers(addresses);
         save(person);
     }
+
     public Person findPersonByNumbers(String socialNumber, String companyNumber){
         List<Person> result = new ArrayList<>();
         if (socialNumber!=null && companyNumber!=null){

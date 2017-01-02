@@ -13,7 +13,7 @@ import java.util.Queue;
 @Component
 public class RequestQueueImpl implements RequestQueue {
 
-    Queue<Batch> queue;
+    private Queue<Batch> queue;
 
     RequestQueueImpl() {
 //        queue = new PriorityQueue<>((Batch b1, Batch b2) -> b1.getFirst().compareTo(b2.getFirst()));

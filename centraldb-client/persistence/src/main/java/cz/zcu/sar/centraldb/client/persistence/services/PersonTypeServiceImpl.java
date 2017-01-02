@@ -13,7 +13,7 @@ import java.util.Optional;
  *         date 02.01.2017.
  */
 @Service
-public class PersonTypeServiceImpl extends BaseServiceImpl<PersonType,Long,PersonTypeRepository> implements PersonTypeService {
+public class PersonTypeServiceImpl extends BaseServiceImpl<PersonType, Long, PersonTypeRepository> implements PersonTypeService {
     @Autowired
     PersonTypeRepository personTypeRepository;
 

@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.client.persistence.domain;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonTypeWrapper;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.Entity;
@@ -9,8 +10,8 @@ import javax.persistence.Entity;
  */
 
 @Entity
-public class PersonType extends cz.zcu.sar.centraldb.common.persistence.PersonType {
-    public PersonType(cz.zcu.sar.centraldb.common.persistence.PersonType personType){
+public class PersonType extends PersonTypeWrapper {
+    public PersonType(PersonTypeWrapper personType){
         super();
         BeanUtils.copyProperties(personType, this);
     }

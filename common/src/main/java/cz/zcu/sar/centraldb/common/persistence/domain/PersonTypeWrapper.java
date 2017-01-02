@@ -1,15 +1,14 @@
-package cz.zcu.sar.centraldb.common.persistence;
+package cz.zcu.sar.centraldb.common.persistence.domain;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import java.util.Objects;
 
 /**
  * Created by Matej Lochman on 31.10.16.
  */
 
 @MappedSuperclass
-public class PersonType extends BaseObject {
+public class PersonTypeWrapper extends BaseObject {
 
     @Column(length = 10)
     protected String personType;

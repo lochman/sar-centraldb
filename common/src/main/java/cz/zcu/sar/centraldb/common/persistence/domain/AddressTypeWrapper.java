@@ -1,16 +1,13 @@
-package cz.zcu.sar.centraldb.common.persistence;
+package cz.zcu.sar.centraldb.common.persistence.domain;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
-import java.util.Set;
 
 /**
  * Created by Matej Lochman on 31.10.16.
  */
 @MappedSuperclass
-public class AddressType extends BaseObject {
-
+public class AddressTypeWrapper extends BaseObject {
 
     @Column(length = 10)
     private String addressType;

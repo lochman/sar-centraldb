@@ -52,17 +52,17 @@ public class RestControler {
         // TODO: nacti data z fronty a posli je a normalizuj
         int size = batchRequest.getSize();
         Batch batch = new Batch();
-        batch.setPersons(normalizedPerson(run()));
+//        batch.setPersons(normalizedPerson(run()));
         return new ResponseEntity<>(batch, HttpStatus.OK);
     }
 
     @PostMapping("/data/confirm")
     public ResponseEntity<ConfirmFetch> confirmFetch(@RequestBody() ConfirmFetch batch) {
-        //todo: potvrd prijeti davky
-        return new ResponseEntity<>(HttpStatus.OK);
+        HttpStatus status = syncService.confirmBatch(batch) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(status);
     }
 
-
+    /*
     public List<Person> run(){
         //Create person types
         Random random = new Random();
@@ -156,4 +156,5 @@ public class RestControler {
         list.add(t2);
         return list;
     }
+    */
 }

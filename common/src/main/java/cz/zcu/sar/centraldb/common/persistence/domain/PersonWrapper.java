@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.common.persistence;
+package cz.zcu.sar.centraldb.common.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -11,7 +11,7 @@ import java.util.Set;
  */
 
 @MappedSuperclass
-public class Person<P extends PersonType, A extends Address> extends BaseObject {
+public class PersonWrapper<P extends PersonTypeWrapper, A extends AddressWrapper> extends BaseObject {
 
     @Transient
     private Long foreignId;
@@ -66,9 +66,9 @@ public class Person<P extends PersonType, A extends Address> extends BaseObject 
     @Column(length = 1)
     private String usePermitted;
 
-    public Person() { }
+    public PersonWrapper() { }
 
-    public Person(String firstName, String name, String gender) {
+    public PersonWrapper(String firstName, String name, String gender) {
         this.firstName = firstName;
         this.name = name;
         this.birthName = name;

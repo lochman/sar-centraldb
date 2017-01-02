@@ -2,7 +2,7 @@ package cz.zcu.sar.centraldb.client.rest;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
-import cz.zcu.sar.centraldb.common.persistence.Address;
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,15 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Marek Rasocha
@@ -83,18 +79,17 @@ public class SenderImpl implements Sender {
         }catch (HttpClientErrorException e){}
     }
 
-    private cz.zcu.sar.centraldb.common.persistence.Person[] normalizedPerson(List<Person> persons) {
-        cz.zcu.sar.centraldb.common.persistence.Person[] wrapper = new cz.zcu.sar.centraldb.common.persistence.Person[persons.size()];
-        int i=0;
+    private PersonWrapper[] normalizedPerson(List<Person> persons) {
+        PersonWrapper[] wrapper = new PersonWrapper[persons.size()];
+        int i = 0;
         for(Person p : persons){
-            cz.zcu.sar.centraldb.common.persistence.Person w = p.getWraperPerson();
-            wrapper[i++] = (w);
+            wrapper[i++] = p.getWraperPerson();
         }
         return wrapper;
     }
 
 
-    private List<Person> normalizedPerson(cz.zcu.sar.centraldb.common.persistence.Person[] persons) {
+    private List<Person> normalizedPerson(PersonWrapper[] persons) {
         List<Person> normalized = new ArrayList<>();
         if (persons == null) return normalized;
         for(int i=0;i<persons.length;i++){

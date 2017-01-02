@@ -12,7 +12,7 @@ import java.util.Optional;
  *         date 02.01.2017.
  */
 @Service
-public class AddressTypeServiceImpl extends BaseServiceImpl<AddressType,Long,AddressTypeRepository> implements AddressTypeService{
+public class AddressTypeServiceImpl extends BaseServiceImpl<AddressType, Long, AddressTypeRepository> implements AddressTypeService {
     public AddressType findAddressType(Long id) {
         Optional<AddressType> res = findOne(id);
         if (res.isPresent()) {

@@ -6,7 +6,7 @@ import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.client.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
-import cz.zcu.sar.centraldb.common.persistence.BaseObject;
+import cz.zcu.sar.centraldb.common.persistence.domain.BaseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

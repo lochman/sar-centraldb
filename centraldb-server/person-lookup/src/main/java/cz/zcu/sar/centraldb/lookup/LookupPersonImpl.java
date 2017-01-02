@@ -17,7 +17,7 @@ public class LookupPersonImpl implements LookupPerson {
     PersonService personService;
     @Override
     public Person findPerson(Person person) {
-        if(person==null) return null;
-        return personService.findPersonByNumbers(person.getSocialNumber(),person.getCompanyNumber());
+        if (person == null) return null;
+        return personService.findPersonByNumbers(person.getSocialNumber(), person.getCompanyNumber());
     }
 }

@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.synchronization;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 
 import java.sql.Timestamp;
@@ -11,6 +12,6 @@ import java.util.Collection;
 
 public interface SyncQueue {
     boolean pushData(Collection<Person> data, Long instituteId);
-    Collection<Person> pullData(Long instituteId, int size);
+    Collection<PersonWrapper> pullData(Long instituteId, int size);
     boolean updateLastSync(Long instituteId, Timestamp lastSync);
 }

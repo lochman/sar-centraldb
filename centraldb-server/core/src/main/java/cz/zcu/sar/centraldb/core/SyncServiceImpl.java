@@ -1,8 +1,9 @@
 package cz.zcu.sar.centraldb.core;
 
-import cz.zcu.sar.centraldb.common.persistence.Person;
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
+import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.synchronization.SyncQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class SyncServiceImpl implements SyncService {
     @Autowired
     private SyncQueue syncQueue;
 
+    @Autowired
+    private InstituteService instituteService;
+
     @Override
     public void pushRequest(Batch batch) {
         //TODO: mark as temp?
@@ -31,7 +35,7 @@ public class SyncServiceImpl implements SyncService {
         Batch batch = new Batch();
         try {
             Long id = Long.parseLong(instituteId);
-            batch.setPersons(syncQueue.pullData(id, size).toArray(new Person[0]));
+            batch.setPersons(syncQueue.pullData(id, size).toArray(new PersonWrapper[0]));
             batch.setSize(batch.getPersons().length);
         } catch (NumberFormatException e) {
             //TODO
@@ -41,6 +45,13 @@ public class SyncServiceImpl implements SyncService {
 
     @Override
     public boolean confirmBatch(ConfirmFetch confirmed) {
-        return false;
+        boolean result;
+        try {
+            Long id = Long.parseLong(confirmed.getClientId());
+            result = syncQueue.updateLastSync(id, confirmed.getLastDate());
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return result;
     }
 }

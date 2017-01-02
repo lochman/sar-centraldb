@@ -1,17 +1,16 @@
-package cz.zcu.sar.centraldb.common.persistence;
+package cz.zcu.sar.centraldb.common.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by Matej Lochman on 31.10.16.
  */
 
 @MappedSuperclass
-public class Address<P extends Person,A extends AddressType> extends BaseObject {
+public class AddressWrapper<P extends PersonWrapper, A extends AddressTypeWrapper> extends BaseObject {
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -175,7 +174,7 @@ public class Address<P extends Person,A extends AddressType> extends BaseObject 
         if (object == null || getClass() != object.getClass()) return false;
        // if (!super.equals(object)) return false;
 
-        Address<?, ?> address = (Address<?, ?>) object;
+        AddressWrapper<?, ?> address = (AddressWrapper<?, ?>) object;
         if (addressType != null ? !addressType.equals(address.addressType) : address.addressType != null) return false;
         if (residenceFrom != null ? !residenceFrom.equals(address.residenceFrom) : address.residenceFrom != null)
             return false;

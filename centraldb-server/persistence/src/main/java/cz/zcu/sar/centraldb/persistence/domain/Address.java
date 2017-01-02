@@ -1,5 +1,7 @@
 package cz.zcu.sar.centraldb.persistence.domain;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
+
 import javax.persistence.Entity;
 
 /**
@@ -7,6 +9,6 @@ import javax.persistence.Entity;
  */
 
 @Entity
-public class Address extends cz.zcu.sar.centraldb.common.persistence.Address<Person, AddressType> {
+public class Address extends AddressWrapper<Person, AddressType> {
 
 }

@@ -1,6 +1,6 @@
 package cz.zcu.sar.centraldb.common.synchronization;
 
-import cz.zcu.sar.centraldb.common.persistence.Person;
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -13,10 +13,10 @@ import java.util.Arrays;
 public class Batch {
     private int size;
     private String clientId;
-    private Person[] persons;
+    private PersonWrapper[] persons;
 
-    public Batch(String clientId, Person[] persons) {
-        Arrays.sort(persons, (Person p1, Person p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime()));
+    public Batch(String clientId, PersonWrapper[] persons) {
+        Arrays.sort(persons, (PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime()));
         this.clientId = clientId;
         this.persons = persons;
     }
@@ -48,11 +48,11 @@ public class Batch {
         this.clientId = clientId;
     }
 
-    public Person[] getPersons() {
+    public PersonWrapper[] getPersons() {
         return persons;
     }
 
-    public void setPersons(Person[] persons) {
+    public void setPersons(PersonWrapper[] persons) {
         this.persons = persons;
     }
 }

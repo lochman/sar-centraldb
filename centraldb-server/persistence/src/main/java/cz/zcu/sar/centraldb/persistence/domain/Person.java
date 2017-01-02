@@ -1,9 +1,9 @@
 package cz.zcu.sar.centraldb.persistence.domain;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "person")
-public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<PersonType, Address> {
+public class Person extends PersonWrapper<PersonType, Address> {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -26,11 +26,10 @@ public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<Perso
     private boolean temporary;
 
     public Person() {}
-
     public Person(String firstName, String surname, String gender) {
         super(firstName, surname, gender);
     }
-    public Person(cz.zcu.sar.centraldb.common.persistence.Person person){
+    public Person(PersonWrapper person) {
         BeanUtils.copyProperties(person, this);
         // change id
         this.setId(person.getForeignId());
@@ -53,8 +52,8 @@ public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<Perso
         this.temporary = temporary;
     }
 
-    public cz.zcu.sar.centraldb.common.persistence.Person getPersonWrapper(){
-        cz.zcu.sar.centraldb.common.persistence.Person person = new cz.zcu.sar.centraldb.common.persistence.Person();
+    public PersonWrapper getPersonWrapper() {
+        PersonWrapper person = new PersonWrapper();
         BeanUtils.copyProperties(this, person);
         return person;
     }

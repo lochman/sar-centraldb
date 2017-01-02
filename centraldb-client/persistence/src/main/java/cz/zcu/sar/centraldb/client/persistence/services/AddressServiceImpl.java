@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class AddressServiceImpl extends BaseServiceImpl<Address,Long,AddressRepository> implements AddressService {
+public class AddressServiceImpl extends BaseServiceImpl<Address, Long, AddressRepository> implements AddressService {
 
 }
 
