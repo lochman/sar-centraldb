@@ -91,7 +91,7 @@ public class SharedSyncQueue implements SyncQueue {
                 break;
             }
         }
-        if(from!=null){
+        if (from != null) {
             data.addAll(queue.tailSet(from));//TODO sublist
         }
         return data;

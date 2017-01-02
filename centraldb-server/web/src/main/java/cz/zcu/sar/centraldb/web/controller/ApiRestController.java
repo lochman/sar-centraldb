@@ -1,11 +1,11 @@
 package cz.zcu.sar.centraldb.web.controller;
 
 import cz.zcu.sar.centraldb.persistence.domain.Person;
-import cz.zcu.sar.centraldb.persistence.wrapper.PersonAddress;
-import cz.zcu.sar.centraldb.persistence.repository.AddressTypeRepository;
-import cz.zcu.sar.centraldb.persistence.repository.PersonTypeRepository;
-import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
+import cz.zcu.sar.centraldb.persistence.service.AddressTypeService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
+import cz.zcu.sar.centraldb.persistence.service.PersonTypeService;
+import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
+import cz.zcu.sar.centraldb.persistence.wrapper.PersonAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -27,10 +27,10 @@ import java.util.Optional;
 public class ApiRestController {
 
     @Autowired
-    private PersonTypeRepository personTypeRepository;
+    private PersonTypeService personTypeService;
 
     @Autowired
-    private AddressTypeRepository addressTypeRepository;
+    private AddressTypeService addressTypeService;
 
     @Autowired
     private PersonService personService;
@@ -54,9 +54,15 @@ public class ApiRestController {
     }
 
     @GetMapping(value = "person/{id}")
-    public ResponseEntity<?> getPersonById(@PathVariable String id) {
-        Optional<Person> person = personService.findOne(id);
-        return person.isPresent() ? userNotFound(id) : ResponseEntity.ok(person);
+    public ResponseEntity<?> getPersonById(@PathVariable String personId) {
+        Optional<Person> person;
+        try {
+            Long id = Long.parseLong(personId);
+            person = personService.findOne(id);
+        } catch (NumberFormatException e) {
+            person = Optional.empty();
+        }
+        return person.isPresent() ? userNotFound(personId) : ResponseEntity.ok(person);
     }
 
     private ResponseEntity<?> userNotFound(String id) {
@@ -79,12 +85,12 @@ public class ApiRestController {
 
     @GetMapping(value = "person/types")
     public ResponseEntity<?> getPersonTypes() {
-        return ResponseEntity.ok(personTypeRepository.findAll(null));
+        return ResponseEntity.ok(personTypeService.findAll());
     }
 
     @GetMapping(value = "address/types")
     public ResponseEntity<?> getAddressTypes() {
-        return ResponseEntity.ok(addressTypeRepository.findAll(null));
+        return ResponseEntity.ok(addressTypeService.findAll());
     }
 
     @PostMapping(value = "person")

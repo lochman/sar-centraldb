@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.persistence.repository;
+package cz.zcu.sar.centraldb.common.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;

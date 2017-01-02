@@ -3,19 +3,21 @@ package cz.zcu.sar.centraldb.core;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import org.springframework.stereotype.Component;
 
-import java.util.PriorityQueue;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by Matej Lochman on 30.12.16.
  */
 
 @Component
-public class PriorityRequestQueue implements RequestQueue {
+public class RequestQueueImpl implements RequestQueue {
 
-    PriorityQueue<Batch> queue;
+    Queue<Batch> queue;
 
-    PriorityRequestQueue() {
-        queue = new PriorityQueue<>((Batch b1, Batch b2) -> b1.getFirst().compareTo(b2.getFirst()));
+    RequestQueueImpl() {
+//        queue = new PriorityQueue<>((Batch b1, Batch b2) -> b1.getFirst().compareTo(b2.getFirst()));
+        queue = new LinkedList<>();
     }
 
     @Override
@@ -31,6 +33,11 @@ public class PriorityRequestQueue implements RequestQueue {
     @Override
     public Batch peek() {
         return queue.peek();
+    }
+
+    @Override
+    public boolean isPresent(Batch batch) {
+        return queue.contains(batch);
     }
 
     @Override

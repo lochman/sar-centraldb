@@ -13,9 +13,9 @@ public class AddressType extends BaseObject {
 
 
     @Column(length = 10)
-    protected String addressType;
+    private String addressType;
 
-    protected String description;
+    private String description;
 
     public String getAddressType() { return addressType; }
 

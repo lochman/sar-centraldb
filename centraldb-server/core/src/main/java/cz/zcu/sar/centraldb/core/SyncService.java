@@ -8,7 +8,7 @@ import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
  */
 
 public interface SyncService {
-    void pushToQueue(Batch batch);
+    void pushRequest(Batch batch);
     Batch retrieveData(String instituteId, int size);
     boolean confirmBatch(ConfirmFetch confirmed);
 }

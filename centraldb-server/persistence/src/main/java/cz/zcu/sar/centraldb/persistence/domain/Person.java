@@ -53,9 +53,9 @@ public class Person extends cz.zcu.sar.centraldb.common.persistence.Person<Perso
         this.temporary = temporary;
     }
 
-    public cz.zcu.sar.centraldb.common.persistence.Person getWraperPerson(){
+    public cz.zcu.sar.centraldb.common.persistence.Person getPersonWrapper(){
         cz.zcu.sar.centraldb.common.persistence.Person person = new cz.zcu.sar.centraldb.common.persistence.Person();
-        BeanUtils.copyProperties(this,person);
+        BeanUtils.copyProperties(this, person);
         return person;
     }
 }

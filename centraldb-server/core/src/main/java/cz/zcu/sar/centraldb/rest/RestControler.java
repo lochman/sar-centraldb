@@ -3,10 +3,8 @@ package cz.zcu.sar.centraldb.rest;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
 import cz.zcu.sar.centraldb.core.SyncService;
-import cz.zcu.sar.centraldb.persistence.domain.Address;
-import cz.zcu.sar.centraldb.persistence.domain.AddressType;
-import cz.zcu.sar.centraldb.persistence.domain.Person;
-import cz.zcu.sar.centraldb.persistence.domain.PersonType;
+import cz.zcu.sar.centraldb.persistence.domain.*;
+import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,26 +26,34 @@ public class RestControler {
     @Autowired
     private SyncService syncService;
 
+    @Autowired
+    private InstituteService instituteService;
+
     @PostMapping("/lastBatch")
-    public ResponseEntity<String> lastBatch(@RequestBody String instituteId) {
-        //todo: najdi lastBatch podle id clienta
-        String result = "laswtBactch";
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<String> getLastBatch(@RequestBody String instituteId) {
+        Optional<Institute> institute;
+        try {
+            Long id = Long.parseLong(instituteId);
+            institute = instituteService.findOne(id);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return institute.isPresent() ? new ResponseEntity<>(institute.get().getLastBatchId(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/data")
     public ResponseEntity<Batch> getData(@RequestBody() Batch batch) {
-        //todo: vloz do bufferu
+        syncService.pushRequest(batch);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/data/fetch")
-    public ResponseEntity<Batch> fetchData(@RequestBody() Batch confirmed) {
+    public ResponseEntity<Batch> fetchData(@RequestBody() Batch batchRequest) {
         // TODO: nacti data z fronty a posli je a normalizuj
-        int size = confirmed.getSize();
+        int size = batchRequest.getSize();
         Batch batch = new Batch();
         batch.setPersons(normalizedPerson(run()));
-        return new ResponseEntity<Batch>(batch,HttpStatus.OK);
+        return new ResponseEntity<>(batch, HttpStatus.OK);
     }
 
     @PostMapping("/data/confirm")
@@ -113,10 +119,10 @@ public class RestControler {
     }
     private cz.zcu.sar.centraldb.common.persistence.Person[] normalizedPerson(List<Person> persons) {
         cz.zcu.sar.centraldb.common.persistence.Person[] wrapper = new cz.zcu.sar.centraldb.common.persistence.Person[persons.size()];
-        int i=0;
-        for(Person p : persons){
-            cz.zcu.sar.centraldb.common.persistence.Person<cz.zcu.sar.centraldb.common.persistence.PersonType,cz.zcu.sar.centraldb.common.persistence.Address> w = p.getWraperPerson();
-            wrapper[i++] = (w);
+        int i = 0;
+        for(Person p : persons) {
+//            cz.zcu.sar.centraldb.common.persistence.Person<cz.zcu.sar.centraldb.common.persistence.PersonType,cz.zcu.sar.centraldb.common.persistence.Address> w = p.getPersonWrapper();
+            wrapper[i++] = p.getPersonWrapper();
         }
         return wrapper;
     }

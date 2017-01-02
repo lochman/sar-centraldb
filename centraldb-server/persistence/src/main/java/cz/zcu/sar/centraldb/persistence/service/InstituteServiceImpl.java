@@ -1,12 +1,12 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
+import cz.zcu.sar.centraldb.common.persistence.service.BaseServiceImpl;
 import cz.zcu.sar.centraldb.persistence.domain.Institute;
 import cz.zcu.sar.centraldb.persistence.repository.InstituteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,15 +14,10 @@ import java.util.Optional;
  */
 
 @Service
-public class InstituteServiceImpl implements InstituteService {
+public class InstituteServiceImpl extends BaseServiceImpl<Institute, Long, InstituteRepository> implements InstituteService {
 
     @Autowired
     InstituteRepository instituteRepository;
-
-    @Override
-    public List<Institute> findAll() {
-        return instituteRepository.findAll(null);
-    }
 
     @Override
     public boolean updateSyncOut(Long instituteId, Timestamp syncOut) {

@@ -21,7 +21,8 @@ public class SyncServiceImpl implements SyncService {
     private SyncQueue syncQueue;
 
     @Override
-    public void pushToQueue(Batch batch) {
+    public void pushRequest(Batch batch) {
+        //TODO: mark as temp?
         requestQueue.push(batch);
     }
 
@@ -31,6 +32,7 @@ public class SyncServiceImpl implements SyncService {
         try {
             Long id = Long.parseLong(instituteId);
             batch.setPersons(syncQueue.pullData(id, size).toArray(new Person[0]));
+            batch.setSize(batch.getPersons().length);
         } catch (NumberFormatException e) {
             //TODO
         }

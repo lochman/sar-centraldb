@@ -1,11 +1,12 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
+import cz.zcu.sar.centraldb.common.persistence.service.BaseServiceImpl;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
-import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
-import cz.zcu.sar.centraldb.persistence.wrapper.PersonAddress;
 import cz.zcu.sar.centraldb.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.persistence.repository.PersonRepository;
+import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
+import cz.zcu.sar.centraldb.persistence.wrapper.PersonAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static cz.zcu.sar.centraldb.persistence.specification.PersonSpecifications.hasProperties;
@@ -24,7 +24,7 @@ import static cz.zcu.sar.centraldb.persistence.specification.PersonSpecification
  */
 
 @Service
-public class PersonServiceImpl implements PersonService {
+public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepository> implements PersonService {
 
     private static final int DEFAULT_PAGE_LIMIT = 20;
 
@@ -65,22 +65,6 @@ public class PersonServiceImpl implements PersonService {
         person = personRepository.save(person);
 //        System.out.println("person after save " + person.getName() + " " + person.getId());
         return person;
-    }
-
-    @Override
-    public Optional<Person> findOne(String id) {
-        Optional<Person> person;
-        try {
-            person = personRepository.findOne(Long.parseLong(id));
-        } catch (NumberFormatException e) {
-            person = Optional.empty();
-        }
-        return person;
-    }
-
-    @Override
-    public Person save(Person person) {
-        return personRepository.save(person);
     }
 
     @Override

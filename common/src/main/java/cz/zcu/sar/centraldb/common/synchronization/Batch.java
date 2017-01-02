@@ -3,6 +3,7 @@ package cz.zcu.sar.centraldb.common.synchronization;
 import cz.zcu.sar.centraldb.common.persistence.Person;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 
 /**
  * @author Marek Rasocha
@@ -10,14 +11,12 @@ import java.sql.Timestamp;
  */
 
 public class Batch {
-    private Timestamp first;
-    private Timestamp last;
     private int size;
     private String clientId;
     private Person[] persons;
 
-    //TODO: set first, last
     public Batch(String clientId, Person[] persons) {
+        Arrays.sort(persons, (Person p1, Person p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime()));
         this.clientId = clientId;
         this.persons = persons;
     }
@@ -34,19 +33,11 @@ public class Batch {
     }
 
     public Timestamp getFirst() {
-        return first;
-    }
-
-    public void setFirst(Timestamp first) {
-        this.first = first;
+        return persons.length != 0 && persons[0] != null ? persons[0].getModifiedTime() : null;
     }
 
     public Timestamp getLast() {
-        return last;
-    }
-
-    public void setLast(Timestamp last) {
-        this.last = last;
+        return persons.length != 0 && persons[persons.length - 1] != null ? persons[persons.length - 1].getModifiedTime() : null;
     }
 
     public String getClientId() {

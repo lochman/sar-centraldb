@@ -10,6 +10,7 @@ public interface RequestQueue {
     void push(Batch batch);
     Batch pull();
     Batch peek();
+    boolean isPresent(Batch batch);
     int size();
     boolean empty();
 }

@@ -23,7 +23,7 @@ public class Institute {
 
     private String description;
 
-    private int lastBatchId;
+    private String lastBatchId;
     private Timestamp lastSyncIn;
     private Timestamp lastSyncOut;
 
@@ -59,11 +59,11 @@ public class Institute {
         this.description = description;
     }
 
-    public int getLastBatchId() {
+    public String getLastBatchId() {
         return lastBatchId;
     }
 
-    public void setLastBatchId(int lastBatchId) {
+    public void setLastBatchId(String lastBatchId) {
         this.lastBatchId = lastBatchId;
     }
 

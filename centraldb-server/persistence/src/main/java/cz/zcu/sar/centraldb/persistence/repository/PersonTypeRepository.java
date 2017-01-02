@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.persistence.repository;
 
+import cz.zcu.sar.centraldb.common.persistence.repository.BaseRepository;
 import cz.zcu.sar.centraldb.persistence.domain.PersonType;
 
 /**
