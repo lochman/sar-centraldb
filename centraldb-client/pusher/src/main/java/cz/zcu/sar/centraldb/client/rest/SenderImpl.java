@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.client.rest;
 
+import cz.zcu.sar.centraldb.client.persistence.domain.Address;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
@@ -20,7 +21,6 @@ import java.util.List;
  * @author Marek Rasocha
  *         date 18.12.2016.
  */
-// TODO: otestovat a dodelat
 @Service
 public class SenderImpl implements Sender {
     @Value("${uri.lastBatch}")
@@ -52,7 +52,9 @@ public class SenderImpl implements Sender {
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         try{
         restTemplate.postForObject(uriData, batchWrapper,Batch.class);
-        }catch (HttpClientErrorException e){}
+        }catch (HttpClientErrorException e){
+            System.out.println(e.toString());
+        }
     }
 
 
@@ -65,7 +67,7 @@ public class SenderImpl implements Sender {
         Batch batch = restTemplate.postForObject(fetchData, batchWrapper, Batch.class);
         try {
             return batch != null ? normalizedPerson(batch.getPersons()) : new ArrayList<>();
-        }catch (HttpClientErrorException e){return new ArrayList<Person>();}
+        }catch (HttpClientErrorException e){return new ArrayList<>();}
     }
 
 
@@ -76,7 +78,9 @@ public class SenderImpl implements Sender {
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         try {
             restTemplate.postForObject(confirmFetch, param, ConfirmFetch.class);
-        }catch (HttpClientErrorException e){}
+        }catch (HttpClientErrorException e){
+            System.out.println(e.toString());
+        }
     }
 
     private PersonWrapper[] normalizedPerson(List<Person> persons) {
@@ -92,11 +96,11 @@ public class SenderImpl implements Sender {
     private List<Person> normalizedPerson(PersonWrapper[] persons) {
         List<Person> normalized = new ArrayList<>();
         if (persons == null) return normalized;
-        for(int i=0;i<persons.length;i++){
-            Person p = new Person(persons[i]);
+        for (PersonWrapper person : persons) {
+            Person p = new Person(person);
             p.setPersonType(new PersonType(p.getPersonType()));
             normalized.add(p);
-    }
+        }
         return normalized;
     }
 

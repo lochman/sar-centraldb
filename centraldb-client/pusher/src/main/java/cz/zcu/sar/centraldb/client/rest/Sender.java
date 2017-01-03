@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
+ * Send normalized person
  * @author Marek Rasocha
  *         date 18.12.2016.
  */

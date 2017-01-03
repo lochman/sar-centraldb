@@ -6,6 +6,7 @@ import cz.zcu.sar.centraldb.client.persistence.services.SynchronizationService;
 import cz.zcu.sar.centraldb.client.rest.MyResponse;
 import cz.zcu.sar.centraldb.client.rest.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -17,8 +18,8 @@ import java.util.List;
  */
 @Service
 public class PusherImpl implements Pusher {
-    //TODO: into properties
-    private static final long START_TIME = System.currentTimeMillis()-(8*24*60*60*1000); // minus tyden
+    @Value("${startTime}")
+    private long START_TIME;
     private Synchronization lastSync;
     @Autowired
     private BatchCreator creator;
@@ -58,11 +59,17 @@ public class PusherImpl implements Pusher {
         }
     }
 
+    /**
+     * Say if pusher have to send new or old batch or do nothing
+     * @return response
+     */
     private MyResponse lastSyncComlete() {
         return lastSync.getBatchId()==null ? MyResponse.SEND_NEW :sender.sendLastBatchId(lastSync.getBatchId());
     }
 
-
+    /**
+     * update sync flags
+     */
     public void updateSyncFlags(){
         lastSync.setLastDate(creator.getEndDate());
         lastSync.setFistDate(creator.getStartDate());

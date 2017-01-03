@@ -12,14 +12,20 @@ import java.util.List;
 
 public interface BatchCreator {
     /**
-     * create batch betwen start and end date. End date is countig while Batch dont have  a full buffer
-     * full buffer end send. If dont have data, return emty list
+     * create batch from start date. End date is counting while Batch dont have  a full buffer
+     * return empty list
      * @param start start date
      * @return list
      */
-    public List<Person> createBatch(Timestamp start);
-    public List<Person> createBatch(Timestamp start,Timestamp end);
+    List<Person> createBatch(Timestamp start);
+    /**
+     * create batch between start and end date.
+     * return empty list
+     * @param start start date
+     * @return list
+     */
+    List<Person> createBatch(Timestamp start,Timestamp end);
 
-    public Timestamp getEndDate();
-    public Timestamp getStartDate();
+    Timestamp getEndDate();
+    Timestamp getStartDate();
 }

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
+ * Thread for pusher
  * @author Marek Rasocha
  *         date 16.12.2016.
  */
@@ -21,6 +22,9 @@ public class PusherRunner extends Thread {
     @Autowired
     TestDataLoader testDataLoader;
 
+    /**
+     * push data to server
+     */
     public synchronized void run(){
         boolean running = true;
         while (running) {

@@ -99,7 +99,7 @@ public class TestDataLoader {
                 address2.setCity("Plisen" + i);
                 address2.setModifiedBy("init");
                 address2.setPerson(person);
-                Set set = new HashSet<>();
+                Set<Address> set = new HashSet<>();
                 set.add(address);
                 set.add(address2);
                 person.setAddressWrappers(set);
@@ -117,9 +117,9 @@ public class TestDataLoader {
 
         List<AddressTypeWrapper> addressTypes = initAddressTypeW();
         for (int i = 0; i < number; i++) {
-            AddressWrapper address = new Address();
-            AddressWrapper address2 = new Address();
-            PersonWrapper person = new Person("Jmeno" + i, "Prijmeni" , "");
+            AddressWrapper<PersonWrapper,AddressTypeWrapper> address = new AddressWrapper<>();
+            AddressWrapper<PersonWrapper,AddressTypeWrapper> address2 = new AddressWrapper<>();
+            PersonWrapper<PersonTypeWrapper,AddressWrapper> person = new PersonWrapper<>("Jmeno" + i, "Prijmeni" , "");
             if (i % 2 == 0) { person.setGender("m");
             } else { person.setGender("f"); }
             person.setModifiedBy("user1");
@@ -155,7 +155,7 @@ public class TestDataLoader {
                 address2.setCity("Plisen" + i);
                 address2.setModifiedBy("init");
                 address2.setPerson(person);
-                Set set = new HashSet<>();
+                Set<AddressWrapper> set = new HashSet<>();
                 set.add(address);
                 set.add(address2);
                 person.setAddressWrappers(set);

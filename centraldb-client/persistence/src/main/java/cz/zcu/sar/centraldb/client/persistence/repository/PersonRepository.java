@@ -29,6 +29,7 @@ public interface PersonRepository extends BaseRepository<Person, Long> {
     List<Person> findBySocialNumber(String socialNumber);
     List<Person> findByCompanyNumber(String companyNumber);
     List<Person> findBySocialNumberAndCompanyNumber(String socialNumber,String companyNumber);
+    Person findByCentralId(Long centralId);
 
 
 

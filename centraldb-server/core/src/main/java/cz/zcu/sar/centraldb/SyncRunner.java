@@ -1,5 +1,7 @@
 package cz.zcu.sar.centraldb;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonTypeWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.core.RequestQueue;
@@ -8,6 +10,7 @@ import cz.zcu.sar.centraldb.merger.Merger;
 import cz.zcu.sar.centraldb.merger.Normalizer;
 import cz.zcu.sar.centraldb.persistence.domain.Institute;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
+import cz.zcu.sar.centraldb.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +50,8 @@ public class SyncRunner extends Thread {
                 Optional<Institute> optional = instituteService.findOne(Long.parseLong(batch.getClientId()));
                 if (optional.isPresent()) {
                     PersonWrapper persons[] = batch.getPersons();
-                    for (int i = 0; i < persons.length; i++) {
-                        Person person = normalizer.normalize(persons[i]);
+                    for (PersonWrapper person1 : persons) {
+                        Person person = normalizer.normalize(person1);
                         Person persist;
                         person = personService.savePersonAsTemp(person);
                         if (person.getId() == null) {
@@ -66,6 +69,7 @@ public class SyncRunner extends Thread {
                 wait(timeout);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                break;
             }
         }
     }

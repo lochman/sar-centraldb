@@ -72,4 +72,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     public List<Person> findPersonByDate(Timestamp startDate, Timestamp endDate) {
         return personRepository.findByDate(startDate, endDate);
     }
+    public Person findPersonByGlobalId(Long id){
+        return personRepository.findByCentralId(id);
+    }
 }

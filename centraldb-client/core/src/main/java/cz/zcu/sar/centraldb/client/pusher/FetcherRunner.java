@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 
 /**
+ * Thread for fetcher
  * @author Marek Rasocha
  *         date 16.12.2016.
  */
@@ -21,6 +22,9 @@ public class FetcherRunner extends Thread{
     @Autowired
     TestDataLoader testDataLoader;
 
+    /**
+     * Fetch data from server
+     */
     public synchronized void run(){
         boolean running=true;
         while (running){

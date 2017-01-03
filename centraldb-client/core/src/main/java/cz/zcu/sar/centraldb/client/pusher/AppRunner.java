@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 /**
+ * Client starter
  * @author Marek Rasocha
  *         date 30.12.2016.
  */

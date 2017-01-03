@@ -5,14 +5,10 @@ import cz.zcu.sar.centraldb.client.persistence.domain.Address;
 import cz.zcu.sar.centraldb.client.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
-import cz.zcu.sar.centraldb.client.persistence.repository.AddressRepository;
-import cz.zcu.sar.centraldb.client.persistence.repository.AddressTypeRepository;
-import cz.zcu.sar.centraldb.client.persistence.repository.PersonRepository;
-import cz.zcu.sar.centraldb.client.persistence.repository.PersonTypeRepository;
 import cz.zcu.sar.centraldb.client.persistence.services.AddressTypeService;
+import cz.zcu.sar.centraldb.client.persistence.services.PersonService;
 import cz.zcu.sar.centraldb.client.persistence.services.PersonTypeService;
 import cz.zcu.sar.centraldb.client.persistence.services.UtilService;
-import cz.zcu.sar.centraldb.client.persistence.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +16,9 @@ import java.sql.Timestamp;
 import java.util.*;
 
 /**
- * Created by Matej Lochman on 22.12.16.
+ * Test data
+ * @author Marek Rasocha
+ *         date 16.12.2016.
  */
 
 @Service
@@ -101,7 +99,7 @@ public class TestDataLoader{
                 address2.setCity("Plisen" + i);
                 address2 = (Address) utilService.setDefaultValue(address2,false);
                 address2.setPerson(person);
-                Set set = new HashSet<>();
+                Set<Address> set = new HashSet<>();
                 set.add(address);
                 set.add(address2);
                 person.setAddressWrappers(set);

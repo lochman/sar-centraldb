@@ -1,8 +1,8 @@
 package cz.zcu.sar.centraldb.client.pusher;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
-import cz.zcu.sar.centraldb.client.persistence.services.UtilService;
 import cz.zcu.sar.centraldb.client.persistence.services.PersonService;
+import cz.zcu.sar.centraldb.client.persistence.services.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,8 +67,7 @@ public class BatchCreatorImpl implements BatchCreator{
     private List<Person> getDataByDate(Timestamp startDate, Timestamp endDate) {
         List<Person> o = personService.findPersonByDate(startDate, endDate);
         if (o==null) o = new ArrayList<>();
-        List<Person> persons = o.stream().map(utilService::fillLazyAttribute).collect(Collectors.toList());
-        return persons;
+        return o.stream().map(utilService::fillLazyAttribute).collect(Collectors.toList());
     }
 
     public Timestamp getEndDate() {

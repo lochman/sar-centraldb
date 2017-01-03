@@ -42,12 +42,12 @@ public class MergerImpl implements Merger {
     public boolean mergeData(Person temporal, Person persist){
         if (persist!=null){
             //TODO - uncomment after testing
-//          if(save.getModifiedTime().after(p.getModifiedTime()))continue;
+          if(persist.getModifiedTime().after(temporal.getModifiedTime()))return true;
             persist = personService.fillLazyAttribute(persist);
             if(persist.getAddressWrappers()==null) persist.setAddressWrappers(new HashSet<>());
             if(temporal.getAddressWrappers()==null) temporal.setAddressWrappers(new HashSet<>());
             // null id and merge address
-            temporal.setAddressWrappers(mergeAddress(new ArrayList(temporal.getAddressWrappers()), new ArrayList(persist.getAddressWrappers())));
+            temporal.setAddressWrappers(mergeAddress(new ArrayList<>(temporal.getAddressWrappers()), new ArrayList<>(persist.getAddressWrappers())));
             personService.delete(temporal.getId());
             temporal.setId(persist.getId());    // change id
             temporal.setLookupOk(true);
@@ -75,7 +75,6 @@ public class MergerImpl implements Merger {
                 address.add(address1);
             }
         }
-        //TODO removed address
         addressService.delete(removed);
         address.addAll(addressOld);
         return address;

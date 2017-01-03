@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
+ * Fetcher implementation
  * @author Marek Rasocha
  *         date 16.12.2016.
  */
@@ -22,6 +23,7 @@ public class FetcherImpl implements Fetcher {
     Sender sender;
     @Autowired
     Merger merger;
+
     @Override
     public void fetchData() {
         List<Person> persons = sender.fetchData(sizeBatch);

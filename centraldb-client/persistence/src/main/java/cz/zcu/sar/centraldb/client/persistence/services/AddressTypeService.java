@@ -8,5 +8,10 @@ import cz.zcu.sar.centraldb.common.persistence.service.BaseService;
  *         date 02.01.2017.
  */
 public interface AddressTypeService extends BaseService<AddressType, Long> {
+    /**
+     * find adress type by id
+     * @param id id
+     * @return addressType
+     */
     AddressType findAddressType(Long id);
 }

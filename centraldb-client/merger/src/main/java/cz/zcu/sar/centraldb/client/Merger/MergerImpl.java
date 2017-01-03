@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Merge data from server into local db
  * @author Marek Rasocha
  *         date 16.12.2016.
  */
@@ -36,17 +37,17 @@ public class MergerImpl implements Merger {
     public boolean mergeData(List<Person> persons){
         for (Person p : persons){
             Person save = p.getId()==null ? null : personService.findPerson(p.getId());
+            if (save==null)save = p.getCentralId()==null ? null : personService.findPersonByGlobalId(p.getCentralId());
            // IF person is not founded, Try to find by companyNumber or socialNumber
             if(save==null) save = personService.mergePerson(p);
             if (save!=null){
-                //TODO - uncomment after testing
-//                if(save.getModifiedTime().after(p.getModifiedTime()))continue;
+                if(save.getModifiedTime().after(p.getModifiedTime()))continue;
                 save = utilService.fillLazyAttribute(save);
                 p.setId(save.getId());
                 if(save.getAddressWrappers()==null) save.setAddressWrappers(new HashSet<>());
                 if(p.getAddressWrappers()==null) p.setAddressWrappers(new HashSet<>());
                 // null id and merge address
-                p.setAddressWrappers(mergeAddress(new ArrayList(p.getAddressWrappers()), new ArrayList(save.getAddressWrappers())));
+                p.setAddressWrappers(mergeAddress(new ArrayList<>(p.getAddressWrappers()), new ArrayList<>(save.getAddressWrappers())));
             }
             p.setPersonType(personTypeService.mergePersonType(p.getPersonType()));
             p = (Person)utilService.setModifyBy(p,true);
@@ -56,6 +57,13 @@ public class MergerImpl implements Merger {
     }
 
 
+    /**
+     * Merge address
+     * Get address wrapper and create address that will be save in the db
+     * @param addressNew list of address from server
+     * @param addressOld list of address from client
+     * @return set of address, that will be save into client db
+     */
     private Set<Address> mergeAddress(List<AddressWrapper> addressNew, List<Address> addressOld) {
         Set<Address> address = new HashSet<>();
         for (AddressWrapper newA : addressNew){
@@ -74,14 +82,18 @@ public class MergerImpl implements Merger {
     }
 
 
-
+    /**
+     * Search current address in list of addresses that is localDb
+     * @param address search address
+     * @param addresses address on db
+     * @return index in the list
+     */
     private int getAddress(Address address, List<Address> addresses) {
         int i=0;
         for (Address a : addresses){
             if (a.equals(address)) return i;
             i++;
         }
-        //address.setId(null);        // null id -> hibernate save as a new row
         return -1;
     }
 }

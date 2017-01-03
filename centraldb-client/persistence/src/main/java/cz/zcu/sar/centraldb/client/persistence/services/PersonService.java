@@ -14,5 +14,6 @@ public interface PersonService extends BaseService<Person, Long> {
     void createPerson(Person person);
     Person mergePerson(Person p);
     Person findPerson(Long id);
+    Person findPersonByGlobalId(Long id);
     List<Person> findPersonByDate(Timestamp startDate, Timestamp endDate);
 }
