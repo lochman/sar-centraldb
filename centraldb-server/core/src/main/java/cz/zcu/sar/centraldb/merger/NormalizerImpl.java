@@ -44,8 +44,8 @@ public class NormalizerImpl implements Normalizer {
         PersonType personType = new PersonType();
         BeanUtils.copyProperties(wrapper.getPersonType(), personType);
         person.setPersonType(personTypeService.mergePersonType(personType));
-        person.setId(person.getForeignId());
-        person.setForeignId(person.getId());
+//        person.setId(person.getForeignId());
+//        person.setForeignId(person.getId());
         return person;
     }
 

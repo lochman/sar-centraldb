@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static cz.zcu.sar.centraldb.persistence.specification.PersonSpecifications.hasProperties;
 
@@ -114,7 +115,11 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     public void createPerson(Person person) {
         personRepository.save(person);
         if (person.getAddressWrappers()!=null){
-            person.getAddressWrappers().forEach(addressRepository::save);
+            for (Address address : person.getAddressWrappers()){
+                Address s = addressRepository.save(address);
+                System.out.println();
+            }
+//            person.getAddressWrappers().forEach(addressRepository::save);
         }
     }
     public Person findPerson(Long id){
@@ -139,14 +144,11 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         persons.setPersonType(type);
         return persons;
     }
-    public Person[] initMergeBuffer(){
-        List<Person> lazy = personRepository.findByTemporaryAndLookupOk(true,true);
-        Person[] result = new Person[lazy.size()];
-        int i=0;
-        for(Person p : lazy){
-            result[i++] = (fillLazyAttribute(p));
-        }
-        return result;
+    public List<Person> initMergeBuffer(){
+        List<Person> lazy = personRepository.findByTemporaryAndLookupOk(true, true);
+
+         return (lazy.stream().map(this::fillLazyAttribute).collect(Collectors.toList()));
+
     }
 
 

@@ -42,6 +42,10 @@ public class RequestQueueImpl implements RequestQueue {
         return request;
     }
 
+    public Request push(Request request){
+        queue.add(request);
+        return request;
+    }
     @Override
     public Request pull() {
         return queue.poll();

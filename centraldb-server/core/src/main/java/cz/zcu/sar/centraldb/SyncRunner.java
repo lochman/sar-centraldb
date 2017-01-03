@@ -1,20 +1,18 @@
 package cz.zcu.sar.centraldb;
 
-import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
-import cz.zcu.sar.centraldb.common.persistence.domain.PersonTypeWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
+import cz.zcu.sar.centraldb.core.Request;
 import cz.zcu.sar.centraldb.core.RequestQueue;
-import cz.zcu.sar.centraldb.lookup.LookupPerson;
+import cz.zcu.sar.centraldb.core.TestDataLoader;
+import cz.zcu.sar.centraldb.lookup.PersonLookup;
 import cz.zcu.sar.centraldb.merger.Merger;
 import cz.zcu.sar.centraldb.merger.Normalizer;
 import cz.zcu.sar.centraldb.persistence.domain.Institute;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
-import cz.zcu.sar.centraldb.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -39,7 +37,7 @@ public class SyncRunner extends Thread {
     @Autowired
     RequestQueue requestQueue;
     @Autowired
-    LookupPerson lookupPerson;
+    PersonLookup lookupPerson;
     @Autowired
     InstituteService instituteService;
 
@@ -48,40 +46,44 @@ public class SyncRunner extends Thread {
     private void initData(){
         testDataLoader.run(false,100);
         testDataLoader.run(true,200);
-        Batch batch = new Batch();
-        batch.setPersons(personService.initMergeBuffer());
-        requestQueue.push(batch);
+        Request request = new Request();
+        request.setPeople(personService.initMergeBuffer());
+        requestQueue.push(request);
     }
 
     @Override
-    public synchronized void run() {
+    public void run() {
         while (true) {
-            Batch batch = requestQueue.pull();
-//            Optional<Institute> optional = instituteService.findOne(Long.parseLong(batch.getClientId()));
-//            if (optional.isPresent()) {
-                PersonWrapper persons[] = batch.getPersons();
-                for (PersonWrapper person1 : persons) {
-                    Person person = normalizer.normalize(person1);
-                    Person persist;
-                    person = personService.savePersonAsTemp(person);
-                    if (person.getId() == null) {
-                        persist = lookupPerson.findPerson(person);
-                    } else {
-                        persist = personService.findPerson(person.getId());
-                    }
-                    merger.mergeData(person, persist);
+            Request request = requestQueue.pull();
+            if (request==null) {
+                sleep();
+                continue;
+            }
+            List<Person> persons = request.getPeople();
+            if (persons==null) {
+                sleep();
+                continue;
+            }
+            for (Person temp : persons) {
+//                Person person = normalizer.normalize(person1);
+                Person persist;
+                if (temp.getForeignId() == null) {
+                    persist = lookupPerson.findPerson(temp);
+                } else {
+                    persist = personService.findPerson(temp.getForeignId());
                 }
-//                Institute institute = optional.get();
-//                instituteService.updateBatchId(institute, batch.getClientId());
-//            }
-            try {
-                wait(timeout);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                break;
+                merger.mergeData(temp, persist);
             }
         }
     }
+    private synchronized void sleep(){
+        try {
+            wait(timeout);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 //    @Override
 //    public synchronized void run() {
 //        testDataLoader.run();

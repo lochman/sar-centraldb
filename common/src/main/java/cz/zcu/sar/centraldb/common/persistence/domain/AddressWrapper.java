@@ -213,4 +213,5 @@ public class AddressWrapper<P extends PersonWrapper, A extends AddressTypeWrappe
         result = 31 * result + (borough != null ? borough.hashCode() : 0);
         return result;
     }
+
 }

@@ -44,7 +44,7 @@ public class RequestProcessor implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... strings) throws Exception {
+    public synchronized void run(String... strings) throws Exception {
         logger.info("Request processor started");
         while (true) {
             if (!requestQueue.isEmpty()) {
