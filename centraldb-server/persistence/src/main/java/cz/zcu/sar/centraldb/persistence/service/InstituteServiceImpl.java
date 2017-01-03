@@ -1,6 +1,7 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
 import cz.zcu.sar.centraldb.common.persistence.service.BaseServiceImpl;
+import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.persistence.domain.Institute;
 import cz.zcu.sar.centraldb.persistence.repository.InstituteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,10 @@ public class InstituteServiceImpl extends BaseServiceImpl<Institute, Long, Insti
             return true;
         }
         return false;
+    }
+    public void updateBatchId(Institute institute, String batchId){
+        institute.setLastBatchId(batchId);
+        instituteRepository.save(institute);
+
     }
 }

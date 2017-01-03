@@ -3,6 +3,7 @@ package cz.zcu.sar.centraldb.persistence.repository;
 import cz.zcu.sar.centraldb.common.persistence.repository.BaseRepository;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
+import cz.zcu.sar.centraldb.persistence.domain.PersonType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -29,6 +30,8 @@ public interface PersonRepository extends BaseRepository<Person, Long> {
 
     @Query("SELECT p.addressWrappers FROM Person p WHERE p.id = :id")
     Set<Address> getAddresses(@Param("id") Long personId);
+    @Query("select p.personType from Person p where p.id=:id")
+    PersonType findPersonType(@Param("id")Long id );
 
     List<Person> findBySocialNumberAndTemporary(String socialNumber,boolean temporary);
     List<Person> findByCompanyNumberAndTemporary(String companyNumber,boolean temporary);

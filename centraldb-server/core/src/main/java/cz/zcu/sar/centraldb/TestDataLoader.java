@@ -1,16 +1,18 @@
 package cz.zcu.sar.centraldb;
 
 
+import cz.zcu.sar.centraldb.common.persistence.domain.AddressTypeWrapper;
+import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonTypeWrapper;
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.persistence.service.AddressTypeService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
-
 import cz.zcu.sar.centraldb.persistence.service.PersonTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -106,21 +108,18 @@ public class TestDataLoader {
         }
     }
 
-    public void run_temp(){
+    public PersonWrapper[] run_temp(int number){
+        PersonWrapper[] personWrappers = new PersonWrapper[number];
         //Create person types
+        //List<PersonWrapper> personWrappers = new ArrayList<>();
         Random random = new Random();
-        List<PersonType> personTypes = personTypeService.findAll();
-        if (personTypes.isEmpty()){
-            personTypes.addAll(initPersonType());
-        }
-        List<AddressType> addressTypes = addressTypeService.findAll();
-        if (addressTypes.isEmpty()){
-            addressTypes.addAll(initAddressType());
-        }
-        for (int i = 0; i < 100; i++) {
-            Address address = new Address();
-            Address address2 = new Address();
-            Person person = new Person("Jmeno" + i, "Prijmeni" , "");
+        List<PersonTypeWrapper> personTypes = (initPersonTypeW());
+
+        List<AddressTypeWrapper> addressTypes = initAddressTypeW();
+        for (int i = 0; i < number; i++) {
+            AddressWrapper address = new Address();
+            AddressWrapper address2 = new Address();
+            PersonWrapper person = new Person("Jmeno" + i, "Prijmeni" , "");
             if (i % 2 == 0) { person.setGender("m");
             } else { person.setGender("f"); }
             person.setModifiedBy("user1");
@@ -161,9 +160,51 @@ public class TestDataLoader {
                 set.add(address2);
                 person.setAddressWrappers(set);
             }
-            personService.savePersonAsTemp(person);
+            personWrappers[i]=person;
+//            personService.savePersonAsTemp(person);
         }
+        return personWrappers;
     }
+
+
+    private List<AddressTypeWrapper> initAddressTypeW() {
+        //Create address types
+        List<AddressType> addressTypes = addressTypeService.findAll();
+        AddressTypeWrapper at1 = new AddressTypeWrapper();
+        at1.setId(addressTypes.get(0).getId());
+        at1.setDescription("Trvalá adresa");
+        at1.setModifiedBy("init");
+        //addressTypeService.save(at1);
+        AddressTypeWrapper at2 = new AddressTypeWrapper();
+        at2.setId(addressTypes.get(1).getId());
+        at2.setDescription("Přechodná adresa");
+        at2.setModifiedBy("init");
+//        addressTypeService.save(at2);
+//        return addressTypeService.findAll();
+        List<AddressTypeWrapper> list = new ArrayList<>();
+        list.add(at1);
+        list.add(at2);
+        return list;
+    }
+
+    private List<PersonTypeWrapper> initPersonTypeW(){
+         List<PersonType> personTypes = personTypeService.findAll();
+        PersonTypeWrapper t1 = new PersonTypeWrapper();
+        t1.setId(personTypes.get(0).getId());
+        t1.setDescription("Fyzická osoba");
+        t1.setModifiedBy("init");
+//        personTypeService.save(t1);
+        PersonTypeWrapper t2 = new PersonTypeWrapper();
+        t2.setId(personTypes.get(1).getId());
+        t2.setDescription("Právnická osoba");
+        t2.setModifiedBy("init");
+//        personTypeService.save(t2);
+        List<PersonTypeWrapper> list = new ArrayList<>();
+        list.add(t1);
+        list.add(t2);
+        return list;
+    }
+
     private List<AddressType> initAddressType() {
         //Create address types
         AddressType at1 = new AddressType();

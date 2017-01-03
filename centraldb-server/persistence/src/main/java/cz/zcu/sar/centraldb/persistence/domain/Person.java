@@ -24,6 +24,7 @@ public class Person extends PersonWrapper<PersonType, Address> {
     private Set<Institute> institutes;
 
     private boolean temporary;
+    private boolean lookupOk;
 
     public Person() {}
     public Person(String firstName, String surname, String gender) {
@@ -31,10 +32,11 @@ public class Person extends PersonWrapper<PersonType, Address> {
     }
     public Person(PersonWrapper person) {
         BeanUtils.copyProperties(person, this);
-        // change id
+        // change idz
         this.setId(person.getForeignId());
         this.setForeignId(person.getId());
     }
+
 
     public Set<Institute> getInstitutes() {
         return institutes;
@@ -56,5 +58,13 @@ public class Person extends PersonWrapper<PersonType, Address> {
         PersonWrapper person = new PersonWrapper();
         BeanUtils.copyProperties(this, person);
         return person;
+    }
+
+    public boolean isLookupOk() {
+        return lookupOk;
+    }
+
+    public void setLookupOk(boolean lookupOk) {
+        this.lookupOk = lookupOk;
     }
 }

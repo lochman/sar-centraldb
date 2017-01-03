@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface PersonTypeService extends BaseService<PersonType, Long> {
-
+    PersonType mergePersonType(PersonType personType);
 }

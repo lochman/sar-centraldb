@@ -14,4 +14,5 @@ import java.util.List;
 @Transactional
 public interface InstituteService extends BaseService<Institute, Long> {
     boolean updateSyncOut(Long instituteId, Timestamp syncOut);
+    void updateBatchId(Institute institute, String batchId);
 }

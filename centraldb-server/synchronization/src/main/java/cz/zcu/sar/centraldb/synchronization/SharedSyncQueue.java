@@ -30,7 +30,7 @@ public class SharedSyncQueue implements SyncQueue {
     private Map<Timestamp, List<PersonWrapper>> peopleByTime;
 
     public SharedSyncQueue() {
-        initQueue();
+
     }
     @PostConstruct
     private void initQueue() {

@@ -1,6 +1,7 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
 import cz.zcu.sar.centraldb.common.persistence.service.BaseService;
+import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.AddressType;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Transactional
-public interface AddressTypeService extends BaseService<AddressType, Long> {
-    AddressType findAddressType(Long id);
+public interface AddressService extends BaseService<Address, Long> {
 }

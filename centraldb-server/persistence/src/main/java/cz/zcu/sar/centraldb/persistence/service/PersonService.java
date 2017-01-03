@@ -27,4 +27,7 @@ public interface PersonService extends BaseService<Person, Long> {
     Person findPersonByNumbers(String socialNumber, String companyNumber);
 
     void createPerson(Person person);
+
+    Person findPerson(Long id);
+    Person fillLazyAttribute(Person persons);
 }

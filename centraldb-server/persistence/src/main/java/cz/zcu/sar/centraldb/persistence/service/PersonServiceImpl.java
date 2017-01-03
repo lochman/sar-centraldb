@@ -2,7 +2,9 @@ package cz.zcu.sar.centraldb.persistence.service;
 
 import cz.zcu.sar.centraldb.common.persistence.service.BaseServiceImpl;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
+import cz.zcu.sar.centraldb.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
+import cz.zcu.sar.centraldb.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.persistence.repository.PersonRepository;
 import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
@@ -15,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static cz.zcu.sar.centraldb.persistence.specification.PersonSpecifications.hasProperties;
 
@@ -116,6 +116,28 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         if (person.getAddressWrappers()!=null){
             person.getAddressWrappers().forEach(addressRepository::save);
         }
+    }
+    public Person findPerson(Long id){
+        if (id==null) return null;
+        Optional<Person> res = findOne(id);
+        if (res.isPresent()) {
+            return res.get();
+        }
+        return null;
+    }
+
+    public Person fillLazyAttribute(Person persons) {
+        PersonType type = personRepository.findPersonType(persons.getId());
+//        Optional<Address> optional = addressRepository.findByPerson(persons);
+        List<Address> addresses =  addressRepository.findByPersonToList(persons);
+        for (Address a : addresses){
+            AddressType addressType = addressRepository.findAddressType(a.getId());
+            a.setAddressType(addressType);
+            a.setPerson(persons);
+        }
+        persons.setAddressWrappers(new HashSet<>(addresses));
+        persons.setPersonType(type);
+        return persons;
     }
 
 
