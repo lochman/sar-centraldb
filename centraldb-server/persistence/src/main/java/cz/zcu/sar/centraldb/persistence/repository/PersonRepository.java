@@ -36,4 +36,5 @@ public interface PersonRepository extends BaseRepository<Person, Long> {
     List<Person> findBySocialNumberAndTemporary(String socialNumber,boolean temporary);
     List<Person> findByCompanyNumberAndTemporary(String companyNumber,boolean temporary);
     List<Person> findBySocialNumberAndCompanyNumberAndTemporary(String socialNumber,String companyNumber,boolean temporary);
+    List<Person> findByTemporaryAndLookupOk(boolean temporary, boolean lookupOk);
 }

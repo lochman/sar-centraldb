@@ -5,6 +5,7 @@ import cz.zcu.sar.centraldb.common.persistence.domain.AddressTypeWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonTypeWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
+import cz.zcu.sar.centraldb.merger.UtilService;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
@@ -34,6 +35,14 @@ public class TestDataLoader {
     @Autowired
     private AddressTypeService addressTypeService;
 
+    @Autowired
+    private UtilService utilService;
+
+
+
+
+
+
     public void initTypes(){
         List<PersonType> personTypes = personTypeService.findAll();
         if (personTypes.isEmpty()){
@@ -44,7 +53,7 @@ public class TestDataLoader {
             addressTypes.addAll(initAddressType());
         }
     }
-    public void run(){
+    public void run(boolean temp,int number){
         //Create person types
         Random random = new Random();
         List<PersonType> personTypes = personTypeService.findAll();
@@ -55,13 +64,15 @@ public class TestDataLoader {
         if (addressTypes.isEmpty()){
             addressTypes.addAll(initAddressType());
         }
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < number; i++) {
             Address address = new Address();
             Address address2 = new Address();
             Person person = new Person("Jmeno" + i, "Prijmeni" , "");
+            person.setTemporary(temp);
             if (i % 2 == 0) { person.setGender("m");
             } else { person.setGender("f"); }
             person.setModifiedBy("init");
+            person = (Person) utilService.setDefaultValue(person,false);
             person.setCompanyNumber(String.valueOf(i));
             person.setSocialNumber(String.valueOf(i));
             // generate modified time
@@ -86,13 +97,13 @@ public class TestDataLoader {
                 address.setStreet("Dlouhá" + i);
                 address.setLand_registry_number(String.valueOf(i));
                 address.setCity("Praha" + i);
-                address.setModifiedBy("init");
+                address = (Address) utilService.setDefaultValue(address,false);
                 address.setPerson(person);
 
                 address2.setStreet("Kratka" + i);
                 address2.setLand_registry_number(String.valueOf(i));
                 address2.setCity("Plisen" + i);
-                address2.setModifiedBy("init");
+                address2 = (Address) utilService.setDefaultValue(address2,false);
                 address2.setPerson(person);
                 Set<Address> set = new HashSet<>();
                 set.add(address);
@@ -117,7 +128,7 @@ public class TestDataLoader {
             PersonWrapper<PersonTypeWrapper,AddressWrapper> person = new PersonWrapper<>("Jmeno" + i, "Prijmeni" , "");
             if (i % 2 == 0) { person.setGender("m");
             } else { person.setGender("f"); }
-            person.setModifiedBy("user1");
+            person = (PersonWrapper<PersonTypeWrapper, AddressWrapper>) utilService.setDefaultValue(person,false);
             person.setCompanyNumber(String.valueOf(i));
             person.setSocialNumber(String.valueOf(i));
             // generate modified time
@@ -142,13 +153,13 @@ public class TestDataLoader {
                 address.setStreet("Dlouhá" + i);
                 address.setLand_registry_number(String.valueOf(i));
                 address.setCity("Praha" + i);
-                address.setModifiedBy("init");
+                address = (AddressWrapper<PersonWrapper, AddressTypeWrapper>) utilService.setDefaultValue(address,false);
                 address.setPerson(person);
 
                 address2.setStreet("Kratka" + i);
                 address2.setLand_registry_number(String.valueOf(i));
                 address2.setCity("Plisen" + i);
-                address2.setModifiedBy("init");
+                address2 = (AddressWrapper<PersonWrapper, AddressTypeWrapper>) utilService.setDefaultValue(address2,false);
                 address2.setPerson(person);
                 Set<AddressWrapper> set = new HashSet<>();
                 set.add(address);
@@ -168,12 +179,12 @@ public class TestDataLoader {
         AddressTypeWrapper at1 = new AddressTypeWrapper();
         at1.setId(addressTypes.get(0).getId());
         at1.setDescription("Trvalá adresa");
-        at1.setModifiedBy("init");
+        at1 = (AddressTypeWrapper) utilService.setDefaultValue(at1,false);
         //addressTypeService.save(at1);
         AddressTypeWrapper at2 = new AddressTypeWrapper();
         at2.setId(addressTypes.get(1).getId());
         at2.setDescription("Přechodná adresa");
-        at2.setModifiedBy("init");
+        at2 = (AddressTypeWrapper) utilService.setDefaultValue(at2,false);
 //        addressTypeService.save(at2);
 //        return addressTypeService.findAll();
         List<AddressTypeWrapper> list = new ArrayList<>();
@@ -187,12 +198,12 @@ public class TestDataLoader {
         PersonTypeWrapper t1 = new PersonTypeWrapper();
         t1.setId(personTypes.get(0).getId());
         t1.setDescription("Fyzická osoba");
-        t1.setModifiedBy("init");
+        t1 = (PersonTypeWrapper) utilService.setDefaultValue(t1,false);
 //        personTypeService.save(t1);
         PersonTypeWrapper t2 = new PersonTypeWrapper();
         t2.setId(personTypes.get(1).getId());
         t2.setDescription("Právnická osoba");
-        t2.setModifiedBy("init");
+        t2 = (PersonTypeWrapper) utilService.setDefaultValue(t2,false);
 //        personTypeService.save(t2);
         List<PersonTypeWrapper> list = new ArrayList<>();
         list.add(t1);
@@ -204,11 +215,11 @@ public class TestDataLoader {
         //Create address types
         AddressType at1 = new AddressType();
         at1.setDescription("Trvalá adresa");
-        at1.setModifiedBy("init");
+        at1 = (AddressType) utilService.setDefaultValue(at1,false);
         addressTypeService.save(at1);
         AddressType at2 = new AddressType();
         at2.setDescription("Přechodná adresa");
-        at2.setModifiedBy("init");
+        at2 = (AddressType) utilService.setDefaultValue(at2,false);
         addressTypeService.save(at2);
         return addressTypeService.findAll();
     }
@@ -216,11 +227,11 @@ public class TestDataLoader {
     private List<PersonType> initPersonType() {
         PersonType t1 = new PersonType();
         t1.setDescription("Fyzická osoba");
-        t1.setModifiedBy("init");
+        t1 = (PersonType) utilService.setDefaultValue(t1,false);
         personTypeService.save(t1);
         PersonType t2 = new PersonType();
         t2.setDescription("Právnická osoba");
-        t2.setModifiedBy("init");
+        t2 = (PersonType) utilService.setDefaultValue(t2,false);
         personTypeService.save(t2);
         return personTypeService.findAll();
 

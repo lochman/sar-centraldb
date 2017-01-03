@@ -30,4 +30,5 @@ public interface PersonService extends BaseService<Person, Long> {
 
     Person findPerson(Long id);
     Person fillLazyAttribute(Person persons);
+    Person[] initMergeBuffer();
 }

@@ -139,6 +139,15 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         persons.setPersonType(type);
         return persons;
     }
+    public Person[] initMergeBuffer(){
+        List<Person> lazy = personRepository.findByTemporaryAndLookupOk(true,true);
+        Person[] result = new Person[lazy.size()];
+        int i=0;
+        for(Person p : lazy){
+            result[i++] = (fillLazyAttribute(p));
+        }
+        return result;
+    }
 
 
 }

@@ -41,7 +41,7 @@ public class MergerImpl implements Merger {
             if(persist.getAddressWrappers()==null) persist.setAddressWrappers(new HashSet<>());
             if(temporal.getAddressWrappers()==null) temporal.setAddressWrappers(new HashSet<>());
             // null id and merge address
-            temporal.setAddressWrappers(mergeAddress(new ArrayList<>(temporal.getAddressWrappers()), new ArrayList<>(persist.getAddressWrappers())));
+            temporal.setAddressWrappers(mergeAddress(temporal,new ArrayList<>(temporal.getAddressWrappers()), new ArrayList<>(persist.getAddressWrappers())));
             personService.delete(temporal.getId());
             temporal.setId(persist.getId());    // change id
             temporal.setLookupOk(true);
@@ -57,20 +57,24 @@ public class MergerImpl implements Merger {
 
     /**
      * merge adress
+     *
+     * @param temporal person
      * @param addressNew address new
      * @param addressOld address old
      * @return
      */
-    private Set<Address> mergeAddress(List<Address> addressNew, List<Address> addressOld) {
+    private Set<Address> mergeAddress(Person temporal, List<Address> addressNew, List<Address> addressOld) {
         Set<Address> address = new HashSet<>();
         List<Address> removed = new ArrayList<>();
         for (Address address1 : addressNew){
             int index = getAddress(address1, addressOld);
             if (index!=-1){
                 Address old = addressOld.remove(index);
+                old.setPerson(temporal);
                 address.add(old);
                 removed.add(address1);
             }else{
+                address1.setPerson(temporal);
                 address.add(address1);
             }
         }

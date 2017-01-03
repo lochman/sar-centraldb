@@ -27,7 +27,9 @@ public abstract class BaseObject implements Serializable {
     @PreUpdate
     @PrePersist
     public void setModificationTimeStamp() {
-        modifiedTime = new Timestamp(new Date().getTime());
+        if(modifiedTime==null){
+            modifiedTime = new Timestamp(new Date().getTime());
+        }
     }
 
     @JsonIgnore

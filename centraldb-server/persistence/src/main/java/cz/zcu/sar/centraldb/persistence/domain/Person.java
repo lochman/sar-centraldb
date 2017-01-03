@@ -15,16 +15,9 @@ import java.util.Set;
 @Table(name = "person")
 public class Person extends PersonWrapper<PersonType, Address> {
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "PersonInstitute",
-        joinColumns = @JoinColumn(name = "centralId", nullable = false),
-        inverseJoinColumns = @JoinColumn(name = "instituteId")
-    )
-    private Set<Institute> institutes;
 
     private boolean temporary;
-    private boolean lookupOk;
+    private boolean lookupOk = true;
 
     public Person() {}
     public Person(String firstName, String surname, String gender) {
@@ -38,13 +31,6 @@ public class Person extends PersonWrapper<PersonType, Address> {
     }
 
 
-    public Set<Institute> getInstitutes() {
-        return institutes;
-    }
-
-    public void setInstitutes(Set<Institute> institutes) {
-        this.institutes = institutes;
-    }
 
     public boolean isTemporary() {
         return temporary;

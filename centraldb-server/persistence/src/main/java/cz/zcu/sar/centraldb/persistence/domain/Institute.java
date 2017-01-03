@@ -18,8 +18,6 @@ public class Institute {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "institutes", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Person> people;
 
     private String description;
 
@@ -43,13 +41,7 @@ public class Institute {
         this.name = name;
     }
 
-    public Set<Person> getPeople() {
-        return people;
-    }
 
-    public void setPeople(Set<Person> people) {
-        this.people = people;
-    }
 
     public String getDescription() {
         return description;
