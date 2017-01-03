@@ -34,10 +34,10 @@ public class RequestProcessor implements CommandLineRunner {
         Request request = requestQueue.pull();
         for (Person person : request.getPeople()) {
             Person persist;
-            if (person.getId() == null) {
+            if (person.getForeignId() == null) {
                 persist = personLookup.findPerson(person);
             } else {
-                persist = personService.findPerson(person.getId());
+                persist = personService.findPerson(person.getForeignId());
             }
             merger.mergeData(person, persist);
         }

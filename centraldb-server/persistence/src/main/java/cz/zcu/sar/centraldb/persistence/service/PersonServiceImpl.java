@@ -115,11 +115,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     public void createPerson(Person person) {
         personRepository.save(person);
         if (person.getAddressWrappers()!=null){
-            for (Address address : person.getAddressWrappers()){
-                Address s = addressRepository.save(address);
-                System.out.println();
-            }
-//            person.getAddressWrappers().forEach(addressRepository::save);
+            person.getAddressWrappers().forEach(addressRepository::save);
         }
     }
     public Person findPerson(Long id){

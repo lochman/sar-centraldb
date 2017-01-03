@@ -86,7 +86,6 @@ public class MergerImpl implements Merger {
         }
         addressService.delete(removed);
         address.addAll(addressOld);
-
         return address;
     }
 
