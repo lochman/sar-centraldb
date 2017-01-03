@@ -7,6 +7,7 @@ import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -24,19 +25,18 @@ public class SeparateSyncQueue implements SyncQueue {
 
     private Map<Long, PriorityQueue<PersonWrapper>> queues;
 
-    public SeparateSyncQueue() {
-        initQueue();
-    }
+    public SeparateSyncQueue() { }
 
+    @PostConstruct
     private void initQueue() {
         List<Institute> institutes = instituteService.findAll();
         List<Person> unSynchronized;
         queues = new HashMap<>();
         for (Institute institute : institutes) {
-            queues.put(institute.getInstitute(), new PriorityQueue<>((PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime())));
+            queues.put(institute.getId(), new PriorityQueue<>((PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime())));
             unSynchronized = personService.getUnsynchronized(institute.getLastSyncOut());
             if (!unSynchronized.isEmpty()) {
-                queues.get(institute.getInstitute()).addAll(unSynchronized);
+                queues.get(institute.getId()).addAll(unSynchronized);
             }
         }
     }
@@ -56,8 +56,7 @@ public class SeparateSyncQueue implements SyncQueue {
     @Override
     public Collection<PersonWrapper> pullData(Long instituteId, int size) {
         PriorityQueue<PersonWrapper> queue = queues.get(instituteId);
-        size = size < queue.size() ? size : queue.size();
-        return Arrays.asList(queue.toArray(new PersonWrapper[0])).subList(0, size);
+        return Arrays.asList(queue.toArray(new PersonWrapper[0])).subList(0, Math.min(size, queue.size()));
     }
 
     @Override

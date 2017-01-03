@@ -1,7 +1,6 @@
 package cz.zcu.sar.centraldb.merger;
 
 
-import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.AddressService;
@@ -11,7 +10,6 @@ import cz.zcu.sar.centraldb.persistence.service.PersonTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,9 +32,6 @@ public class MergerImpl implements Merger {
     UtilService utilService;
     @Autowired
     AddressService addressService;
-
-
-
 
     @Override
     public boolean mergeData(Person temporal, Person persist){

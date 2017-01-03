@@ -18,7 +18,7 @@ import java.util.Set;
 @Table(name = "person")
 public class Person extends PersonWrapper<PersonType, Address> {
 
-   private Long centralId;
+    private Long centralId;
 
     public Long getCentralId() {
         return centralId;

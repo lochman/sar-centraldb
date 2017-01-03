@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,14 +23,14 @@ import java.util.Set;
  *         date 02.01.2017.
  */
 @Service
-public class NormalizerImpl implements Normalizer{
+public class NormalizerImpl implements Normalizer {
     @Autowired
     private PersonTypeService personTypeService;
     @Autowired
     private AddressTypeService addressTypeService;
 
     @Override
-    public Person normalize(PersonWrapper<PersonTypeWrapper,AddressWrapper> wrapper) {
+    public Person normalize(PersonWrapper<PersonTypeWrapper, AddressWrapper> wrapper) {
         Person person = new Person();
         BeanUtils.copyProperties(wrapper, person);
         Set<Address> addresses= new HashSet<>();
@@ -45,6 +47,15 @@ public class NormalizerImpl implements Normalizer{
         person.setId(person.getForeignId());
         person.setForeignId(person.getId());
         return person;
+    }
+
+    @Override
+    public List<Person> normalize(PersonWrapper[] personWrappers) {
+        List<Person> normalized = new LinkedList<>();
+        for (PersonWrapper personWrapper : personWrappers) {
+            normalized.add(normalize(personWrapper));
+        }
+        return normalized;
     }
 
     /**

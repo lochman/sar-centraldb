@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Matej Lochman on 28.12.16.
@@ -13,6 +14,6 @@ import java.util.List;
 
 @Transactional
 public interface InstituteService extends BaseService<Institute, Long> {
-    boolean updateSyncOut(Long instituteId, Timestamp syncOut);
-    void updateBatchId(Institute institute, String batchId);
+    void updateSyncOut(Long instituteId, Timestamp syncOut);
+    void updateBatchId(String clientId, String batchId);
 }

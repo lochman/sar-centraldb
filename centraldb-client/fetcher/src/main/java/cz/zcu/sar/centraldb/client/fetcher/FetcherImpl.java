@@ -1,6 +1,6 @@
 package cz.zcu.sar.centraldb.client.fetcher;
 
-import cz.zcu.sar.centraldb.client.Merger.Merger;
+import cz.zcu.sar.centraldb.client.merger.Merger;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.rest.Sender;
 import org.springframework.beans.factory.annotation.Autowired;

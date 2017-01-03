@@ -32,6 +32,7 @@ public class SharedSyncQueue implements SyncQueue {
     public SharedSyncQueue() {
 
     }
+
     @PostConstruct
     private void initQueue() {
         List<Institute> institutes = instituteService.findAll();
@@ -43,7 +44,7 @@ public class SharedSyncQueue implements SyncQueue {
             unSynchronized = personService.getUnsynchronized(institute.getLastSyncOut());
             if (!unSynchronized.isEmpty()) {
                 queue.addAll(unSynchronized);
-                lastSync.put(institute.getInstitute(), unSynchronized.get(0).getModifiedTime());
+                lastSync.put(institute.getId(), unSynchronized.get(0).getModifiedTime());
                 for (Person person : unSynchronized) {
                     addPersonToMap(person);
                 }
@@ -82,23 +83,46 @@ public class SharedSyncQueue implements SyncQueue {
         return true;
     }
 
+    private PersonWrapper findFirstByMap(Timestamp lastSyncTime) {
+        PersonWrapper first = null;
+        SortedSet<PersonWrapper> tmpSet, tailSet = new TreeSet<>();
+        for (PersonWrapper person : peopleByTime.get(lastSyncTime)) {
+            tmpSet = queue.tailSet(person);
+            if (tmpSet.size() > tailSet.size()) {
+                tailSet = new TreeSet<>(tmpSet);
+            }
+            queue.tailSet(person).first();
+        }
+        if (!tailSet.isEmpty()) {
+            first = tailSet.first();
+        }
+        return first;
+    }
+
+    private PersonWrapper findFirstByIterator(Timestamp lastSyncTime) {
+        PersonWrapper first = null;
+        Iterator<PersonWrapper> iterator = queue.iterator();
+        while (iterator.hasNext()) {
+            first = iterator.next();
+            if (first.getModifiedTime() == lastSyncTime) {
+                first = iterator.next();
+                break;
+            }
+        }
+        return first;
+    }
+
     @Override
     public Collection<PersonWrapper> pullData(Long instituteId, int size) {
         List<PersonWrapper> data = new LinkedList<>();
         Timestamp lastSyncTime = lastSync.get(instituteId);
-        PersonWrapper from = null;
-        Iterator<PersonWrapper> iterator = queue.iterator();
-        while (iterator.hasNext()) {
-            from = iterator.next();
-            if (from.getModifiedTime() == lastSyncTime) {
-                from = iterator.next();
-                break;
-            }
+        PersonWrapper first;
+//        first = findFirstByIterator(lastSyncTime);
+        first = findFirstByMap(lastSyncTime);
+        if (first != null) {
+            data.addAll(queue.tailSet(first));
         }
-        if (from != null) {
-            data.addAll(queue.tailSet(from));//TODO sublist
-        }
-        return data;
+        return data.subList(0, Math.min(size, data.size()));
     }
 
     private boolean isLastToSync(Long instituteId) {

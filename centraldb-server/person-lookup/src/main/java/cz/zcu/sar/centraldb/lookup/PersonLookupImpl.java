@@ -3,7 +3,6 @@ package cz.zcu.sar.centraldb.lookup;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Service;
  *         date 02.01.2017.
  */
 @Service
-public class LookupPersonImpl implements LookupPerson {
+public class PersonLookupImpl implements PersonLookup {
 
     @Autowired
     PersonService personService;

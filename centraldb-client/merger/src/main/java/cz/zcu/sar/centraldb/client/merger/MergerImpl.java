@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.client.Merger;
+package cz.zcu.sar.centraldb.client.merger;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Address;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;

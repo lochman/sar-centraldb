@@ -40,6 +40,14 @@ public class Batch {
         return  persons != null && persons.length != 0 && persons[persons.length - 1] != null ? persons[persons.length - 1].getModifiedTime() : null;
     }
 
+    public String getId() {
+        String id = "";
+        Timestamp first = getFirst(), last = getLast();
+        id += first != null ? first.toString() : "";
+        id += last != null ? last.toString() : "";
+        return id;
+    }
+
     public String getClientId() {
         return clientId;
     }

@@ -13,7 +13,7 @@ import java.util.Set;
 public class Institute {
 
     @Id
-    private Long institute;
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -27,12 +27,12 @@ public class Institute {
     private Timestamp lastSyncIn;
     private Timestamp lastSyncOut;
 
-    public Long getInstitute() {
-        return institute;
+    public Long getId() {
+        return id;
     }
 
-    public void setInstitute(Long institute) {
-        this.institute = institute;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

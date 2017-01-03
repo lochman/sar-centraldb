@@ -7,10 +7,10 @@ import cz.zcu.sar.centraldb.common.synchronization.Batch;
  */
 
 public interface RequestQueue {
-    void push(Batch batch);
-    Batch pull();
-    Batch peek();
+    Request push(Batch batch);
+    Request pull();
+    Request peek();
     boolean isPresent(Batch batch);
     int size();
-    boolean empty();
+    boolean isEmpty();
 }

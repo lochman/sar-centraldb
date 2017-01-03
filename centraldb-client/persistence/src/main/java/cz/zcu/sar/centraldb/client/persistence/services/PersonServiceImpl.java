@@ -32,7 +32,6 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     @Autowired
     AddressTypeRepository addressTypeRepository;
 
-
     @Override
     @Transactional
     public void createPerson(Person person) {

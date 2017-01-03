@@ -10,7 +10,8 @@ import java.util.Optional;
  */
 
 public interface SyncService {
-    void pushRequest(Batch batch);
+    Request pushRequest(Batch batch);
+    Request pullRequest();
     Batch retrieveData(String instituteId, int size);
     boolean confirmBatch(ConfirmFetch confirmed);
 }

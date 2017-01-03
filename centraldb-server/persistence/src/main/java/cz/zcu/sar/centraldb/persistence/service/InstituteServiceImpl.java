@@ -21,17 +21,16 @@ public class InstituteServiceImpl extends BaseServiceImpl<Institute, Long, Insti
     InstituteRepository instituteRepository;
 
     @Override
-    public boolean updateSyncOut(Long instituteId, Timestamp syncOut) {
-        Optional<Institute> institute = instituteRepository.findOne(instituteId);
-        if (institute.isPresent()) {
-            institute.get().setLastSyncOut(syncOut);
-            return true;
-        }
-        return false;
+    public void updateSyncOut(Long instituteId, Timestamp syncOut) {
+        instituteRepository.findOne(instituteId)
+                .ifPresent(institute -> institute.setLastSyncOut(syncOut));
     }
-    public void updateBatchId(Institute institute, String batchId){
-        institute.setLastBatchId(batchId);
-        instituteRepository.save(institute);
 
+    @Override
+    public void updateBatchId(String clientId, String batchId) {
+        instituteRepository.findByName(clientId).ifPresent(institute -> {
+            institute.setLastBatchId(batchId);
+            instituteRepository.save(institute);
+        });
     }
 }

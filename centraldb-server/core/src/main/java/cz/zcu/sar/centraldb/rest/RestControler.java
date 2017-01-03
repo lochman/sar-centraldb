@@ -49,10 +49,7 @@ public class RestControler {
 
     @PostMapping("/data/fetch")
     public ResponseEntity<Batch> fetchData(@RequestBody() Batch batchRequest) {
-        // TODO: nacti data z fronty a posli je a normalizuj
-        int size = batchRequest.getSize();
-        Batch batch = new Batch();
-//        batch.setPersons(normalizedPerson(run()));
+        Batch batch = syncService.retrieveData(batchRequest.getClientId(), batchRequest.getSize());
         return new ResponseEntity<>(batch, HttpStatus.OK);
     }
 

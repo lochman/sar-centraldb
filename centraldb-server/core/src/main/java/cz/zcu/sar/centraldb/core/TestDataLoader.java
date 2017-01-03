@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb;
+package cz.zcu.sar.centraldb.core;
 
 
 import cz.zcu.sar.centraldb.common.persistence.domain.AddressTypeWrapper;
@@ -33,11 +33,6 @@ public class TestDataLoader {
 
     @Autowired
     private AddressTypeService addressTypeService;
-
-
-
-
-
 
     public void initTypes(){
         List<PersonType> personTypes = personTypeService.findAll();
@@ -86,7 +81,7 @@ public class TestDataLoader {
                 address2.setAddressType(addressTypes.get(1));
             }
             person.setBirthDate(new Date());
-           // personRepository.save(person);
+            // personRepository.save(person);
             if(i%10 !=0){
                 address.setStreet("Dlouhá" + i);
                 address.setLand_registry_number(String.valueOf(i));
@@ -188,7 +183,7 @@ public class TestDataLoader {
     }
 
     private List<PersonTypeWrapper> initPersonTypeW(){
-         List<PersonType> personTypes = personTypeService.findAll();
+        List<PersonType> personTypes = personTypeService.findAll();
         PersonTypeWrapper t1 = new PersonTypeWrapper();
         t1.setId(personTypes.get(0).getId());
         t1.setDescription("Fyzická osoba");

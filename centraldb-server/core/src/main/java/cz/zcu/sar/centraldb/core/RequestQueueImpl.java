@@ -1,9 +1,16 @@
 package cz.zcu.sar.centraldb.core;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
+import cz.zcu.sar.centraldb.merger.Normalizer;
+import cz.zcu.sar.centraldb.persistence.domain.Person;
+import cz.zcu.sar.centraldb.persistence.service.PersonService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -13,31 +20,41 @@ import java.util.Queue;
 @Component
 public class RequestQueueImpl implements RequestQueue {
 
-    private Queue<Batch> queue;
+    @Autowired
+    private Normalizer normalizer;
+
+    private Queue<Request> queue;
 
     RequestQueueImpl() {
-//        queue = new PriorityQueue<>((Batch b1, Batch b2) -> b1.getFirst().compareTo(b2.getFirst()));
+
+    }
+
+    @PostConstruct
+    private void init() {
         queue = new LinkedList<>();
     }
 
     @Override
-    public void push(Batch batch) {
-        queue.add(batch);
+    public Request push(Batch batch) {
+        Request request = new Request(batch.getId(),
+                batch.getClientId(), normalizer.normalize(batch.getPersons()));
+        queue.add(request);
+        return request;
     }
 
     @Override
-    public Batch pull() {
+    public Request pull() {
         return queue.poll();
     }
 
     @Override
-    public Batch peek() {
+    public Request peek() {
         return queue.peek();
     }
 
     @Override
     public boolean isPresent(Batch batch) {
-        return queue.contains(batch);
+        return queue.contains(new Request(batch.getId(), batch.getClientId()));
     }
 
     @Override
@@ -46,7 +63,7 @@ public class RequestQueueImpl implements RequestQueue {
     }
 
     @Override
-    public boolean empty() {
+    public boolean isEmpty() {
         return queue.isEmpty();
     }
 }

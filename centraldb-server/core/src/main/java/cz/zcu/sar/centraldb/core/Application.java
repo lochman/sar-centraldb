@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb;
+package cz.zcu.sar.centraldb.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
