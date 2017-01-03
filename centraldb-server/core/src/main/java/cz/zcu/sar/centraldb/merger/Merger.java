@@ -11,5 +11,11 @@ import java.util.List;
  *         date 16.12.2016.
  */
 public interface Merger {
+    /**
+     * merge data
+     * @param temporal temporal person
+     * @param persist persist person
+     * @return merge ok
+     */
     boolean mergeData(Person temporal, Person persist);
 }

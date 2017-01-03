@@ -10,5 +10,10 @@ import cz.zcu.sar.centraldb.persistence.domain.Person;
  *         date 02.01.2017.
  */
 public interface Normalizer {
+    /**
+     * normalize from personWrapper into person
+     * @param wrapper wrapper
+     * @return person
+     */
     Person normalize(PersonWrapper<PersonTypeWrapper,AddressWrapper>  wrapper);
 }

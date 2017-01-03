@@ -41,7 +41,6 @@ public class MergerImpl implements Merger {
     @Override
     public boolean mergeData(Person temporal, Person persist){
         if (persist!=null){
-            //TODO - uncomment after testing
           if(persist.getModifiedTime().after(temporal.getModifiedTime()))return true;
             persist = personService.fillLazyAttribute(persist);
             if(persist.getAddressWrappers()==null) persist.setAddressWrappers(new HashSet<>());
@@ -61,7 +60,12 @@ public class MergerImpl implements Merger {
         return true;
     }
 
-
+    /**
+     * merge adress
+     * @param addressNew address new
+     * @param addressOld address old
+     * @return
+     */
     private Set<Address> mergeAddress(List<Address> addressNew, List<Address> addressOld) {
         Set<Address> address = new HashSet<>();
         List<Address> removed = new ArrayList<>();
@@ -81,7 +85,12 @@ public class MergerImpl implements Merger {
     }
 
 
-
+    /**
+     * search address in addresses
+     * @param address address
+     * @param addresses addresses
+     * @return index
+     */
     private int getAddress(Address address, List<Address> addresses) {
         int i=0;
         for (Address a : addresses){

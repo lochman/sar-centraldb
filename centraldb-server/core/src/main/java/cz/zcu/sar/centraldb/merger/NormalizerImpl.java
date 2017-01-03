@@ -47,6 +47,11 @@ public class NormalizerImpl implements Normalizer{
         return person;
     }
 
+    /**
+     * normalize address
+     * @param wrapper address wrapper
+     * @return address
+     */
     private Address normalizeAddress(AddressWrapper wrapper){
         Address address = new Address();
         BeanUtils.copyProperties(wrapper, address);
