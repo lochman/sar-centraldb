@@ -38,11 +38,15 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     private AddressRepository addressRepository;
 
     public List<Person> getUnsynchronized(Timestamp from) {
-        return personRepository.findByDate(from);
+        List<Person> unsync = personRepository.findByDate(from);
+        logger.info("getUnsynchronized: from=" + from + ", listSize=" + unsync.size());
+        return unsync;
     }
 
     public List<Person> getUnsynchronized(Timestamp from, int count) {
-        return personRepository.findByDate(from, new PageRequest(0, count)).getContent();
+        List<Person> unsync = personRepository.findByDate(from, new PageRequest(0, count)).getContent();
+        logger.info("getUnsynchronized: from=" + from + ", count=" + count + ", listSize=" + unsync.size());
+        return unsync;
     }
 
     @Override
@@ -58,25 +62,25 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         } else {
             pageRequest = new PageRequest(page, limit);
         }
-        return personRepository.findAll(hasProperties(requestWrapper.getQueryParams()), pageRequest);
+        Page<Person> all =  personRepository.findAll(hasProperties(requestWrapper.getQueryParams()), pageRequest);
+        logger.info("getPeopleByQuery: requestWrapper=" + requestWrapper + ", pageSize=" + all.getNumberOfElements());
+        return all;
     }
 
     @Override
     public Person savePersonAsTemp(Person person) {
-//        System.out.println("person before save " + person.getName() + " " + person.getId());
         person.setTemporary(true);
-        person = personRepository.save(person);
-//        System.out.println("person after save " + person.getName() + " " + person.getId());
-        return person;
+        return save(person);
     }
 
     @Override
     public Person createPerson(PersonAddress personAddress, String modifiedBy) {
         Person person = personAddress.getPerson();
         person.setModifiedBy(modifiedBy);
-        System.out.println(person.getBirthDate().getTime());
         savePersonAsTemp(person);
-        saveAddress(person, personAddress, modifiedBy);
+        if(personAddress.getAddressWrappers().length > 0) {
+            saveAddress(person, personAddress, modifiedBy);
+        }
         return person;
     }
 
@@ -91,6 +95,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         }
         person.setAddressWrappers(addresses);
         save(person);
+        logger.info("saveAddress: modifiedBy='" + modifiedBy + "', " + person + ", " + personAddress);
     }
 
     public Person findPersonByNumbers(String socialNumber, String companyNumber){
@@ -107,17 +112,20 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         }
         Person search = null;
         if (!result.isEmpty()) search = result.get(0);
+
+        logger.info("findPersonByNumbers: socialNumber=" + socialNumber + ", companyNumber=" + companyNumber + ", personFound=" + search);
         return search;
     }
 
     @Override
     @Transactional
     public void createPerson(Person person) {
-        personRepository.save(person);
+        save(person);
         if (person.getAddressWrappers()!=null){
             person.getAddressWrappers().forEach(addressRepository::save);
         }
     }
+
     public Person findPerson(Long id){
         if (id==null) return null;
         Optional<Person> res = findOne(id);
@@ -127,18 +135,20 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         return null;
     }
 
-    public Person fillLazyAttribute(Person persons) {
-        PersonType type = personRepository.findPersonType(persons.getId());
+    public Person fillLazyAttribute(Person person) {
+        PersonType type = personRepository.findPersonType(person.getId());
 //        Optional<Address> optional = addressRepository.findByPerson(persons);
-        List<Address> addresses =  addressRepository.findByPersonToList(persons);
+        List<Address> addresses =  addressRepository.findByPersonToList(person);
         for (Address a : addresses){
             AddressType addressType = addressRepository.findAddressType(a.getId());
             a.setAddressType(addressType);
-            a.setPerson(persons);
+            a.setPerson(person);
         }
-        persons.setAddressWrappers(new HashSet<>(addresses));
-        persons.setPersonType(type);
-        return persons;
+        person.setAddressWrappers(new HashSet<>(addresses));
+        person.setPersonType(type);
+        logger.info("fillLazyAttribute: " + person);
+
+        return person;
     }
     public List<Person> initMergeBuffer(){
         List<Person> lazy = personRepository.findByTemporaryAndLookupOk(true, true);

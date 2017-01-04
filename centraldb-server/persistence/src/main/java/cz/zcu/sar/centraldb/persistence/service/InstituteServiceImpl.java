@@ -24,13 +24,15 @@ public class InstituteServiceImpl extends BaseServiceImpl<Institute, Long, Insti
     public void updateSyncOut(Long instituteId, Timestamp syncOut) {
         instituteRepository.findOne(instituteId)
                 .ifPresent(institute -> institute.setLastSyncOut(syncOut));
-    }
+        logger.info("updateSyncOut: id=" + instituteId + ", syncOut=" + syncOut);
 
+    }
     @Override
     public void updateBatchId(String clientId, String batchId) {
         instituteRepository.findByName(clientId).ifPresent(institute -> {
             institute.setLastBatchId(batchId);
             instituteRepository.save(institute);
+            logger.info("updateBatchId: batchId='" + batchId + "', clientId=" + clientId + ", " + institute);
         });
     }
 }

@@ -60,4 +60,12 @@ public class PageRequestWrapper {
             this.sort = sort;
         }
     }
+
+    @Override
+    public String toString() {
+        return "PageRequestWrapper{" +
+                "queryParams=" + queryParams +
+                ", paginationParams=" + paginationParams +
+                '}';
+    }
 }

@@ -28,9 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/")
 public class IndexController {
-    //public class IndexController implements ErrorController {
-        private static final String ERROR_PATH = "error";
-
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -58,6 +55,7 @@ public class IndexController {
         }
     }
 
+    @Secured({ "ROLE_USER" })
     @PostMapping(value = "sec/logout")
     @ResponseBody
     public String performLogout(HttpServletRequest request, HttpServletResponse response, Authentication auth) {
@@ -69,8 +67,7 @@ public class IndexController {
 
     //@Secured({ "ROLE_USER" })
     @GetMapping
-    public String viewIndex(Model model) {
-        model.addAttribute("message", "Hello");
+    public String getIndex() {
         return "index";
     }
 
@@ -80,51 +77,38 @@ public class IndexController {
         return "login";
     }
 
+    @Secured({ "ROLE_USER" })
     @GetMapping(value = "person-list")
     public String getList() {
         return "person-list";
     }
 
+    @Secured({ "ROLE_USER" })
     @GetMapping(value = "home")
     public String getHome() {
         return "home";
     }
 
+    @Secured({ "ROLE_USER" })
     @GetMapping(value = "person")
     public String getPerson() {
         return "person";
     }
 
+    @Secured({ "ROLE_ADMIN" })
     @GetMapping(value = "person-edit")
     public String getPersonEdit() {
         return "person-edit";
     }
 
+    @Secured({ "ROLE_USER" })
     @GetMapping(value = "address")
     public String getAddress() {
-        return "address";
-    }
+        return "address";    }
 
+    @Secured({ "ROLE_ADMIN" })
     @GetMapping(value = "address-edit")
     public String getAddressEdit() {
         return "address-edit";
     }
-
-    @GetMapping(value = "/person/p/{id}")
-    public String getPerson(@PathVariable String id, Model model) {
-        System.out.println(id);
-        model.addAttribute("id", id);
-        return "person";
-    }
-/*
-    //@Secured({ "ROLE_USER" })
-    @RequestMapping(value = ERROR_PATH)
-    public String error() {
-        return "error";
-    }
-
-    @Override
-    public String getErrorPath() {
-        return ERROR_PATH;
-    }*/
 }

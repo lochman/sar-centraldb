@@ -210,4 +210,28 @@ public class PersonWrapper<P extends PersonTypeWrapper, A extends AddressWrapper
     public void setUsePermitted(String usePermitted) {
         this.usePermitted = usePermitted;
     }
+
+    @Override
+    public String toString() {
+        return "PersonWrapper{" +
+                "id=" + getId() +
+                ", foreignId=" + foreignId +
+                ", personType=" + personType +
+                ", addressWrappers=" + addressWrappers +
+                ", name='" + name + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", birthName='" + birthName + '\'' +
+                ", birthplace='" + birthplace + '\'' +
+                ", birthDate=" + birthDate +
+                ", gender='" + gender + '\'' +
+                ", degreeBefore='" + degreeBefore + '\'' +
+                ", degreeAfter='" + degreeAfter + '\'' +
+                ", supervisor='" + supervisor + '\'' +
+                ", description='" + description + '\'' +
+                ", citizenship='" + citizenship + '\'' +
+                ", companyNumber='" + companyNumber + '\'' +
+                ", socialNumber='" + socialNumber + '\'' +
+                ", usePermitted='" + usePermitted + '\'' +
+                '}';
+    }
 }

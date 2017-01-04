@@ -213,5 +213,24 @@ public class AddressWrapper<P extends PersonWrapper, A extends AddressTypeWrappe
         result = 31 * result + (borough != null ? borough.hashCode() : 0);
         return result;
     }
-
+    public String toString() {
+        return "AddressWrapper{" +
+                "id=" + getId() +
+                ", person=" + person.getId() +
+                ", addressType=" + addressType +
+                ", residenceFrom=" + residenceFrom +
+                ", residenceTo=" + residenceTo +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", land_registry_number='" + land_registry_number + '\'' +
+                ", country='" + country + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", phone='" + phone + '\'' +
+                ", fax='" + fax + '\'' +
+                ", district='" + district + '\'' +
+                ", flatAt='" + flatAt + '\'' +
+                ", borough='" + borough + '\'' +
+                '}';
+    }
 }

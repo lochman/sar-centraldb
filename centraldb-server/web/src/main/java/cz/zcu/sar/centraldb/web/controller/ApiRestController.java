@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,6 @@ import java.util.Optional;
  * Created by Petr on 12/23/2016.
  */
 @RestController
-//@Secured({ "ROLE_ADMIN" })
 @RequestMapping("/api/")
 public class ApiRestController {
 
@@ -46,53 +46,51 @@ public class ApiRestController {
         return ResponseEntity.ok().body(userJson);
     }
 
-    //@Secured({ "ROLE_USER" })
+    @Secured({ "ROLE_USER" })
     @PostMapping("person/search/paginated")
     public Page<Person> getPeopleByQuery(@RequestBody PageRequestWrapper request) {
         System.out.println(request.getQueryParams());
         return personService.getPeopleByQuery(request);
     }
 
+    @Secured({ "ROLE_USER" })
     @GetMapping(value = "person/{id}")
-    public ResponseEntity<?> getPersonById(@PathVariable String personId) {
-        Optional<Person> person;
-        try {
-            Long id = Long.parseLong(personId);
-            person = personService.findOne(id);
-        } catch (NumberFormatException e) {
-            person = Optional.empty();
-        }
-        return person.isPresent() ? userNotFound(personId) : ResponseEntity.ok(person);
+    public ResponseEntity<?> getPersonById(@PathVariable Long id) {
+        Optional<Person> person = personService.findOne(id);
+        return person.isPresent() ? ResponseEntity.ok(person.get()) : userNotFound(id.toString());
     }
 
     private ResponseEntity<?> userNotFound(String id) {
         return new ResponseEntity<>("{\"error\": \"Uživatel s id \'" + id + "\' nebyl nalezen.\"}", HttpStatus.NOT_FOUND);
     }
 
+    @Secured({ "ROLE_ADMIN" })
     @PutMapping(value = "person/{id}")
-    public ResponseEntity<?> updatePerson(@PathVariable String id, @RequestBody PersonAddress personAddress, Authentication auth) {
+    public ResponseEntity<?> updatePerson(@PathVariable Long id, @RequestBody PersonAddress personAddress, Authentication auth) {
         Person person = personAddress.getPerson();
-        if (person == null || Long.parseLong(id) != person.getId()) {
-            return userNotFound(id);
+        if (person == null || id != person.getId()) {
+            return userNotFound(id.toString());
         }
         personService.save(person);
         person.setModifiedBy(auth.getName());
-        System.out.println("update person id" + person.getId() + " adresy " + personAddress.getAddressWrappers());
-        personService.saveAddress(person, personAddress, auth.getName());
-        System.out.println("person.addressWrappers = " + person.getAddressWrappers());
+        if(personAddress.getAddressWrappers().length > 0) {
+            personService.saveAddress(person, personAddress, auth.getName());
+        }
         return ResponseEntity.ok("{\"status\": true}");
     }
 
+    @Secured({ "ROLE_USER" })
     @GetMapping(value = "person/types")
     public ResponseEntity<?> getPersonTypes() {
         return ResponseEntity.ok(personTypeService.findAll());
     }
-
+    @Secured({ "ROLE_USER" })
     @GetMapping(value = "address/types")
     public ResponseEntity<?> getAddressTypes() {
         return ResponseEntity.ok(addressTypeService.findAll());
     }
 
+    @Secured({ "ROLE_ADMIN" })
     @PostMapping(value = "person")
     public ResponseEntity<?> createNewPerson( @RequestBody PersonAddress personAddress, Authentication auth) {
         Person person = personService.createPerson(personAddress, auth.getName());

@@ -23,4 +23,12 @@ public class PersonTypeWrapper extends BaseObject {
 
     public void setDescription(String description) { this.description = description; }
 
+    @Override
+    public String toString() {
+        return "PersonTypeWrapper{" +
+                "id=" + getId() +
+                ", personType='" + personType + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
