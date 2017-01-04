@@ -3,6 +3,7 @@ package cz.zcu.sar.centraldb.core;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
+import cz.zcu.sar.centraldb.merger.Normalizer;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
@@ -22,23 +23,24 @@ public class SyncServiceImpl implements SyncService {
 
     @Autowired
     private RequestQueue requestQueue;
-
     @Autowired
     private SyncQueue syncQueue;
-
     @Autowired
     private PersonService personService;
-
     @Autowired
     private InstituteService instituteService;
+    @Autowired
+    private Normalizer normalizer;
 
     @Override
     public Request pushRequest(Batch batch) {
-        Request request = requestQueue.push(batch);
+        Request request = new Request(batch.getId(),
+                batch.getClientId(), normalizer.normalize(batch.getPersons()));
         for (Person person : request.getPeople()) {
             personService.savePersonAsTemp(person);
         }
         instituteService.updateBatchId(batch.getClientId(), batch.getId());
+        requestQueue.push(request);
         LOGGER.debug("Pushing request with Id={} into queue", batch.getId());
         return request;
     }

@@ -16,9 +16,6 @@ import java.util.Queue;
 @Component
 public class RequestQueueImpl implements RequestQueue {
 
-    @Autowired
-    private Normalizer normalizer;
-
     private Queue<Request> queue;
 
     RequestQueueImpl() {
@@ -28,14 +25,6 @@ public class RequestQueueImpl implements RequestQueue {
     @PostConstruct
     private void init() {
         queue = new LinkedList<>();
-    }
-
-    @Override
-    public Request push(Batch batch) {
-        Request request = new Request(batch.getId(),
-                batch.getClientId(), normalizer.normalize(batch.getPersons()));
-        queue.add(request);
-        return request;
     }
 
     @Override
