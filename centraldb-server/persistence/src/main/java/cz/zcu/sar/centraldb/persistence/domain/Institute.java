@@ -1,29 +1,31 @@
 package cz.zcu.sar.centraldb.persistence.domain;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.sql.Timestamp;
-import java.util.Set;
 
 /**
  * Created by Matej Lochman on 17.11.16.
  */
-
 
 @Entity
 public class Institute {
 
     @Id
     private Long id;
-
-    @Column(nullable = false)
     private String name;
-
-
     private String description;
-
     private String lastBatchId;
     private Timestamp lastSyncIn;
     private Timestamp lastSyncOut;
+
+    public Institute() {
+    }
+
+    public Institute(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -40,8 +42,6 @@ public class Institute {
     public void setName(String name) {
         this.name = name;
     }
-
-
 
     public String getDescription() {
         return description;

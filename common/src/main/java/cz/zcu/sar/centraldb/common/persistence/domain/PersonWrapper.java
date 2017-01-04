@@ -216,8 +216,8 @@ public class PersonWrapper<P extends PersonTypeWrapper, A extends AddressWrapper
         return "PersonWrapper{" +
                 "id=" + getId() +
                 ", foreignId=" + foreignId +
-                ", personType=" + personType +
-                ", addressWrappers=" + addressWrappers +
+//                ", personType=" + personType +
+//                ", addressWrappers=" + addressWrappers +
                 ", name='" + name + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", birthName='" + birthName + '\'' +

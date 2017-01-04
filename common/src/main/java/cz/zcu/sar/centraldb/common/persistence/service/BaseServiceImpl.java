@@ -1,11 +1,11 @@
 package cz.zcu.sar.centraldb.common.persistence.service;
 
 import cz.zcu.sar.centraldb.common.persistence.repository.BaseRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +18,7 @@ public class BaseServiceImpl<T, ID extends Serializable, R extends BaseRepositor
     @Autowired
     private R repository;
 
-    protected final Logger logger = Logger.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public T save(T object) {
         logger.info("save: "+object.toString());
@@ -27,13 +27,13 @@ public class BaseServiceImpl<T, ID extends Serializable, R extends BaseRepositor
 
     public List<T> findAll() {
         List<T> all = repository.findAll(null);
-        logger.info("findAll: listSize=" + all.size());
+//        logger.debug("findAll: listSize=" + all.size());
         return all;
     }
 
     public Optional<T> findOne(ID id) {
         Optional<T> one = repository.findOne(id);
-        logger.info("findOne: id=" + id + ", " + one);
+//        logger.debug("findOne: id=" + id + ", " + one);
         return one;
     }
 

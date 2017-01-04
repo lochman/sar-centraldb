@@ -7,6 +7,8 @@ import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import cz.zcu.sar.centraldb.synchronization.SyncQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SyncServiceImpl implements SyncService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SyncServiceImpl.class);
 
     @Autowired
     private RequestQueue requestQueue;
@@ -36,11 +39,13 @@ public class SyncServiceImpl implements SyncService {
             personService.savePersonAsTemp(person);
         }
         instituteService.updateBatchId(batch.getClientId(), batch.getId());
+        LOGGER.debug("Pushing request with Id={} into queue", batch.getId());
         return request;
     }
 
     @Override
     public Request pullRequest() {
+        LOGGER.debug("Pulling request from queue");
         return requestQueue.pull();
     }
 
@@ -51,8 +56,9 @@ public class SyncServiceImpl implements SyncService {
             Long id = Long.parseLong(instituteId);
             batch.setPersons(syncQueue.pullData(id, size).toArray(new PersonWrapper[0]));
             batch.setSize(batch.getPersons().length);
+            LOGGER.info("Retrieved data for institute {} of size {}", instituteId, batch.getSize());
         } catch (NumberFormatException e) {
-            //TODO log
+            LOGGER.warn("Failed to parse instituteId {} before pulling from syncQueue", instituteId);
         }
         return batch;
     }
@@ -63,7 +69,9 @@ public class SyncServiceImpl implements SyncService {
         try {
             Long id = Long.parseLong(confirmed.getClientId());
             result = syncQueue.updateLastSync(id, confirmed.getLastDate());
+            LOGGER.info("Confirming batch from institute {} with lastDate {}", confirmed.getClientId(), confirmed.getLastDate());
         } catch (NumberFormatException e) {
+            LOGGER.warn("Failed to parse instituteId {} while confirming batch", confirmed.getClientId());
             return false;
         }
         return result;

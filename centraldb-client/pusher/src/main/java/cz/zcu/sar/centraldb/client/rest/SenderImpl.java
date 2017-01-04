@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Marek Rasocha
@@ -42,7 +43,7 @@ public class SenderImpl implements Sender {
         try {
             String result = restTemplate.postForObject(uriBatch, clientId, String.class);
             LOGGER.debug("Received last batch id {}", result);
-            return result.equals(batchId) ? MyResponse.SEND_NEW : MyResponse.SEND_OLD;
+            return Objects.equals(result, batchId) ? MyResponse.SEND_NEW : MyResponse.SEND_OLD;
         } catch (HttpClientErrorException e) {
             HttpStatus statusCode = e.getStatusCode();
             // if not found - client dont have a mark about sync -> send batch

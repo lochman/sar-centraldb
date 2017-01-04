@@ -16,13 +16,15 @@ public class AppRunner implements CommandLineRunner {
     FetcherRunner fetcherRunner;
     @Autowired
     PusherRunner pusherRunner;
+    @Autowired
+    TestDataLoader testDataLoader;
 
     @Override
     public void run(String... args) throws Exception {
+        testDataLoader.run();
         pusherRunner.start();
         fetcherRunner.start();
         pusherRunner.join();
         fetcherRunner.join();
-
     }
 }

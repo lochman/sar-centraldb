@@ -3,8 +3,11 @@ package cz.zcu.sar.centraldb.rest;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
 import cz.zcu.sar.centraldb.core.SyncService;
+import cz.zcu.sar.centraldb.core.SyncServiceImpl;
 import cz.zcu.sar.centraldb.persistence.domain.Institute;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
 /**
@@ -20,7 +24,7 @@ import java.util.Optional;
  */
 @RestController
 public class RestControler {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestControler.class);
     @Autowired
     private SyncService syncService;
 
@@ -36,7 +40,14 @@ public class RestControler {
         } catch (NumberFormatException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return institute.isPresent() ? new ResponseEntity<>(institute.get().getLastBatchId(), HttpStatus.OK) : new ResponseEntity<>("NOT FOUND",HttpStatus.NOT_FOUND);
+        if (institute.isPresent() && institute.get().getLastBatchId() != null) {
+            String id = institute.get().getLastBatchId();
+            LOGGER.info("Last batch id of institute {} is {}", instituteId, id);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } else {
+            LOGGER.info("Institute {} has no lastBatchId yet", instituteId);
+            return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/data")

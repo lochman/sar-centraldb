@@ -6,14 +6,13 @@ import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonTypeWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.merger.UtilService;
-import cz.zcu.sar.centraldb.persistence.domain.Address;
-import cz.zcu.sar.centraldb.persistence.domain.AddressType;
-import cz.zcu.sar.centraldb.persistence.domain.Person;
-import cz.zcu.sar.centraldb.persistence.domain.PersonType;
+import cz.zcu.sar.centraldb.persistence.domain.*;
 import cz.zcu.sar.centraldb.persistence.service.AddressTypeService;
+import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import cz.zcu.sar.centraldb.persistence.service.PersonTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -37,7 +36,22 @@ public class TestDataLoader {
     private AddressTypeService addressTypeService;
 
     @Autowired
+    private InstituteService instituteService;
+
+    @Autowired
     private UtilService utilService;
+
+    private final Map<Long, String> institutes = new HashMap<Long, String>(){{
+        put(0L, "Praha");
+        put(1L, "Plzen");
+        put(2L, "Ostrava");
+    }};
+
+    private void initInstitutes() {
+        for (Map.Entry<Long, String> entry : institutes.entrySet()) {
+            instituteService.save(new Institute(entry.getKey(), entry.getValue()));
+        }
+    }
 
     public void initTypes(){
         List<PersonType> personTypes = personTypeService.findAll();
@@ -49,7 +63,8 @@ public class TestDataLoader {
             addressTypes.addAll(initAddressType());
         }
     }
-    public void run(boolean temp,int number){
+    public void run(boolean temp,int number) {
+        initInstitutes();
         //Create person types
         Random random = new Random();
         List<PersonType> personTypes = personTypeService.findAll();

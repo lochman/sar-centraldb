@@ -1,6 +1,8 @@
 package cz.zcu.sar.centraldb.client.pusher;
 
 import cz.zcu.sar.centraldb.client.fetcher.Fetcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,19 +15,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class FetcherRunner extends Thread{
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(FetcherRunner.class);
     @Value("${thread.fetcher.timeout}")
     private long timeout;
     @Autowired
     private Fetcher fetcher;
 
-    @Autowired
-    TestDataLoader testDataLoader;
-
     /**
      * Fetch data from server
      */
-    public synchronized void run(){
+    public synchronized void run() {
+        LOGGER.info("Fetcher started with timeout set to {}", timeout);
         boolean running=true;
         while (running){
             fetcher.fetchData();
