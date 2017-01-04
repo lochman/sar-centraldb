@@ -120,9 +120,13 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     @Override
     @Transactional
     public void createPerson(Person person) {
-        save(person);
+        person = save(person);
         if (person.getAddressWrappers()!=null){
-            person.getAddressWrappers().forEach(addressRepository::save);
+            for (Address a : person.getAddressWrappers()){
+                a.setPerson(person);
+                addressRepository.save(a);
+                person.getAddressWrappers().forEach(addressRepository::save);
+            }
         }
     }
 

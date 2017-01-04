@@ -18,8 +18,8 @@ import java.util.List;
  */
 @Service
 public class PusherImpl implements Pusher {
-    @Value("${startTime}")
-    private long START_TIME;
+//    @Value("${startTime}")
+    private long START_TIME = System.currentTimeMillis() - 8*24*60*60*1000;
     private Synchronization lastSync;
     @Autowired
     private BatchCreator creator;

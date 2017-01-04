@@ -75,8 +75,8 @@ public class MergerImpl implements Merger {
                 old.setPerson(temporal);
                 address.add(old);
                 if (!address1.getId().equals(old.getId())) {
-                    address1.setAddressType(null);
-                    address1.setPerson(null);
+//                    address1.setAddressType(null);
+//                    address1.setPerson(null);
                     removed.add(address1);
                 }
             }else{
