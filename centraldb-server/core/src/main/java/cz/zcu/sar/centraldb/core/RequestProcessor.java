@@ -10,25 +10,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by Matej Lochman on 2.1.17.
- */
+import javax.annotation.PostConstruct;
 
+/**
+ * @author Marek Rasocha
+ *         date 03.01.2017.
+ */
 @Component
 public class RequestProcessor implements CommandLineRunner {
-
     private static final Logger logger = LoggerFactory.getLogger(RequestProcessor.class);
 
+    private final long TIMEOUT = 10000;
     @Autowired
-    private RequestQueue requestQueue;
+    private TestDataLoader testDataLoader;
     @Autowired
     private Merger merger;
     @Autowired
     private PersonService personService;
     @Autowired
+    private RequestQueue requestQueue;
+    @Autowired
     private PersonLookup personLookup;
 
-    private final long TIMEOUT = 1000;
+    @PostConstruct
+    private void initData() {
+        testDataLoader.run(false, 100);
+        testDataLoader.run(true, 200);
+        Request request = new Request();
+        request.setPeople(personService.initMergeBuffer());
+        if (!request.getPeople().isEmpty()) {
+            requestQueue.push(request);
+        }
+        logger.info("Request processor started");
+    }
 
     private void processRequest() {
         Request request = requestQueue.pull();
@@ -41,20 +55,25 @@ public class RequestProcessor implements CommandLineRunner {
             }
             merger.mergeData(person, persist);
         }
+        logger.info("Processed request {} from client {}.", request.getBatchId(), request.getClientId());
     }
 
     @Override
-    public synchronized void run(String... strings) throws Exception {
-        logger.info("Request processor started");
+    public void run(String... strings) throws Exception {
         while (true) {
             if (!requestQueue.isEmpty()) {
                 processRequest();
+            } else {
+                sleep();
             }
-            try {
-                wait(TIMEOUT);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        }
+    }
+
+    private synchronized void sleep() {
+        try {
+            wait(TIMEOUT);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,11 +1,12 @@
 package cz.zcu.sar.centraldb.client.rest;
 
-import cz.zcu.sar.centraldb.client.persistence.domain.Address;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.domain.PersonType;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.common.synchronization.ConfirmFetch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,6 +24,8 @@ import java.util.List;
  */
 @Service
 public class SenderImpl implements Sender {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SenderImpl.class);
+
     @Value("${uri.lastBatch}")
     String uriBatch;
     @Value("${uri.getData}")
@@ -38,8 +41,9 @@ public class SenderImpl implements Sender {
         RestTemplate restTemplate = new RestTemplate();
         try {
             String result = restTemplate.postForObject(uriBatch, clientId, String.class);
+            LOGGER.debug("Received last batch id {}", result);
             return result.equals(batchId) ? MyResponse.SEND_NEW : MyResponse.SEND_OLD;
-        }catch (HttpClientErrorException e){
+        } catch (HttpClientErrorException e) {
             HttpStatus statusCode = e.getStatusCode();
             // if not found - client dont have a mark about sync -> send batch
             // Other status code - wait
@@ -47,30 +51,39 @@ public class SenderImpl implements Sender {
         }
     }
     public void sendData(List<Person> persons,String batchId) {
-        Batch batchWrapper = new Batch(clientId, normalizedPerson(persons));
+        Batch batch = new Batch(clientId, normalizedPerson(persons));
+        LOGGER.info("Sending batch {} of size {}", batch.getId(), batch.getSize());
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         try{
-        restTemplate.postForObject(uriData, batchWrapper,Batch.class);
+        restTemplate.postForObject(uriData, batch, Batch.class);
         }catch (HttpClientErrorException e){
+            LOGGER.error("Failed to send batch {} on URI {}", batch.getId(), uriData);
             System.out.println(e.toString());
         }
     }
 
 
     public List<Person> fetchData(int size) {
-        Batch batchWrapper = new Batch();
-        batchWrapper.setClientId(clientId);
-        batchWrapper.setSize(size);
+        Batch batchRequest = new Batch();
+        batchRequest.setClientId(clientId);
+        batchRequest.setSize(size);
+        LOGGER.info("Sending fetch request to server of size {}", size);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        Batch batch = restTemplate.postForObject(fetchData, batchWrapper, Batch.class);
         try {
-            return batch != null ? normalizedPerson(batch.getPersons()) : new ArrayList<>();
-        }catch (HttpClientErrorException e){return new ArrayList<>();}
+            Batch batch = restTemplate.postForObject(fetchData, batchRequest, Batch.class);
+            if (batch == null) {
+                return new ArrayList<>();
+            } else {
+                LOGGER.info("Received batch {} of size {}", batch.getId(), batch.getSize());
+                return normalizedPerson(batch.getPersons());
+            }
+        } catch (HttpClientErrorException e) {
+            LOGGER.error("Failed to receive batch from request {} on URI {}", batchRequest.getId(), fetchData);
+            return new ArrayList<>();
+        }
     }
-
-
 
     public void confirmFetchData(Timestamp lastDate, int size) {
         ConfirmFetch param = new ConfirmFetch(clientId, lastDate,size);

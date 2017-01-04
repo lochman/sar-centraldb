@@ -117,8 +117,8 @@ public class SharedSyncQueue implements SyncQueue {
         List<PersonWrapper> data = new LinkedList<>();
         Timestamp lastSyncTime = lastSync.get(instituteId);
         PersonWrapper first;
-//        first = findFirstByIterator(lastSyncTime);
-        first = findFirstByMap(lastSyncTime);
+        first = findFirstByIterator(lastSyncTime);
+//        first = findFirstByMap(lastSyncTime);
         if (first != null) {
             data.addAll(queue.tailSet(first));
         }

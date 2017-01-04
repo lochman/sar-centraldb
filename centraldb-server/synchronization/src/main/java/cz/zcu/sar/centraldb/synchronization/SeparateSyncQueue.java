@@ -6,6 +6,7 @@ import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
@@ -15,6 +16,7 @@ import java.util.*;
  * Created by Matej Lochman on 28.12.16.
  */
 
+//@Component
 public class SeparateSyncQueue implements SyncQueue {
 
     @Autowired
@@ -56,6 +58,9 @@ public class SeparateSyncQueue implements SyncQueue {
     @Override
     public Collection<PersonWrapper> pullData(Long instituteId, int size) {
         PriorityQueue<PersonWrapper> queue = queues.get(instituteId);
+        if (queue == null) {
+            return new LinkedList<>();
+        }
         return Arrays.asList(queue.toArray(new PersonWrapper[0])).subList(0, Math.min(size, queue.size()));
     }
 

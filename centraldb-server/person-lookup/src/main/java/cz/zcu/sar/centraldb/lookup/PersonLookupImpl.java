@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class PersonLookupImpl implements PersonLookup {
 
+
     @Autowired
     PersonService personService;
+
     @Override
     public Person findPerson(Person person) {
         if (person == null) return null;

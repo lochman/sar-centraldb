@@ -19,6 +19,7 @@ public class Batch {
         Arrays.sort(persons, (PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime()));
         this.clientId = clientId;
         this.persons = persons;
+        this.size = persons.length;
     }
 
     public Batch() {

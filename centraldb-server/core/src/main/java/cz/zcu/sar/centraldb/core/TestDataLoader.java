@@ -20,7 +20,8 @@ import java.sql.Timestamp;
 import java.util.*;
 
 /**
- * Created by Matej Lochman on 22.12.16.
+ * @author Marek Rasocha
+ *         date 22.12.16.
  */
 
 @Service
@@ -37,11 +38,6 @@ public class TestDataLoader {
 
     @Autowired
     private UtilService utilService;
-
-
-
-
-
 
     public void initTypes(){
         List<PersonType> personTypes = personTypeService.findAll();
