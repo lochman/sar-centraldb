@@ -24,12 +24,9 @@ angular.module('person', ['ngResource', 'auth', 'address'])
     var self = this;
     self.id = $routeParams.id;
     $scope.id = self.id;
-    console.log("init", self.id);
-    //console.log("init",[[${id}]]);
     self.person = Person.get({id: self.id}, function () {
         $scope.person = self.person;
         $scope.personParams = Object.keys(self.person);
-        console.log("hmm", self.person);
         $scope.error = false;
     }, function () {
         $scope.error = true;
@@ -40,12 +37,11 @@ angular.module('person', ['ngResource', 'auth', 'address'])
     self.goEdit = function () {
         $location.path("person/edit/" + self.id);
     };
-}]).controller('PersonEditController', ['$scope', '$http', 'editPage', 'Person', '$location', '$routeParams', function($scope, $http, editPage, Person, $location, $routeParams) {
+}]).controller('PersonEditController', ['$scope', '$http', '$filter', 'editPage', 'Person', '$location', '$routeParams', function($scope, $http, $filter, editPage, Person, $location, $routeParams) {
     var self = this;
     $scope.editPage = editPage;
     self.id = $routeParams.id;
     $scope.id = self.id;
-    console.log("init", self.id);
     self.person = {};
     $scope.person = {};
     self.person.addressWrappers = [];
@@ -54,7 +50,6 @@ angular.module('person', ['ngResource', 'auth', 'address'])
         method: 'GET',
         url: 'api/person/types'
         }).then(function successCallback(response) {
-            console.log("s", response);
             if(response.data) {
                 $scope.personTypes = response.data;
             }
@@ -65,7 +60,6 @@ angular.module('person', ['ngResource', 'auth', 'address'])
         method: 'GET',
         url: 'api/address/types'
         }).then(function successCallback(response) {
-            console.log("s", response);
             if(response.data) {
                 $scope.addressTypes = response.data;
             }
@@ -77,8 +71,8 @@ angular.module('person', ['ngResource', 'auth', 'address'])
             function () {
                 $scope.person = self.person;
                 $scope.persontype = String(self.person.personType.id);
-                console.log("hmm", self.person, $scope);
                 $scope.error = false;
+                $scope.person.birthDate = $filter('date')(self.person.birthDate, 'd.M.yyyy');
             }, function () {
                 $scope.error = true;
             });
@@ -91,7 +85,6 @@ angular.module('person', ['ngResource', 'auth', 'address'])
                 break;
             }
         }
-        console.log('wtf', $scope.person.addressWrappers);
         //convertor string id to adressType
         for(var i in $scope.person.addressWrappers){
             for(var y in $scope.addressTypes){
@@ -102,7 +95,6 @@ angular.module('person', ['ngResource', 'auth', 'address'])
                 }
             }
         }
-        console.log("send pers", $scope.person, $scope);
         //deep copy
         var copy = JSON.parse(JSON.stringify($scope.person));
         delete copy.addressWrappers;
@@ -110,29 +102,9 @@ angular.module('person', ['ngResource', 'auth', 'address'])
         copy.birthDate = (new Date(copy.birthDate.replace( /(\d+)[^\d]+(\d+)[^\d]+(\d+)/, "$2/$1/$3") )).getTime();
         //convert true/false to 1/0
         copy.usePermitted = copy.usePermitted ? "1" : "0";
-        console.log("datumek", copy.birthDate);
         var obj = {person: copy, addressWrappers: $scope.person.addressWrappers};
         if (editPage){
-           /* $http({
-                method: 'PUT',
-                url: 'api/person/'+self.id,
-                data: obj,
-                headers: {'Content-Type': 'application/json'}
-            }).then(function (resp){
-                console.log(resp);
-                if(resp.status){
-                    $location.path("").search("edited");
-                }
-                console.log("Chyba pri zpracovani na serveru");
-            }, function(err) {
-                console.log("Chyba pri zpracovani na serveru");
-            });
-
-*/
-
-
             Person.update(obj, function (resp){
-                console.log(resp);
                 if(resp.status){
                     $location.path("").search("edited");
                 }else {
@@ -143,7 +115,6 @@ angular.module('person', ['ngResource', 'auth', 'address'])
             });
         }else{
             Person.create(obj, function (resp){
-                console.log(resp);
                 if(resp.status){
                     $location.path("").search("created");
                 }else {
@@ -155,15 +126,10 @@ angular.module('person', ['ngResource', 'auth', 'address'])
         }
     };
     self.addAddress = function (){
-        console.log("pridavam");
         $scope.person.addressWrappers.push({});
-        console.log('add', $scope.addressWrappers);
-        //$scope.$apply();
     };
     self.removeAddress = function (index){
-        console.log("odebiram ", index);
         $scope.person.addressWrappers.splice(index,  1);
-        //$scope.$apply();
     }
 }]).controller('PersonListController', ['$scope', '$http', 'Person', function($scope, $http, Person) {
     var self = this;
@@ -175,12 +141,10 @@ angular.module('person', ['ngResource', 'auth', 'address'])
     $scope.paginationParams.limit = 10;
     $scope.paginationParams.totalCount = 0;
     $scope.paginationParams.maxSize = 5;
-    console.log("nechapu s");
     $scope.personTypes = $http({
         method: 'GET',
         url: 'api/person/types'
     }).then(function successCallback(response) {
-        console.log("s", response);
         if(response.data) {
             $scope.personTypes = response.data;
         }
@@ -190,16 +154,12 @@ angular.module('person', ['ngResource', 'auth', 'address'])
     self.changePaginationLimit = function(){
         self.paginationParams.limit = $scope.paginationParams.limit;
         self.paginatedSearch();
-        console.log(self.paginationParams)
     };
     self.pageChanged = function() {
         self.paginationParams.currentPage = $scope.paginationParams.currentPage;
-        console.log("stranka na ", $scope.paginationParams.currentPage, $scope.paginationParams.limit);
         self.paginatedSearch();
     };
     self.paginatedSearch = function() {
-        console.log(2);
-        console.log("serch called", $scope);
         if ($scope.name) {
             self.queryParams.name = $scope.name;
         }else{
@@ -235,10 +195,8 @@ angular.module('person', ['ngResource', 'auth', 'address'])
         pp.page = self.paginationParams.currentPage - 1;
         pp.limit = self.paginationParams.limit;
         pp.sort = self.paginationParams.sort;
-        console.log("serchh called", JSON.stringify({queryParams: self.queryParams, paginationParams: pp}));
         Person.paginatedSearch({queryParams: self.queryParams, paginationParams: pp},
             function(data) {
-                console.log("done", data);
                 self.paginationParams.totalCount = Number(data.totalElements);
                 self.paginationParams.currentPage = Number(data.number) + 1;
                 self.paginationParams.limit =  Number(data.size);

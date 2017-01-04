@@ -5,14 +5,12 @@ angular.module('auth', []).factory( 'AuthService', ['$http', '$location', functi
         username: null,
         homePath : '/',
         login : function(credentials, callback) {
-            console.log("login()", credentials.password, credentials.username);
             $http({
                 method: 'POST',
                 url: 'sec/login',
                 data: 'username='+ credentials.username+'&password='+credentials.password,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function successCallback(response) {
-                console.log("s", response);
                 if(response.data.status){
                     auth.isAdmin = response.data.isAdmin;
                     auth.authenticated = true;
@@ -28,13 +26,11 @@ angular.module('auth', []).factory( 'AuthService', ['$http', '$location', functi
             });
         },
         logout : function(callback) {
-            console.log("logout()");
             $http({
                 method: 'POST',
                 url: 'sec/logout',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function successCallback(response) {
-                console.log("su", response);
                 auth.isAdmin = false;
                 auth.authenticated = false;
                 auth.username = null;
@@ -48,7 +44,6 @@ angular.module('auth', []).factory( 'AuthService', ['$http', '$location', functi
                 method: 'GET',
                 url: 'api/user'
             }).then(function (resp){
-                console.log("s", resp.data);
                 if(resp.data.authenticated === true){
                     auth.authenticated = true;
                     auth.username = resp.data.username;
@@ -57,22 +52,16 @@ angular.module('auth', []).factory( 'AuthService', ['$http', '$location', functi
                     auth.authenticated = false;
                     auth.username = null;
                     auth.isAdmin = false;
-                    console.log("unsigned");
                     $location.path("/login").search({});
                 }
-                // this callback will be called asynchronously
-                // when the response is available
             }, function (resp) {
-                console.log("e", resp);
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
+                console.log("error", resp);
             });
         }
     };
     return auth;
 }]).controller('LoginController',['AuthService', '$scope', '$location', '$routeParams', function(AuthService, $scope, $location, $routeParams){
     var self = this;
-    console.log("init login cont");
     self.login = function(){
         var credentials = {username: $scope.username, password: $scope.password};
         AuthService.login(credentials, function(error){
@@ -85,9 +74,7 @@ angular.module('auth', []).factory( 'AuthService', ['$http', '$location', functi
         });
     };
     //process logout
-    console.log($routeParams);
     if($routeParams.logout){
-        console.log("logout z cntr");
         if(AuthService.authenticated) {
             AuthService.logout(function(error){
                 if(error){

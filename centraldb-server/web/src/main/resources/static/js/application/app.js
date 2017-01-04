@@ -39,11 +39,8 @@ App.config(function($routeProvider) {
         })
     ;
 }).run(['AuthService', function(AuthService) {
-    var self  = this;
-    console.log("running app");
     AuthService.authenticate();
 }]).controller('HomeController', ['$scope', '$routeParams', function($scope, $routeParams) {
-    var self = this;
     if($routeParams.created){
         $scope.message = "Nově vytvořená osoba předána ke zpracování.";
     }
@@ -51,20 +48,3 @@ App.config(function($routeProvider) {
         $scope.message = "Změněná osoba předána ke zpracování.";
     }
 }]);
-
-
-/*
-App.run( function($rootScope, $location) {
-    // register listener to watch route changes
-    $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-        if ( $rootScope.loggedUser == null ) {
-            // no logged user, we should be going to #login
-            if ( next.templateUrl == "partials/login.html" ) {
-                // already going to #login, no redirect needed
-            } else {
-                // not going to #login, we should redirect now
-                $location.path( "/login" );
-            }
-        }
-    });
-})*/
