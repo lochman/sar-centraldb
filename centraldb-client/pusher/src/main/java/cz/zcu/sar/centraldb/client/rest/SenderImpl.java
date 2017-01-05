@@ -42,13 +42,19 @@ public class SenderImpl implements Sender {
         RestTemplate restTemplate = new RestTemplate();
         try {
             String result = restTemplate.postForObject(uriBatch, clientId, String.class);
-            LOGGER.debug("Received last batch id {}", result);
+            LOGGER.debug("LastBatchId: Received last batch id {}", result);
             return Objects.equals(result, batchId) ? MyResponse.SEND_NEW : MyResponse.SEND_OLD;
         } catch (HttpClientErrorException e) {
             HttpStatus statusCode = e.getStatusCode();
-            // if not found - client dont have a mark about sync -> send batch
-            // Other status code - wait
-            return statusCode == HttpStatus.NOT_FOUND ? MyResponse.SEND_NEW : MyResponse.WAIT;
+            if (statusCode == HttpStatus.NOT_FOUND) {
+                // if not found - client dont have a mark about sync -> send batch
+                LOGGER.debug("LastBatchId: Server has no last batch id yet");
+                return MyResponse.SEND_NEW;
+            } else {
+                // Other status code - wait
+                LOGGER.warn("LastBatchId: error retrieving last batch id. Status code: {}", statusCode);
+                return MyResponse.WAIT;
+            }
         }
     }
     public void sendData(List<Person> persons,String batchId) {

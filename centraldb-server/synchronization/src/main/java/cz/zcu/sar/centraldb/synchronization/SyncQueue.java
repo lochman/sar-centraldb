@@ -12,6 +12,7 @@ import java.util.List;
  */
 
 public interface SyncQueue {
+    void initQueue();
     boolean pushData(List<Person> data, Long instituteId);
     Collection<PersonWrapper> pullData(Long instituteId, int size);
     boolean updateLastSync(Long instituteId, Timestamp lastSync);

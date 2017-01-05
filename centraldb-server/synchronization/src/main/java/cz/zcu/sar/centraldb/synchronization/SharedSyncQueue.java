@@ -33,8 +33,8 @@ public class SharedSyncQueue implements SyncQueue {
 
     }
 
-    @PostConstruct
-    private void initQueue() {
+    @Override
+    public void initQueue() {
         List<Institute> institutes = instituteService.findAll();
         List<PersonWrapper> unSynchronized;
         lastSync = new HashMap<>();

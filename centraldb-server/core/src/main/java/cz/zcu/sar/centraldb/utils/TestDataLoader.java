@@ -2,6 +2,7 @@ package cz.zcu.sar.centraldb.utils;
 
 import cz.zcu.sar.centraldb.persistence.domain.*;
 import cz.zcu.sar.centraldb.persistence.service.*;
+import cz.zcu.sar.centraldb.synchronization.SyncQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -15,5 +15,5 @@ import java.util.Optional;
 @Transactional
 public interface InstituteService extends BaseService<Institute, Long> {
     void updateSyncOut(Long instituteId, Timestamp syncOut);
-    void updateBatchId(String clientId, String batchId);
+    void updateLastBatchId(String clientId, String batchId);
 }

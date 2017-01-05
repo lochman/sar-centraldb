@@ -28,19 +28,19 @@ public class InstituteServiceImpl extends BaseServiceImpl<Institute, Long, Insti
 
     }
     @Override
-    public void updateBatchId(String clientId, String batchId) {
+    public void updateLastBatchId(String clientId, String batchId) {
         try {
             Optional<Institute> institute = instituteRepository.findOne(Long.parseLong(clientId));
             institute.ifPresent(theInstitute -> {
                 theInstitute.setLastBatchId(batchId);
                 instituteRepository.save(theInstitute);
-                logger.info("updateBatchId: batchId='" + batchId + "', clientId=" + clientId + ", " + theInstitute);
+                logger.info("updateLastBatchId: batchId='{}', clientId='{}' {}", batchId, clientId, theInstitute.getName());
             });
             if (!institute.isPresent()) {
-                logger.warn("updateBatchId: failed to find institute with id {}", clientId);
+                logger.warn("updateLastBatchId: failed to find institute with id {}", clientId);
             }
         } catch (NumberFormatException e) {
-            logger.warn("updateBatchId: failed to parse institute id {}", clientId);
+            logger.warn("updateLastBatchId: failed to parse institute id {}", clientId);
         }
     }
 }

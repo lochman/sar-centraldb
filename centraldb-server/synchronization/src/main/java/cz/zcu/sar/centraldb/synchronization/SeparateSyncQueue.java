@@ -31,8 +31,8 @@ public class SeparateSyncQueue implements SyncQueue {
 
     public SeparateSyncQueue() { }
 
-    @PostConstruct
-    private void initQueue() {
+    @Override
+    public void initQueue() {
         List<Institute> institutes = instituteService.findAll();
         List<PersonWrapper> unSynchronized;
         queues = new HashMap<>();

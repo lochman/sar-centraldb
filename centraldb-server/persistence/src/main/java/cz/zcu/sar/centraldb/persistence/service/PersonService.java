@@ -23,7 +23,6 @@ public interface PersonService extends BaseService<Person, Long> {
     Person savePersonAsTemp(Long personId);
     Person createPerson(PersonAddress personAddress, String modifiedBy);
     Person savePersonWithAddresses(Person person);
-//    Person createPerson(Person person);
     void saveAddress(Person person, PersonAddress personAddress, String modifiedBy);
     Person findPersonByNumbers(String socialNumber, String companyNumber);
     Person findPerson(Long id);

@@ -39,9 +39,9 @@ public class SyncServiceImpl implements SyncService {
         for (Person person : request.getPeople()) {
             personService.savePersonAsTemp(person.getId());
         }
-        instituteService.updateBatchId(batch.getClientId(), batch.getBatchId());
+        instituteService.updateLastBatchId(batch.getClientId(), batch.getBatchId());
         requestQueue.push(request);
-        LOGGER.debug("Pushing request with Id={} into queue", batch.getBatchId());
+        LOGGER.debug("Pushing request with id='{}' into queue", batch.getBatchId());
         return request;
     }
 
