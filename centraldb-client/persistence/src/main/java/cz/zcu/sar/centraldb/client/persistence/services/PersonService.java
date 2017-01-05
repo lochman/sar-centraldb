@@ -16,4 +16,5 @@ public interface PersonService extends BaseService<Person, Long> {
     Person findPerson(Long id);
     Person findPersonByGlobalId(Long id);
     List<Person> findPersonByDate(Timestamp startDate, Timestamp endDate);
+    public Person savePersonWithAddresses(Person person);
 }

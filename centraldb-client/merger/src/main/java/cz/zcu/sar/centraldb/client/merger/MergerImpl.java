@@ -1,12 +1,14 @@
 package cz.zcu.sar.centraldb.client.merger;
 
 import cz.zcu.sar.centraldb.client.persistence.domain.Address;
+import cz.zcu.sar.centraldb.client.persistence.domain.AddressType;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.services.AddressTypeService;
 import cz.zcu.sar.centraldb.client.persistence.services.PersonService;
 import cz.zcu.sar.centraldb.client.persistence.services.PersonTypeService;
 import cz.zcu.sar.centraldb.client.persistence.services.UtilService;
 import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,10 +50,14 @@ public class MergerImpl implements Merger {
                 if(p.getAddressWrappers()==null) p.setAddressWrappers(new HashSet<>());
                 // null id and merge address
                 p.setAddressWrappers(mergeAddress(new ArrayList<>(p.getAddressWrappers()), new ArrayList<>(save.getAddressWrappers())));
+            }else{
+                if(p.getAddressWrappers()==null) p.setAddressWrappers(new HashSet<>());
+                // null id and merge address
+                p.setAddressWrappers(mergeAddress(new ArrayList<>(p.getAddressWrappers()), new ArrayList<>()));
             }
             p.setPersonType(personTypeService.mergePersonType(p.getPersonType()));
             p = (Person)utilService.setModifyBy(p,true);
-            personService.createPerson(p);
+            personService.savePersonWithAddresses(p);
         }
         return true;
     }
@@ -67,17 +73,27 @@ public class MergerImpl implements Merger {
     private Set<Address> mergeAddress(List<AddressWrapper> addressNew, List<Address> addressOld) {
         Set<Address> address = new HashSet<>();
         for (AddressWrapper newA : addressNew){
-            Address address1 = new Address(newA);
+            Address address1 = normalizeAddress(newA);
             int index = getAddress(address1, addressOld);
             if (index!=-1){
                 Address old = addressOld.remove(index);
                 address.add(old);
             }else{
+                address1.setId(null);
                 address1.setAddressType(addressTypeService.findAddressType(address1.getAddressType().getId()));
                 address.add(address1);
             }
         }
         address.addAll(addressOld);
+        return address;
+    }
+
+    private Address normalizeAddress(AddressWrapper wrapper) {
+        Address address = new Address();
+        BeanUtils.copyProperties(wrapper, address);
+        AddressType type = new AddressType();
+        BeanUtils.copyProperties(wrapper.getAddressType(), type);
+        address.setAddressType(addressTypeService.findAddressType(type.getId()));
         return address;
     }
 

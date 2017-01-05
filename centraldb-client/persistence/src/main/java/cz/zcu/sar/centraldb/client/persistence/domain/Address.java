@@ -18,7 +18,6 @@ public class Address extends AddressWrapper<Person, AddressType> {
     public Address(AddressWrapper address){
         super();
         BeanUtils.copyProperties(address, this);
-        this.setAddressType(new AddressType(this.addressType));
     }
     @Override
     public boolean equals(Object o) {

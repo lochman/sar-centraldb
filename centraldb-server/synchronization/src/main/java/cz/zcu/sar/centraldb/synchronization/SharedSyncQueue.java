@@ -19,8 +19,8 @@ import java.util.*;
  * Created by Matej Lochman on 23.12.16.
  */
 
-@Primary
-@Component
+//@Primary
+//@Component
 public class SharedSyncQueue implements SyncQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(SharedSyncQueue.class);
     @Autowired

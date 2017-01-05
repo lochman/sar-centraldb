@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.client.persistence.services;
 
+import cz.zcu.sar.centraldb.client.persistence.domain.Address;
 import cz.zcu.sar.centraldb.client.persistence.domain.Person;
 import cz.zcu.sar.centraldb.client.persistence.repository.AddressRepository;
 import cz.zcu.sar.centraldb.client.persistence.repository.AddressTypeRepository;
@@ -11,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Marek Rasocha
@@ -73,5 +72,23 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     }
     public Person findPersonByGlobalId(Long id){
         return personRepository.findByCentralId(id);
+    }
+
+    @Override
+    public Person savePersonWithAddresses(Person person) {
+        Set<Address> addresses = person.getAddressWrappers();
+        Set<Address> addresses1 = new HashSet<>();
+        person.setAddressWrappers(null);
+        person = personRepository.save(person);
+        for (Address address : addresses) {
+            address.setPerson(person);
+            if (address.getAddressType()!=null && address.getAddressType().getId()>2){
+                System.out.println();
+            }
+            addresses1.add(addressRepository.save(address));
+        }
+        person.setAddressWrappers(addresses1);
+        person = personRepository.save(person);
+        return person;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -55,6 +56,9 @@ public class SenderImpl implements Sender {
                 LOGGER.warn("LastBatchId: error retrieving last batch id. Status code: {}", statusCode);
                 return MyResponse.WAIT;
             }
+        } catch (ResourceAccessException e){
+            LOGGER.error("Connection refused:");
+            return MyResponse.WAIT;
         }
     }
     public void sendData(List<Person> persons,String batchId) {
@@ -67,6 +71,9 @@ public class SenderImpl implements Sender {
         }catch (HttpClientErrorException e){
             LOGGER.error("Failed to send batch {} on URI {}", batch.getBatchId(), uriData);
             System.out.println(e.toString());
+        }
+        catch (ResourceAccessException e){
+            LOGGER.error("Connection refused:");
         }
     }
 
@@ -90,6 +97,11 @@ public class SenderImpl implements Sender {
             LOGGER.error("Failed to receive batch from request {} on URI {}", batchRequest.getBatchId(), fetchData);
             return new ArrayList<>();
         }
+        catch (ResourceAccessException e){
+            LOGGER.error("Connection refused:");
+            return new ArrayList<>();
+
+        }
     }
 
     public void confirmFetchData(Timestamp lastDate, int size) {
@@ -100,6 +112,11 @@ public class SenderImpl implements Sender {
             restTemplate.postForObject(confirmFetch, param, ConfirmFetch.class);
         }catch (HttpClientErrorException e){
             System.out.println(e.toString());
+        }
+        catch (ResourceAccessException e){
+            LOGGER.error("Connection refused:");
+            return;
+
         }
     }
 
