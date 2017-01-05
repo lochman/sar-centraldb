@@ -82,9 +82,6 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         person = personRepository.save(person);
         for (Address address : addresses) {
             address.setPerson(person);
-            if (address.getAddressType()!=null && address.getAddressType().getId()>2){
-                System.out.println();
-            }
             addresses1.add(addressRepository.save(address));
         }
         person.setAddressWrappers(addresses1);

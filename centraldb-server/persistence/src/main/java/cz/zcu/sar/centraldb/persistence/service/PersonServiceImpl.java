@@ -76,7 +76,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     @Override
     public Person savePersonAsTemp(Person person) {
         person.setTemporary(true);
-        return personRepository.save(person);
+        return savePersonWithAddresses(person);
     }
 
     @Override
@@ -142,11 +142,12 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         Set<Address> addresses1 = new HashSet<>();
         person.setAddressWrappers(null);
         person = personRepository.save(person);
-        if (addresses != null) {
-            for (Address address : addresses) {
-                address.setPerson(person);
-                addresses1.add(addressRepository.save(address));
-            }
+        if (addresses == null) {
+            return person;
+        }
+        for (Address address : addresses) {
+            address.setPerson(person);
+            addresses1.add(addressRepository.save(address));
         }
         person.setAddressWrappers(addresses1);
         person = personRepository.save(person);

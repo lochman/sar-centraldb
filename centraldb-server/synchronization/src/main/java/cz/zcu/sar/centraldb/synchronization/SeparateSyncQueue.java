@@ -50,7 +50,7 @@ public class SeparateSyncQueue implements SyncQueue {
             }
             if (!unSynchronized.isEmpty()) {
                 queues.get(institute.getId()).addAll(unSynchronized);
-                LOGGER.info("SyncQ: loaded {} records from DB for institute {}", unSynchronized.size(), institute.getId());
+                LOGGER.info("SyncQueue: loaded {} records from DB for institute {}", unSynchronized.size(), institute.getId());
             }
         }
         LOGGER.info("Synchronization queue initialized");
@@ -90,10 +90,11 @@ public class SeparateSyncQueue implements SyncQueue {
     @Override
     public Collection<PersonWrapper> pullData(Long instituteId, int size) {
         PriorityQueue<PersonWrapper> queue = queues.get(instituteId);
-        LOGGER.error("SYNCQ: pull Q size {}", queues.size());
+//        LOGGER.debug("SyncQueue: pull queue is {}, instituteID is {}", queue, instituteId);
         if (queue == null) {
             return new LinkedList<>();
         }
+        LOGGER.debug("SyncQueue: pull of size {}, queue size is {}", size, queue.size());
         return Arrays.asList(queue.toArray(new PersonWrapper[0])).subList(0, Math.min(size, queue.size()));
     }
 
@@ -105,6 +106,6 @@ public class SeparateSyncQueue implements SyncQueue {
             person = queue.poll();
         }
         instituteService.updateSyncOut(instituteId, lastSync);
-        return Objects.equals(queue.peek().getModifiedTime(), lastSync);
+        return queue.isEmpty() || Objects.equals(queue.peek().getModifiedTime(), lastSync);
     }
 }
