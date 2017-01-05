@@ -24,8 +24,7 @@ public class InstituteServiceImpl extends BaseServiceImpl<Institute, Long, Insti
     public void updateSyncOut(Long instituteId, Timestamp syncOut) {
         instituteRepository.findOne(instituteId)
                 .ifPresent(institute -> institute.setLastSyncOut(syncOut));
-        logger.info("updateSyncOut: id=" + instituteId + ", syncOut=" + syncOut);
-
+//        logger.info("updateSyncOut: id=" + instituteId + ", syncOut=" + syncOut);
     }
     @Override
     public void updateLastBatchId(String clientId, String batchId) {
@@ -34,7 +33,7 @@ public class InstituteServiceImpl extends BaseServiceImpl<Institute, Long, Insti
             institute.ifPresent(theInstitute -> {
                 theInstitute.setLastBatchId(batchId);
                 instituteRepository.save(theInstitute);
-                logger.info("updateLastBatchId: batchId='{}', clientId='{}' {}", batchId, clientId, theInstitute.getName());
+//                logger.info("updateLastBatchId: batchId='{}', clientId='{}' {}", batchId, clientId, theInstitute.getName());
             });
             if (!institute.isPresent()) {
                 logger.warn("updateLastBatchId: failed to find institute with id {}", clientId);

@@ -5,6 +5,8 @@ import cz.zcu.sar.centraldb.persistence.domain.Institute;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -17,13 +19,12 @@ import java.util.*;
  * Created by Matej Lochman on 28.12.16.
  */
 
-@Primary
-@Component
+//@Primary
+//@Component
 public class SeparateSyncQueue implements SyncQueue {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(SeparateSyncQueue.class);
     @Autowired
     private PersonService personService;
-
     @Autowired
     private InstituteService instituteService;
 
@@ -34,20 +35,30 @@ public class SeparateSyncQueue implements SyncQueue {
     @Override
     public void initQueue() {
         List<Institute> institutes = instituteService.findAll();
+        List<PersonWrapper> wholeDB = personService.getUnsynchronized(null);
         List<PersonWrapper> unSynchronized;
+        Timestamp time;
         queues = new HashMap<>();
         for (Institute institute : institutes) {
             queues.put(institute.getId(), new PriorityQueue<>((PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime())));
-            unSynchronized = personService.getUnsynchronized(institute.getLastSyncOut());
+            time = institute.getLastSyncOut();
+            if (time == null) {
+                unSynchronized = new ArrayList<>(wholeDB.size());
+                unSynchronized.addAll(wholeDB);
+            } else {
+                unSynchronized = personService.getUnsynchronized(time);
+            }
             if (!unSynchronized.isEmpty()) {
                 queues.get(institute.getId()).addAll(unSynchronized);
+                LOGGER.info("SyncQ: loaded {} records from DB for institute {}", unSynchronized.size(), institute.getId());
             }
         }
+        LOGGER.info("Synchronization queue initialized");
     }
 
     private void checkModifiedTime(Person person, Long instituteId) {
         Timestamp time = person.getModifiedTime();
-        if (time == null) {
+        if (time == null || !queues.containsKey(instituteId)) {
             return;
         }
         PersonWrapper personWrapper = queues.get(instituteId).peek();
@@ -61,7 +72,7 @@ public class SeparateSyncQueue implements SyncQueue {
 
     @Override
     public boolean pushData(List<Person> data, Long instituteId) {
-        if (!queues.containsKey(instituteId) || data.isEmpty()) {
+        if (data.isEmpty()) {
             return false;
         }
         for (Map.Entry<Long, PriorityQueue<PersonWrapper>> entry : queues.entrySet()) {
@@ -79,6 +90,7 @@ public class SeparateSyncQueue implements SyncQueue {
     @Override
     public Collection<PersonWrapper> pullData(Long instituteId, int size) {
         PriorityQueue<PersonWrapper> queue = queues.get(instituteId);
+        LOGGER.error("SYNCQ: pull Q size {}", queues.size());
         if (queue == null) {
             return new LinkedList<>();
         }

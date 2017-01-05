@@ -46,10 +46,10 @@ public class RequestProcessor implements CommandLineRunner {
 
     @PostConstruct
     private void initData() {
-        syncQueue.initQueue();
         testDataLoader.initInstitutes();
         testDataLoader.generatePeople(false, dataCount);
         testDataLoader.generatePeople(true, dataCountTemp);
+        syncQueue.initQueue();
         Request request = new Request();
         request.setPeople(personService.initMergeBuffer());
         if (!request.getPeople().isEmpty()) {
@@ -76,7 +76,8 @@ public class RequestProcessor implements CommandLineRunner {
         try {
             syncQueue.pushData(toSynchronize, Long.parseLong(request.getClientId()));
         } catch (NumberFormatException e) {
-            LOGGER.warn("RequestProcessor: Failed to parse instituteId {}", request.getClientId());
+            // No clientID - request from web or init from DB;
+            syncQueue.pushData(toSynchronize, null);
         }
         LOGGER.info("RequestProcessor: Processed request {} from client {}.", request.getBatchId(), request.getClientId());
     }

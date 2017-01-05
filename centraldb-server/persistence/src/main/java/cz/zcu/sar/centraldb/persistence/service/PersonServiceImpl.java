@@ -42,7 +42,12 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     @Override
     public List<PersonWrapper> getUnsynchronized(Timestamp from) {
         List<PersonWrapper> normalized = new LinkedList<>();
-        List<Person> unSync = personRepository.findByDate(from);
+        List<Person> unSync;
+        if (from != null) {
+            unSync = personRepository.findByDate(from);
+        } else {
+            unSync = personRepository.findAll(null);
+        }
         for (Person person : unSync) {
             person = fillLazyAttribute(person);
             normalized.add(person.getPersonWrapper());
@@ -138,19 +143,6 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         person = personRepository.save(person);
         return person;
     }
-
-//    @Override
-//    public Person createPerson(Person person) {
-//        person = personRepository.save(person);//TODO: solve circular dependency...
-//        if (person.getAddressWrappers() != null) {
-//            for (Address address : person.getAddressWrappers()) {
-//                address.setPerson(person);
-//                addressRepository.save(address);
-//                person.getAddressWrappers().forEach(addressRepository::save);
-//            }
-//        }
-//        return person;
-//    }
 
     public Person findPerson(Long id){
         if (id==null) return null;

@@ -5,7 +5,10 @@ import cz.zcu.sar.centraldb.persistence.domain.Institute;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,12 +19,12 @@ import java.util.*;
  * Created by Matej Lochman on 23.12.16.
  */
 
+@Primary
 @Component
 public class SharedSyncQueue implements SyncQueue {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(SharedSyncQueue.class);
     @Autowired
     private PersonService personService;
-
     @Autowired
     private InstituteService instituteService;
 
@@ -50,6 +53,7 @@ public class SharedSyncQueue implements SyncQueue {
                 }
             }
         }
+        LOGGER.info("Synchronization queue initialized, size is {}", queue.size());
     }
 
     private void addPersonToMap(PersonWrapper person) {
@@ -74,8 +78,10 @@ public class SharedSyncQueue implements SyncQueue {
     public boolean pushData(List<Person> data, Long instituteId) {
         Timestamp lastSyncTime = lastSync.get(instituteId);
         PersonWrapper personWrapper;
+        Timestamp time;
         for (Person person : data) {
-            if (person.getModifiedTime().before(lastSyncTime)) {
+            time = person.getModifiedTime();
+            if (time != null && lastSyncTime != null && time.before(lastSyncTime)) {
                 lastSync.put(instituteId, person.getModifiedTime());
                 instituteService.updateSyncOut(instituteId, person.getModifiedTime());
             }
