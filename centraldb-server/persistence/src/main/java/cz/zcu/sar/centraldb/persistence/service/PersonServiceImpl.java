@@ -119,7 +119,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
 
     @Override
     @Transactional
-    public void createPerson(Person person) {
+    public Person createPerson(Person person) {
         person = save(person);
         if (person.getAddressWrappers()!=null){
             for (Address a : person.getAddressWrappers()){
@@ -128,6 +128,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
                 person.getAddressWrappers().forEach(addressRepository::save);
             }
         }
+        return person;
     }
 
     public Person findPerson(Long id){

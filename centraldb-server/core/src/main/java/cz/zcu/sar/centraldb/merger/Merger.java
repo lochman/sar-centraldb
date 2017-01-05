@@ -17,5 +17,5 @@ public interface Merger {
      * @param persist persist person
      * @return merge ok
      */
-    boolean mergeData(Person temporal, Person persist);
+    Person mergeData(Person temporal, Person persist);
 }

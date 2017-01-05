@@ -55,7 +55,7 @@ public class RequestProcessor implements CommandLineRunner {
             } else {
                 persist = personService.findPerson(person.getForeignId());
             }
-            merger.mergeData(person, persist);
+            Person mergerPerson = merger.mergeData(person, persist);
         }
         LOGGER.info("Processed request {} from client {}.", request.getBatchId(), request.getClientId());
     }
