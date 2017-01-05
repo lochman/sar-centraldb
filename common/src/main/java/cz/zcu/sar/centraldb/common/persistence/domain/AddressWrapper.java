@@ -216,8 +216,8 @@ public class AddressWrapper<P extends PersonWrapper, A extends AddressTypeWrappe
     public String toString() {
         return "AddressWrapper{" +
                 "id=" + getId() +
-                ", person=" + person.getId() +
-                ", addressType=" + addressType +
+//                ", person=" + person.getId() +
+//                ", addressType=" + addressType +
                 ", residenceFrom=" + residenceFrom +
                 ", residenceTo=" + residenceTo +
                 ", city='" + city + '\'' +

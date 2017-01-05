@@ -7,7 +7,6 @@ import cz.zcu.sar.centraldb.common.synchronization.Batch;
  */
 
 public interface RequestQueue {
-    Request push(Batch batch);
     Request push(Request request);
     Request pull();
     Request peek();

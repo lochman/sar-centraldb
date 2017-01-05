@@ -1,16 +1,12 @@
 package cz.zcu.sar.centraldb.core;
 
-import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.synchronization.Batch;
 import cz.zcu.sar.centraldb.merger.Normalizer;
-import cz.zcu.sar.centraldb.persistence.domain.Person;
-import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /**
@@ -19,9 +15,6 @@ import java.util.Queue;
 
 @Component
 public class RequestQueueImpl implements RequestQueue {
-
-    @Autowired
-    private Normalizer normalizer;
 
     private Queue<Request> queue;
 
@@ -35,17 +28,11 @@ public class RequestQueueImpl implements RequestQueue {
     }
 
     @Override
-    public Request push(Batch batch) {
-        Request request = new Request(batch.getId(),
-                batch.getClientId(), normalizer.normalize(batch.getPersons()));
-        queue.add(request);
-        return request;
-    }
-
     public Request push(Request request){
         queue.add(request);
         return request;
     }
+
     @Override
     public Request pull() {
         return queue.poll();
