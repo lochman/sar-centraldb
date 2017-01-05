@@ -36,7 +36,7 @@ public class SharedSyncQueue implements SyncQueue {
     @PostConstruct
     private void initQueue() {
         List<Institute> institutes = instituteService.findAll();
-        List<Person> unSynchronized;
+        List<PersonWrapper> unSynchronized;
         lastSync = new HashMap<>();
         peopleByTime = new HashMap<>();
         queue = new TreeSet<>((PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime()));
@@ -45,7 +45,7 @@ public class SharedSyncQueue implements SyncQueue {
             if (!unSynchronized.isEmpty()) {
                 queue.addAll(unSynchronized);
                 lastSync.put(institute.getId(), unSynchronized.get(0).getModifiedTime());
-                for (Person person : unSynchronized) {
+                for (PersonWrapper person : unSynchronized) {
                     addPersonToMap(person);
                 }
             }
@@ -61,6 +61,9 @@ public class SharedSyncQueue implements SyncQueue {
 
     private void removePersonFromMap(PersonWrapper person) {
         List<PersonWrapper> people = peopleByTime.get(person.getModifiedTime());
+        if (people == null) {
+            return;
+        }
         people.remove(person);
         if (people.isEmpty()) {
             peopleByTime.remove(person.getModifiedTime());
@@ -68,7 +71,7 @@ public class SharedSyncQueue implements SyncQueue {
     }
 
     @Override
-    public boolean pushData(Collection<Person> data, Long instituteId) {
+    public boolean pushData(List<Person> data, Long instituteId) {
         Timestamp lastSyncTime = lastSync.get(instituteId);
         PersonWrapper personWrapper;
         for (Person person : data) {
@@ -104,9 +107,8 @@ public class SharedSyncQueue implements SyncQueue {
         Iterator<PersonWrapper> iterator = queue.iterator();
         while (iterator.hasNext()) {
             first = iterator.next();
-            if (first.getModifiedTime() == lastSyncTime) {
-                first = iterator.next();
-                break;
+            if (Objects.equals(first.getModifiedTime(), lastSyncTime)) {
+                return iterator.next();
             }
         }
         return first;
@@ -135,14 +137,15 @@ public class SharedSyncQueue implements SyncQueue {
 
     private void reduceQueue() {
         PersonWrapper person;
+        Timestamp lastSyncTime = lastSyncTime();
         Iterator<PersonWrapper> iterator = queue.iterator();
         while (iterator.hasNext()) {
             person = iterator.next();
+            if (Objects.equals(person.getModifiedTime(), lastSyncTime)) {
+                return;
+            }
             iterator.remove();
             removePersonFromMap(person);
-            if (person.getModifiedTime() == lastSyncTime()) {
-                break;
-            }
         }
     }
 

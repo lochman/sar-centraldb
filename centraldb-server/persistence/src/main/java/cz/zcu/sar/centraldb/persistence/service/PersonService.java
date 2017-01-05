@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.persistence.service.BaseService;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
@@ -17,9 +18,7 @@ import java.util.List;
 @Transactional
 public interface PersonService extends BaseService<Person, Long> {
 
-    List<Person> getUnsynchronized(Timestamp from);
-    List<Person> getUnsynchronized(Timestamp from, int count);
-
+    List<PersonWrapper> getUnsynchronized(Timestamp from);
     Page<Person> getPeopleByQuery(PageRequestWrapper requestWrapper);
     Person savePersonAsTemp(Person person);
     Person createPerson(PersonAddress personAddress, String modifiedBy);

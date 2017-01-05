@@ -4,6 +4,8 @@ import cz.zcu.sar.centraldb.lookup.PersonLookup;
 import cz.zcu.sar.centraldb.merger.Merger;
 import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
+import cz.zcu.sar.centraldb.synchronization.SyncQueue;
+import cz.zcu.sar.centraldb.utils.TestDataLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Marek Rasocha
@@ -30,14 +34,21 @@ public class RequestProcessor implements CommandLineRunner {
     private RequestQueue requestQueue;
     @Autowired
     private PersonLookup personLookup;
+    @Autowired
+    private SyncQueue syncQueue;
 
     @Value("${requestProcessor.timeout}")
     private long TIMEOUT;
+    @Value("${testDataCount}")
+    private int dataCount;
+    @Value("${testDataCount.temp}")
+    private int dataCountTemp;
 
     @PostConstruct
     private void initData() {
-        testDataLoader.run(false, 100);
-        testDataLoader.run(true, 200);
+        testDataLoader.initInstitutes();
+        testDataLoader.generatePeople(false, dataCount);
+        testDataLoader.generatePeople(true, dataCountTemp);
         Request request = new Request();
         request.setPeople(personService.initMergeBuffer());
         if (!request.getPeople().isEmpty()) {
@@ -47,6 +58,7 @@ public class RequestProcessor implements CommandLineRunner {
     }
 
     private void processRequest() {
+        List<Person> toSynchronize = new LinkedList<>();
         Request request = requestQueue.pull();
         for (Person person : request.getPeople()) {
             Person persist;
@@ -55,9 +67,17 @@ public class RequestProcessor implements CommandLineRunner {
             } else {
                 persist = personService.findPerson(person.getForeignId());
             }
-            Person mergerPerson = merger.mergeData(person, persist);
+            Person mergedPerson = merger.mergeData(person, persist);
+            if (mergedPerson != null) {
+                toSynchronize.add(mergedPerson);
+            }
         }
-        LOGGER.info("Processed request {} from client {}.", request.getBatchId(), request.getClientId());
+        try {
+            syncQueue.pushData(toSynchronize, Long.parseLong(request.getClientId()));
+        } catch (NumberFormatException e) {
+            LOGGER.warn("RequestProcessor: Failed to parse instituteId {}", request.getClientId());
+        }
+        LOGGER.info("RequestProcessor: Processed request {} from client {}.", request.getBatchId(), request.getClientId());
     }
 
     @Override

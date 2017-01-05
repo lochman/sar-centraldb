@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.persistence.service.BaseServiceImpl;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
 import cz.zcu.sar.centraldb.persistence.domain.AddressType;
@@ -37,16 +38,16 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     @Autowired
     private AddressRepository addressRepository;
 
-    public List<Person> getUnsynchronized(Timestamp from) {
-        List<Person> unsync = personRepository.findByDate(from);
-        logger.info("getUnsynchronized: from=" + from + ", listSize=" + unsync.size());
-        return unsync;
-    }
-
-    public List<Person> getUnsynchronized(Timestamp from, int count) {
-        List<Person> unsync = personRepository.findByDate(from, new PageRequest(0, count)).getContent();
-        logger.info("getUnsynchronized: from=" + from + ", count=" + count + ", listSize=" + unsync.size());
-        return unsync;
+    @Override
+    public List<PersonWrapper> getUnsynchronized(Timestamp from) {
+        List<PersonWrapper> normalized = new LinkedList<>();
+        List<Person> unSync = personRepository.findByDate(from);
+        for (Person person : unSync) {
+            person = fillLazyAttribute(person);
+            normalized.add(person.getPersonWrapper());
+        }
+//        logger.debug("getUnsynchronized: from=" + from + ", listSize=" + unsync.size());
+        return normalized;
     }
 
     @Override
@@ -63,7 +64,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
             pageRequest = new PageRequest(page, limit);
         }
         Page<Person> all =  personRepository.findAll(hasProperties(requestWrapper.getQueryParams()), pageRequest);
-        logger.info("getPeopleByQuery: requestWrapper=" + requestWrapper + ", pageSize=" + all.getNumberOfElements());
+        logger.debug("getPeopleByQuery: requestWrapper=" + requestWrapper + ", pageSize=" + all.getNumberOfElements());
         return all;
     }
 
@@ -113,7 +114,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         Person search = null;
         if (!result.isEmpty()) search = result.get(0);
 
-        logger.info("findPersonByNumbers: socialNumber=" + socialNumber + ", companyNumber=" + companyNumber + ", personFound=" + search);
+        logger.debug("findPersonByNumbers: socialNumber=" + socialNumber + ", companyNumber=" + companyNumber + ", personFound=" + search);
         return search;
     }
 
@@ -151,7 +152,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         }
         person.setAddressWrappers(new HashSet<>(addresses));
         person.setPersonType(type);
-        logger.info("fillLazyAttribute: " + person);
+        logger.debug("fillLazyAttribute: " + person);
 
         return person;
     }

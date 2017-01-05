@@ -1,6 +1,8 @@
-package cz.zcu.sar.centraldb.client.pusher;
+package cz.zcu.sar.centraldb.client.core;
 
+import cz.zcu.sar.centraldb.client.core.utils.TestDataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +20,12 @@ public class AppRunner implements CommandLineRunner {
     PusherRunner pusherRunner;
     @Autowired
     TestDataLoader testDataLoader;
+    @Value("${testDataCount}")
+    private int testDataCount;
 
     @Override
     public void run(String... args) throws Exception {
-        testDataLoader.run();
+        testDataLoader.generatePeople(testDataCount);
         pusherRunner.start();
         fetcherRunner.start();
         pusherRunner.join();

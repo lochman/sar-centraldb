@@ -1,4 +1,4 @@
-package cz.zcu.sar.centraldb.client.pusher;
+package cz.zcu.sar.centraldb.client.core;
 
 import cz.zcu.sar.centraldb.client.fetcher.Fetcher;
 import org.slf4j.Logger;

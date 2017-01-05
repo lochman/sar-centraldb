@@ -6,6 +6,7 @@ import cz.zcu.sar.centraldb.persistence.domain.Person;
 import cz.zcu.sar.centraldb.persistence.service.InstituteService;
 import cz.zcu.sar.centraldb.persistence.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,7 +17,8 @@ import java.util.*;
  * Created by Matej Lochman on 28.12.16.
  */
 
-//@Component
+@Primary
+@Component
 public class SeparateSyncQueue implements SyncQueue {
 
     @Autowired
@@ -32,7 +34,7 @@ public class SeparateSyncQueue implements SyncQueue {
     @PostConstruct
     private void initQueue() {
         List<Institute> institutes = instituteService.findAll();
-        List<Person> unSynchronized;
+        List<PersonWrapper> unSynchronized;
         queues = new HashMap<>();
         for (Institute institute : institutes) {
             queues.put(institute.getId(), new PriorityQueue<>((PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime())));
@@ -43,14 +45,33 @@ public class SeparateSyncQueue implements SyncQueue {
         }
     }
 
-    @Override
-    public boolean pushData(Collection<Person> data, Long instituteId) {
-        Timestamp lastSyncTime = queues.get(instituteId).peek().getModifiedTime();
-        for (Person person : data) {
-            if (person.getModifiedTime().before(lastSyncTime)) {
-                instituteService.updateSyncOut(instituteId, person.getModifiedTime());
+    private void checkModifiedTime(Person person, Long instituteId) {
+        Timestamp time = person.getModifiedTime();
+        if (time == null) {
+            return;
+        }
+        PersonWrapper personWrapper = queues.get(instituteId).peek();
+        if (personWrapper != null) {
+            Timestamp lastModified = personWrapper.getModifiedTime();
+            if (lastModified == null || time.before(lastModified)) {
+                instituteService.updateSyncOut(instituteId, time);
             }
-            queues.get(instituteId).add(person.getPersonWrapper());
+        }
+    }
+
+    @Override
+    public boolean pushData(List<Person> data, Long instituteId) {
+        if (!queues.containsKey(instituteId) || data.isEmpty()) {
+            return false;
+        }
+        for (Map.Entry<Long, PriorityQueue<PersonWrapper>> entry : queues.entrySet()) {
+            if (Objects.equals(entry.getKey(), instituteId)) {
+                continue;
+            }
+            checkModifiedTime(data.get(0), entry.getKey());
+            for (Person person : data) {
+                entry.getValue().add(person.getPersonWrapper());
+            }
         }
         return true;
     }
@@ -68,7 +89,7 @@ public class SeparateSyncQueue implements SyncQueue {
     public boolean updateLastSync(Long instituteId, Timestamp lastSync) {
         PriorityQueue<PersonWrapper> queue = queues.get(instituteId);
         PersonWrapper person = queue.poll();
-        while (!queue.isEmpty() && person != null && person.getModifiedTime() != lastSync) {
+        while (!queue.isEmpty() && person != null && !Objects.equals(person.getModifiedTime(), lastSync)) {
             person = queue.poll();
         }
         instituteService.updateSyncOut(instituteId, lastSync);
