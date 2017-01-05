@@ -34,14 +34,14 @@ public class SyncServiceImpl implements SyncService {
 
     @Override
     public Request pushRequest(Batch batch) {
-        Request request = new Request(batch.getId(),
+        Request request = new Request(batch.getBatchId(),
                 batch.getClientId(), normalizer.normalize(batch.getPersons()));
         for (Person person : request.getPeople()) {
             personService.savePersonAsTemp(person.getId());
         }
-        instituteService.updateBatchId(batch.getClientId(), batch.getId());
+        instituteService.updateBatchId(batch.getClientId(), batch.getBatchId());
         requestQueue.push(request);
-        LOGGER.debug("Pushing request with Id={} into queue", batch.getId());
+        LOGGER.debug("Pushing request with Id={} into queue", batch.getBatchId());
         return request;
     }
 

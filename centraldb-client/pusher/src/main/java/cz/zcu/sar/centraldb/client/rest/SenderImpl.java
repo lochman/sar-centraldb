@@ -52,14 +52,14 @@ public class SenderImpl implements Sender {
         }
     }
     public void sendData(List<Person> persons,String batchId) {
-        Batch batch = new Batch(clientId, normalizedPerson(persons));
-        LOGGER.info("Sending batch {} of size {}", batch.getId(), batch.getSize());
+        Batch batch = new Batch(clientId, normalizedPerson(persons), batchId);
+        LOGGER.info("Sending batch {} of size {}", batch.getBatchId(), batch.getSize());
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         try{
         restTemplate.postForObject(uriData, batch, Batch.class);
         }catch (HttpClientErrorException e){
-            LOGGER.error("Failed to send batch {} on URI {}", batch.getId(), uriData);
+            LOGGER.error("Failed to send batch {} on URI {}", batch.getBatchId(), uriData);
             System.out.println(e.toString());
         }
     }
@@ -77,11 +77,11 @@ public class SenderImpl implements Sender {
             if (batch == null) {
                 return new ArrayList<>();
             } else {
-                LOGGER.info("Received batch {} of size {}", batch.getId(), batch.getSize());
+                LOGGER.info("Received batch {} of size {}", batch.getBatchId(), batch.getSize());
                 return normalizedPerson(batch.getPersons());
             }
         } catch (HttpClientErrorException e) {
-            LOGGER.error("Failed to receive batch from request {} on URI {}", batchRequest.getId(), fetchData);
+            LOGGER.error("Failed to receive batch from request {} on URI {}", batchRequest.getBatchId(), fetchData);
             return new ArrayList<>();
         }
     }

@@ -45,7 +45,7 @@ public class RequestQueueImpl implements RequestQueue {
 
     @Override
     public boolean isPresent(Batch batch) {
-        return queue.contains(new Request(batch.getId(), batch.getClientId()));
+        return queue.contains(new Request(batch.getBatchId(), batch.getClientId()));
     }
 
     @Override

@@ -14,8 +14,10 @@ public class Batch {
     private int size;
     private String clientId;
     private PersonWrapper[] persons;
+    private String batchId;
 
-    public Batch(String clientId, PersonWrapper[] persons) {
+    public Batch(String clientId, PersonWrapper[] persons, String batchId) {
+        this.batchId = batchId;
         Arrays.sort(persons, (PersonWrapper p1, PersonWrapper p2) -> p1.getModifiedTime().compareTo(p2.getModifiedTime()));
         this.clientId = clientId;
         this.persons = persons;
@@ -23,6 +25,14 @@ public class Batch {
     }
 
     public Batch() {
+    }
+
+    public String getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(String batchId) {
+        this.batchId = batchId;
     }
 
     public int getSize() {
@@ -41,13 +51,13 @@ public class Batch {
         return  persons != null && persons.length != 0 && persons[persons.length - 1] != null ? persons[persons.length - 1].getModifiedTime() : null;
     }
 
-    public String getId() {
-        String id = "";
-        Timestamp first = getFirst(), last = getLast();
-        id += first != null ? first.toString() : "";
-        id += last != null ? last.toString() : "";
-        return id;
-    }
+//    public String getId() {
+//        String id = "";
+//        Timestamp first = getFirst(), last = getLast();
+//        id += first != null ? first.toString() : "";
+//        id += last != null ? last.toString() : "";
+//        return id;
+//    }
 
     public String getClientId() {
         return clientId;
