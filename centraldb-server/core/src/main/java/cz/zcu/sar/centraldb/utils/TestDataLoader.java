@@ -6,6 +6,7 @@ import cz.zcu.sar.centraldb.synchronization.SyncQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -26,16 +27,26 @@ public class TestDataLoader {
     @Autowired
     private InstituteService instituteService;
 
+    private List<PersonType> personTypes;
+
+    private List<AddressType> addressTypes;
+
     private final Map<Long, String> institutes = new HashMap<Long, String>(){{
         put(0L, "Praha");
         put(1L, "Plzen");
         put(2L, "Ostrava");
     }};
-
+    @PostConstruct
     public void initInstitutes() {
         for (Map.Entry<Long, String> entry : institutes.entrySet()) {
             instituteService.save(new Institute(entry.getKey(), entry.getValue()));
         }
+
+    }
+    @PostConstruct
+    public void initTypes(){
+        personTypes = createPersonTypes();
+        addressTypes = createAddressTypes();
     }
 
     private PersonType createPersonType(String description) {
@@ -69,8 +80,6 @@ public class TestDataLoader {
     }
 
     public void generatePeople(boolean temp, int count) {
-        List<PersonType> personTypes = createPersonTypes();
-        List<AddressType> addressTypes = createAddressTypes();
         Person person;
         DataGenerator generator = new DataGenerator(Person.class, Address.class);
         for (int i = 0; i < count; i++) {

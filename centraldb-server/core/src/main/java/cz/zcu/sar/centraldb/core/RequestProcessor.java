@@ -46,7 +46,6 @@ public class RequestProcessor implements CommandLineRunner {
 
     @PostConstruct
     private void initData() {
-        testDataLoader.initInstitutes();
         testDataLoader.generatePeople(false, dataCount);
         testDataLoader.generatePeople(true, dataCountTemp);
         syncQueue.initQueue();

@@ -39,7 +39,6 @@ public class IndexController {
     @ResponseBody
     public String performLogin(@RequestParam String username, @RequestParam String password,
                                HttpServletRequest request, HttpServletResponse response) {
-        System.out.println(username + password);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
         try {
             Authentication auth = authenticationManager.authenticate(token);

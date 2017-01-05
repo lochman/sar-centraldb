@@ -1,6 +1,5 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
-import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.persistence.service.BaseServiceImpl;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -38,6 +36,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
 
     @Autowired
     private AddressRepository addressRepository;
+
 
     @Override
     public List<PersonWrapper> getUnsynchronized(Timestamp from) {
@@ -75,21 +74,28 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     }
 
     @Override
-    public Person savePersonAsTemp(Long personId) {
-        Person person = null;
-        Optional<Person> optional = personRepository.findOne(personId);
-        if (optional.isPresent()) {
-            optional.get().setTemporary(true);
-            person = personRepository.save(optional.get());
-        }
-        return person;
+    public Person savePersonAsTemp(Person person) {
+        person.setTemporary(true);
+        return personRepository.save(person);
     }
 
     @Override
-    public Person createPerson(PersonAddress personAddress, String modifiedBy) {
+    public Person updatePersonWeb(PersonAddress personAddress, String modifiedBy) {
         Person person = personAddress.getPerson();
         person.setModifiedBy(modifiedBy);
-        person = savePersonAsTemp(person.getId());
+        person.setModifiedTime(new Timestamp(System.currentTimeMillis()));
+        save(person);
+        if(personAddress.getAddressWrappers().length > 0) {
+            saveAddress(person, personAddress, modifiedBy);
+        }
+        return person;
+    }
+    @Override
+    public Person createPersonWeb(PersonAddress personAddress, String modifiedBy) {
+        Person person = personAddress.getPerson();
+        person.setModifiedBy(modifiedBy);
+        person.setModifiedTime(new Timestamp(System.currentTimeMillis()));
+        person = savePersonAsTemp(person);
         if (personAddress.getAddressWrappers().length > 0) {
             saveAddress(person, personAddress, modifiedBy);
         }
@@ -102,6 +108,7 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         for (Address address : personAddress.getAddressWrappers()) {
             address.setPerson(person);
             address.setModifiedBy(modifiedBy);
+            address.setModifiedTime(new Timestamp(System.currentTimeMillis()));
             address = addressRepository.save(address);
             addresses.add(address);
         }
@@ -135,9 +142,11 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         Set<Address> addresses1 = new HashSet<>();
         person.setAddressWrappers(null);
         person = personRepository.save(person);
-        for (Address address : addresses) {
-            address.setPerson(person);
-            addresses1.add(addressRepository.save(address));
+        if (addresses != null) {
+            for (Address address : addresses) {
+                address.setPerson(person);
+                addresses1.add(addressRepository.save(address));
+            }
         }
         person.setAddressWrappers(addresses1);
         person = personRepository.save(person);

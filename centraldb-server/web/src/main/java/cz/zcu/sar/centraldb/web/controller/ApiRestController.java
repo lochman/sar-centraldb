@@ -7,13 +7,17 @@ import cz.zcu.sar.centraldb.persistence.service.PersonTypeService;
 import cz.zcu.sar.centraldb.persistence.wrapper.PageRequestWrapper;
 import cz.zcu.sar.centraldb.persistence.wrapper.PersonAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -35,6 +39,9 @@ public class ApiRestController {
     @Autowired
     private PersonService personService;
 
+    @Value("${core.url}")
+    private String coreUrl;
+
     @GetMapping(value = "user")
     public ResponseEntity<?> getUser(Authentication user) {
         String userJson;
@@ -49,7 +56,6 @@ public class ApiRestController {
     @Secured({ "ROLE_USER" })
     @PostMapping("person/search/paginated")
     public Page<Person> getPeopleByQuery(@RequestBody PageRequestWrapper request) {
-        System.out.println(request.getQueryParams());
         return personService.getPeopleByQuery(request);
     }
 
@@ -71,10 +77,14 @@ public class ApiRestController {
         if (person == null || id != person.getId()) {
             return userNotFound(id.toString());
         }
-        personService.save(person);
-        person.setModifiedBy(auth.getName());
-        if(personAddress.getAddressWrappers().length > 0) {
-            personService.saveAddress(person, personAddress, auth.getName());
+        person = personService.updatePersonWeb(personAddress, auth.getName());
+        //try to put it to sync in core application
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        try{
+            restTemplate.put(coreUrl+"person/"+person.getId(), person, Person.class);
+        }catch (HttpClientErrorException e){
+            System.out.println(e.toString());
         }
         return ResponseEntity.ok("{\"status\": true}");
     }
@@ -93,7 +103,15 @@ public class ApiRestController {
     @Secured({ "ROLE_ADMIN" })
     @PostMapping(value = "person")
     public ResponseEntity<?> createNewPerson(@RequestBody PersonAddress personAddress, Authentication auth) {
-        Person person = personService.createPerson(personAddress, auth.getName());
+        Person person = personService.createPersonWeb(personAddress, auth.getName());
+        //try to put it to sync in core application
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        try{
+            restTemplate.postForObject(coreUrl+"person", person, Person.class);
+        }catch (HttpClientErrorException e){
+            System.out.println(e.toString());
+        }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(person.getId()).toUri();
