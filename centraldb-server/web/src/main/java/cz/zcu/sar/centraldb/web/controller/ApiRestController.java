@@ -92,7 +92,7 @@ public class ApiRestController {
 
     @Secured({ "ROLE_ADMIN" })
     @PostMapping(value = "person")
-    public ResponseEntity<?> createNewPerson( @RequestBody PersonAddress personAddress, Authentication auth) {
+    public ResponseEntity<?> createNewPerson(@RequestBody PersonAddress personAddress, Authentication auth) {
         Person person = personService.createPerson(personAddress, auth.getName());
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")

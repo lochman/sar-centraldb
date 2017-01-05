@@ -32,7 +32,7 @@ public class TestDataLoader {
         PersonType personType = new PersonType();
         personType.setDescription(description);
         personType.setModifiedBy("init");
-        personTypeService.save(personType);
+        personType = personTypeService.save(personType);
         return personType;
     }
 
@@ -47,7 +47,7 @@ public class TestDataLoader {
         AddressType addressType = new AddressType();
         addressType.setDescription(description);
         addressType.setModifiedBy("init");
-        addressTypeService.save(addressType);
+        addressType = addressTypeService.save(addressType);
         return addressType;
     }
 
@@ -75,13 +75,13 @@ public class TestDataLoader {
             //address
             Address address = generator.nextAddress(addressTypes.get(0));
             address.setPerson(person);
-            addressService.save(address);
+            address = addressService.save(address);
             addresses.add(address);
             //temporary address
             if (ThreadLocalRandom.current().nextInt(10) == 0) {
                 Address address2 = generator.nextAddress(addressTypes.get(1));
                 address2.setPerson(person);
-                addressService.save(address2);
+                address2 = addressService.save(address2);
                 addresses.add(address2);
             }
             person.setAddressWrappers(addresses);

@@ -1,5 +1,6 @@
 package cz.zcu.sar.centraldb.persistence.service;
 
+import cz.zcu.sar.centraldb.common.persistence.domain.AddressWrapper;
 import cz.zcu.sar.centraldb.common.persistence.domain.PersonWrapper;
 import cz.zcu.sar.centraldb.common.persistence.service.BaseServiceImpl;
 import cz.zcu.sar.centraldb.persistence.domain.Address;
@@ -63,23 +64,28 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
         } else {
             pageRequest = new PageRequest(page, limit);
         }
-        Page<Person> all =  personRepository.findAll(hasProperties(requestWrapper.getQueryParams()), pageRequest);
+        Page<Person> all = personRepository.findAll(hasProperties(requestWrapper.getQueryParams()), pageRequest);
         logger.debug("getPeopleByQuery: requestWrapper=" + requestWrapper + ", pageSize=" + all.getNumberOfElements());
         return all;
     }
 
     @Override
-    public Person savePersonAsTemp(Person person) {
-        person.setTemporary(true);
-        return save(person);
+    public Person savePersonAsTemp(Long personId) {
+        Person person = null;
+        Optional<Person> optional = personRepository.findOne(personId);
+        if (optional.isPresent()) {
+            optional.get().setTemporary(true);
+            person = personRepository.save(optional.get());
+        }
+        return person;
     }
 
     @Override
     public Person createPerson(PersonAddress personAddress, String modifiedBy) {
         Person person = personAddress.getPerson();
         person.setModifiedBy(modifiedBy);
-        savePersonAsTemp(person);
-        if(personAddress.getAddressWrappers().length > 0) {
+        person = savePersonAsTemp(person.getId());
+        if (personAddress.getAddressWrappers().length > 0) {
             saveAddress(person, personAddress, modifiedBy);
         }
         return person;
@@ -87,15 +93,15 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
 
     @Override
     public void saveAddress(Person person, PersonAddress personAddress, String modifiedBy) {
-        Set<Address> addresses = personRepository.getAddresses(person.getId());
+        Set<Address> addresses = new HashSet<>();
         for (Address address : personAddress.getAddressWrappers()) {
             address.setPerson(person);
             address.setModifiedBy(modifiedBy);
-            addressRepository.save(address);
+            address = addressRepository.save(address);
             addresses.add(address);
         }
         person.setAddressWrappers(addresses);
-        save(person);
+        personRepository.save(person);
         logger.info("saveAddress: modifiedBy='" + modifiedBy + "', " + person + ", " + personAddress);
     }
 
@@ -119,18 +125,32 @@ public class PersonServiceImpl extends BaseServiceImpl<Person, Long, PersonRepos
     }
 
     @Override
-    @Transactional
-    public Person createPerson(Person person) {
-        person = save(person);
-        if (person.getAddressWrappers()!=null){
-            for (Address a : person.getAddressWrappers()){
-                a.setPerson(person);
-                addressRepository.save(a);
-                person.getAddressWrappers().forEach(addressRepository::save);
-            }
+    public Person savePersonWithAddresses(Person person) {
+        Set<Address> addresses = person.getAddressWrappers();
+        Set<Address> addresses1 = new HashSet<>();
+        person.setAddressWrappers(null);
+        person = personRepository.save(person);
+        for (Address address : addresses) {
+            address.setPerson(person);
+            addresses1.add(addressRepository.save(address));
         }
+        person.setAddressWrappers(addresses1);
+        person = personRepository.save(person);
         return person;
     }
+
+//    @Override
+//    public Person createPerson(Person person) {
+//        person = personRepository.save(person);//TODO: solve circular dependency...
+//        if (person.getAddressWrappers() != null) {
+//            for (Address address : person.getAddressWrappers()) {
+//                address.setPerson(person);
+//                addressRepository.save(address);
+//                person.getAddressWrappers().forEach(addressRepository::save);
+//            }
+//        }
+//        return person;
+//    }
 
     public Person findPerson(Long id){
         if (id==null) return null;

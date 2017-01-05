@@ -20,13 +20,12 @@ public interface PersonService extends BaseService<Person, Long> {
 
     List<PersonWrapper> getUnsynchronized(Timestamp from);
     Page<Person> getPeopleByQuery(PageRequestWrapper requestWrapper);
-    Person savePersonAsTemp(Person person);
+    Person savePersonAsTemp(Long personId);
     Person createPerson(PersonAddress personAddress, String modifiedBy);
+    Person savePersonWithAddresses(Person person);
+//    Person createPerson(Person person);
     void saveAddress(Person person, PersonAddress personAddress, String modifiedBy);
     Person findPersonByNumbers(String socialNumber, String companyNumber);
-
-    Person createPerson(Person person);
-
     Person findPerson(Long id);
     Person fillLazyAttribute(Person persons);
     List<Person> initMergeBuffer();

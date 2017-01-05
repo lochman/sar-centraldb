@@ -49,7 +49,7 @@ public class MergerImpl implements Merger {
             temporal.setTemporary(true);
         }
         temporal = (Person)utilService.setModifyBy(temporal,true);
-        temporal = personService.createPerson(temporal);
+        temporal = personService.savePersonWithAddresses(temporal);
         if (persist!=null){
             persist.setAddressWrappers(new HashSet<>());
             personService.delete(persist.getId());
